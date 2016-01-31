@@ -1,10 +1,10 @@
-#include "camera.h"
+#include "engine/camera/Camera.h"
 
 Camera::Camera(glm::vec2 size) :
-    m_eye(glm::vec3(0, 2, 0)),
     m_yaw(0),
     m_pitch(0),
-    m_fov(60),
+    m_fov(60.f),
+    m_eye(glm::vec3(0, 1.f, 0)),
     m_ratio(size)
 {
 }
@@ -17,6 +17,26 @@ float Camera::getYaw()
 float Camera::getPitch()
 {
     return m_pitch;
+}
+
+void Camera::setYaw(float yaw)
+{
+    m_yaw = yaw;
+}
+
+void Camera::setPitch(float pitch)
+{
+    m_pitch = pitch;
+}
+
+void Camera::setFov(float fov)
+{
+    m_fov = fov;
+}
+
+void Camera::setEye(glm::vec3 eye)
+{
+    m_eye = eye;
 }
 
 void Camera::setRatio(glm::vec2 size)
@@ -36,22 +56,22 @@ void Camera::rotate(float yaw, float pitch)
     m_pitch = glm::clamp(static_cast<double>(m_pitch), -M_PI / 2.0, M_PI / 2.0);
 }
 
-void Camera::sendTransforms(GLuint shader)
+void Camera::sendToShader(GLuint shader)
 {
     glm::vec3 look, up;
     glm::mat4x4 view, proj;
 
-    // Orient look based on rotation about y, and horizontal rotation
+    // Orient look vector
     look = glm::vec3(glm::cos(m_yaw) * glm::cos(m_pitch), glm::sin(m_pitch), glm::sin(m_yaw) * glm::cos(m_pitch));
 
     // Set up vector
     if(m_pitch < 0)
     {
-        up = glm::normalize(glm::vec3(look.x, 1, look.z));
+        up = glm::normalize(glm::vec3(look.x, 1.f, look.z));
     }
     else
     {
-        up = glm::vec3(0, 1, 0);
+        up = glm::vec3(0, 1.f, 0);
     }
 
     // Create transformation matrices
@@ -59,6 +79,6 @@ void Camera::sendTransforms(GLuint shader)
     proj = glm::perspective(glm::radians(m_fov), m_ratio.x / m_ratio.y, nearPlane, farPlane);
 
     // Send matrices to the shader
-    glUniformMatrix4fv(glGetUniformLocation(shader, "v"),1,GL_FALSE,glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(shader, "p"),1,GL_FALSE,glm::value_ptr(proj));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "v"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(shader, "p"), 1, GL_FALSE, glm::value_ptr(proj));
 }

@@ -1,1 +1,10 @@
 * Screen management
+        - Application object
+        - Screen object
+* Shape Object (separate than graphics object)
+* Graphics Object
+        - Contains textures (where else could go?)
+        - Contains shader program (where else could go?)
+        - Contains other rendering constants (where else could go?)
+        - Contains scene information (where else could go?)
+        - Contains shapes (where else could go?)

@@ -2,7 +2,8 @@
 #define VIEW_H
 
 #include "util/CommonIncludes.h"
-#include "camera.h"
+#include "engine/Application.h"
+
 #include <qgl.h>
 #include <QTime>
 #include <QTimer>
@@ -24,23 +25,26 @@ public:
     ~View();
 
 private:
+    /** Fix for OSX **/
     static QGLFormat getFormat();
 
+    /* Application */
+    Application app;
+
+    /* Time */
     QTime time;
     QTimer timer;
-
-    // Rendering objects
-    Camera *m_cam;
-    GLuint m_shader;
 
     float fps;
     int frameIndex;
     float frameTimes[FRAMES_TO_AVERAGE];
 
+    /* GL Loop */
     void initializeGL();
     void paintGL();
     void resizeGL(int w, int h);
 
+    /* Input Events */
     void mousePressEvent(QMouseEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
@@ -49,7 +53,6 @@ private:
 
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
-
 
 private slots:
     void tick();

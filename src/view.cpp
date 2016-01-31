@@ -1,6 +1,7 @@
 #include "util/CommonIncludes.h"
 #include "util/ResourceLoader.h"
 #include "view.h"
+
 #include <QApplication>
 #include <QKeyEvent>
 #include <QGLFormat>
@@ -18,41 +19,36 @@ QGLFormat View::getFormat()
 
 /** Instance methods **/
 
-View::View(QWidget *parent) : QGLWidget(getFormat(), parent)
+View::View(QWidget *parent) :
+    QGLWidget(getFormat(), parent),
+    app(Application(this))
 {
-    // View needs all mouse move events, not just mouse drag events
+    // Enable all mouse events
     setMouseTracking(true);
 
-    // Hide the cursor since this is a fullscreen app
+    // Hide the cursor
     setCursor(Qt::BlankCursor);
 
-    // View needs keyboard focus
+    // Accept focus by tab and clicking
     setFocusPolicy(Qt::StrongFocus);
 
     // The game loop is implemented using a timer
     connect(&timer, SIGNAL(timeout()), this, SLOT(tick()));
 
+    // Initialize frame times
     for (int i = 0; i < FRAMES_TO_AVERAGE; i++) {
         frameTimes[i] = 0;
     }
-    frameIndex = 0;
 
-    // Setup camera
-    glm::vec2 ratio = glm::vec2(16.f, 9.f);
-    m_cam = new Camera(ratio);
+    frameIndex = 0;
 }
 
 View::~View()
 {
-    delete m_cam;
 }
 
 void View::initializeGL()
 {
-    /* All OpenGL initialization *MUST* be done during or after this
-     * method. Before this method is called, there is no active OpenGL
-     * context and all OpenGL calls have no effect. */
-
     /* Initialize glew */
 
     glewExperimental = GL_TRUE;
@@ -67,67 +63,89 @@ void View::initializeGL()
 
     /* Start engine time */
 
-    // Start a timer that will try to get 60 frames per second (the actual
-    // frame rate depends on the operating system and other running programs)
+    // Timer at 60fps
     time.start();
     timer.start(1000 / 60);
 
     /* Initialize devices */
 
-    // Center the mouse, which is explained more in mouseMoveEvent() below.
-    // This needs to be done here because the mouse may be initially outside
-    // the fullscreen window and will not automatically receive mouse move
-    // events. This occurs if there are two monitors and the mouse is on the
-    // secondary monitor.
+    // Center mouse
     QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
     /* General GL setup */
 
-    // Enable depth testing, so that objects are occluded based on depth instead of drawing order.
+    // Enable depth testing
     glEnable(GL_DEPTH_TEST);
 
-    // Enable back-face culling, meaning only the front side of every face is rendered.
+    // Enable back-face culling
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    // Specify that the front face is represented by vertices in counterclockwise order (this is
-    // the default).
+    // Specify vertex order
     glFrontFace(GL_CCW);
 
-    // Load shaders
-    m_shader = ResourceLoader::loadShaders(":/shaders/shader.vert",":/shaders/shader.frag");
+    // Specify screen clearing color
+    glClearColor(0, 0, 0, 0);
 }
 
 void View::paintGL()
 {
-    glClearColor(0, 0, 0, 0);
+    // Clear the color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glColor3f(1,1,1);
-
-    /* Rendering code */
-
-    // Update camera
-    m_cam->sendTransforms(m_shader);
+    // Send paint event to application
+    app.paint();
 }
 
 void View::resizeGL(int w, int h)
 {
+    // Resize viewport
     glViewport(0, 0, w, h);
 
-    glm::vec2 size = glm::vec2(static_cast<float>(w), static_cast<float>(h));
-    m_cam->setRatio(size);
+    // Send resize event to application
+    app.resize(w, h);
+}
+
+void View::tick()
+{
+    /* Record FPS */
+
+    // Get the number of seconds since the last tick (variable update rate)
+    float seconds = time.restart() * 0.001f;
+
+    // Set current frame time
+    frameTimes[frameIndex] = seconds;
+    frameIndex = (frameIndex + 1) % FRAMES_TO_AVERAGE;
+    fps = 0;
+
+    // Accumulate frame times
+    for (int i = 0; i < FRAMES_TO_AVERAGE; i++) {
+        fps += frameTimes[i];
+    }
+
+    // Get average FPS
+    fps /= FRAMES_TO_AVERAGE;
+    fps = 1.f / fps;
+
+    /* Update application and view */
+
+    // Update application
+    app.tick();
+
+    // Flag this view for repainting
+    update();
 }
 
 void View::mousePressEvent(QMouseEvent *event)
 {
+    app.mousePressEvent(event);
 }
 
 void View::mouseMoveEvent(QMouseEvent *event)
 {
-    /* Re-center the mouse */
+    /* Decide whether or not to propagate event */
 
-    // Get deltas
+    // Deltas
     int deltaX = event->x() - width() / 2;
     int deltaY = event->y() - height() / 2;
 
@@ -137,59 +155,27 @@ void View::mouseMoveEvent(QMouseEvent *event)
         return;
     }
 
-    // Set mouse position. Triggers mouse move event
-    QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
+    /* Send event to application */
 
-    /* TODO: Handle mouse movements */
+    app.mouseMoveEvent(event);
 }
 
 void View::mouseReleaseEvent(QMouseEvent *event)
 {
+    app.mouseReleaseEvent(event);
 }
 
 void View::wheelEvent(QWheelEvent *event)
 {
+    app.wheelEvent(event);
 }
 
 void View::keyPressEvent(QKeyEvent *event)
 {
-    /* Handle keypresses */
-
-    // Quit
-    if (event->key() == Qt::Key_Escape)
-    {
-        QApplication::quit();
-    }
-
-    /* TODO: handle other key presses */
+    app.keyPressEvent(event);
 }
 
 void View::keyReleaseEvent(QKeyEvent *event)
 {
-}
-
-void View::tick()
-{
-    /* Record ups */
-
-    // Get the number of seconds since the last tick (variable update rate)
-    float seconds = time.restart() * 0.001f;
-
-    frameTimes[frameIndex] = seconds;
-    frameIndex = (frameIndex + 1) % FRAMES_TO_AVERAGE;
-    fps = 0;
-
-    for (int i = 0; i < FRAMES_TO_AVERAGE; i++) {
-        fps += frameTimes[i];
-    }
-
-    fps /= FRAMES_TO_AVERAGE;
-    fps = 1.f / fps;
-
-    /* TODO: implement game update */
-
-    /* Update */
-
-    // Flag this view for repainting (Qt will call paintGL() soon after)
-    update();
+    app.keyReleaseEvent(event);
 }
