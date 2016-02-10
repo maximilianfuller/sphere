@@ -2,13 +2,13 @@
 #define VIEW_H
 
 #include "util/CommonIncludes.h"
-#include "engine/Application.h"
 
-#include <qgl.h>
 #include <QTime>
 #include <QTimer>
 
 #define FRAMES_TO_AVERAGE 30
+
+class Application;
 
 /**
  * This is similar to your "CS1971FrontEnd" class. Here you will receive all of the input events
@@ -29,7 +29,7 @@ private:
     static QGLFormat getFormat();
 
     /* Application */
-    Application app;
+    Application *app;
 
     /* Time */
     QTime time;

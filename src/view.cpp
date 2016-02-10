@@ -1,6 +1,8 @@
+#include "view.h"
 #include "util/CommonIncludes.h"
 #include "util/ResourceLoader.h"
-#include "view.h"
+#include "engine/Application.h"
+#include "warmup/WarmupApplication.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -11,17 +13,16 @@
 QGLFormat View::getFormat()
 {
     QGLFormat glFormat;
-    glFormat.setVersion( 3, 3 );
-    glFormat.setProfile( QGLFormat::CoreProfile );
-    glFormat.setSampleBuffers( true );
+    glFormat.setVersion(3, 2);
+    glFormat.setProfile(QGLFormat::CoreProfile);
+    glFormat.setSampleBuffers(true);
     return glFormat;
 }
 
 /** Instance methods **/
 
 View::View(QWidget *parent) :
-    QGLWidget(getFormat(), parent),
-    app(Application(this))
+    QGLWidget(getFormat(), parent)
 {
     // Enable all mouse events
     setMouseTracking(true);
@@ -45,6 +46,7 @@ View::View(QWidget *parent) :
 
 View::~View()
 {
+    delete app;
 }
 
 void View::initializeGL()
@@ -53,6 +55,7 @@ void View::initializeGL()
 
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
+    glGetError();
 
     if ( GLEW_OK != err ) {
         // Problem: glewInit failed, something is seriously wrong.
@@ -84,17 +87,20 @@ void View::initializeGL()
     // Specify vertex order
     glFrontFace(GL_CCW);
 
-    // Specify screen clearing color
-    glClearColor(0, 0, 0, 0);
+    /* Setup application */
+    app = new WarmupApplication(this);
 }
 
 void View::paintGL()
 {
+    // Specify screen clearing color
+    glClearColor(0, 0, 0, 0);
+
     // Clear the color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Send paint event to application
-    app.paint();
+    app->paint();
 }
 
 void View::resizeGL(int w, int h)
@@ -103,7 +109,7 @@ void View::resizeGL(int w, int h)
     glViewport(0, 0, w, h);
 
     // Send resize event to application
-    app.resize(w, h);
+    app->resize(w, h);
 }
 
 void View::tick()
@@ -130,7 +136,7 @@ void View::tick()
     /* Update application and view */
 
     // Update application
-    app.tick();
+    app->tick(seconds);
 
     // Flag this view for repainting
     update();
@@ -138,7 +144,7 @@ void View::tick()
 
 void View::mousePressEvent(QMouseEvent *event)
 {
-    app.mousePressEvent(event);
+    app->mousePressEvent(event);
 }
 
 void View::mouseMoveEvent(QMouseEvent *event)
@@ -157,25 +163,25 @@ void View::mouseMoveEvent(QMouseEvent *event)
 
     /* Send event to application */
 
-    app.mouseMoveEvent(event);
+    app->mouseMoveEvent(event);
 }
 
 void View::mouseReleaseEvent(QMouseEvent *event)
 {
-    app.mouseReleaseEvent(event);
+    app->mouseReleaseEvent(event);
 }
 
 void View::wheelEvent(QWheelEvent *event)
 {
-    app.wheelEvent(event);
+    app->wheelEvent(event);
 }
 
 void View::keyPressEvent(QKeyEvent *event)
 {
-    app.keyPressEvent(event);
+    app->keyPressEvent(event);
 }
 
 void View::keyReleaseEvent(QKeyEvent *event)
 {
-    app.keyReleaseEvent(event);
+    app->keyReleaseEvent(event);
 }

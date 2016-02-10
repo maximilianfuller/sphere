@@ -2,17 +2,20 @@
 #define SCREEN_H
 
 #include "util/CommonIncludes.h"
-#include "engine/camera/Camera.h"
-
-#include <qgl.h>
 
 class Application;
+namespace Graphics
+{
+class Controller;
+}
+class Camera;
+class World;
 
 class Screen
 {
 public:
     Screen(Application *app, float opacity);
-    ~Screen();
+    virtual ~Screen();
 
     /* Screen opacity */
     float getOpacity();
@@ -21,7 +24,7 @@ public:
     /* Game Loop */
     virtual bool paint(float &currentOpacity);
     virtual void resize(int w, int h);
-    virtual void tick();
+    virtual void tick(float seconds);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -33,18 +36,14 @@ public:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
-private:
-    // Pointer to QGL container
+protected:
     Application *m_app;
 
-    // Camera used to render contents of screen
+    Graphics::Controller *m_graphics;
     Camera *m_camera;
+    World *m_world;
 
-    // Screen opacity
     float m_opacity;
-
-    // TODO: add graphics object
-    // TODO: add more scene information
 };
 
 #endif // SCREEN_H

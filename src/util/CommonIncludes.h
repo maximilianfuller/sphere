@@ -4,6 +4,7 @@
 /*A file for any includes or structs that need to be used in many different places. */
 
 #include "GL/glew.h"
+#include <qgl.h>
 #include <iostream>
 
 #define GLM_FORCE_RADIANS

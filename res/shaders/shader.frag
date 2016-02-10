@@ -1,4 +1,4 @@
-#version 410 core
+#version 330 core
 
 out vec4 fragColor;
 
@@ -29,6 +29,4 @@ void main(){
     vec4 eyeDirection = normalize(eye_worldSpace - position_worldSpace);
     float specIntensity = pow(max(0.0, dot(eyeDirection, lightReflection)), 150);
     fragColor += vec4(max(vec3(0), vec3(1,1,1) * base_color * specIntensity),0.f);
-
-    fragColor += vec4(base_color*.1,0.f);
 }

@@ -1,48 +1,27 @@
-#include "Shape.h"
+#include "engine/shape/Shape.h"
 
-Shape::Shape()
+#include "engine/graphics/Controller.h"
+
+Shape::Shape(glm::mat4x4 model) :
+    m_model(model)
 {
-    // Generate vao and vbo
-    glGenVertexArrays(1, &m_vao);
-    glGenBuffers(1, &m_vbo);
 }
 
 Shape::~Shape()
 {
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vbo);
 }
 
-void Shape::setVertexData(GLfloat *data, GLsizeiptr size, int numVertices)
+glm::mat4x4 Shape::getModelMatrix()
 {
-    // Set the number of vertices
-    m_numVertices = numVertices;
-
-    // Send vertex data to GPU
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-
-    glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
+    return m_model;
 }
 
-void Shape::setAttribute(GLuint index, GLint size, GLenum type,
-                         GLboolean normalized, GLsizei stride, GLvoid *pointer)
+void Shape::setModelMatrix(glm::mat4x4 model)
 {
-    // Enable and describe vertex attribute
-    glBindVertexArray(m_vao);
-
-    glEnableVertexAttribArray(index);
-    glVertexAttribPointer(index, size, type, normalized, stride, pointer);
-
-    glBindVertexArray(0);
+    m_model = model;
 }
 
-void Shape::draw()
+void Shape::draw(Graphics::Controller *graphics)
 {
-    glBindVertexArray(m_vao);
-    glDrawArrays(GL_TRIANGLES, 0, m_numVertices);
-    glBindVertexArray(0);
+    graphics->sendModelUniform(m_model, "default");
 }

@@ -2,25 +2,26 @@
 #define SHAPE_H
 
 #include "util/CommonIncludes.h"
+#include "engine/graphics/Controller.h"
 
-/* Essentially a wrapper for VAO and VBO */
+namespace Graphics {
+class Controller;
+}
+
+
 class Shape
 {
 public:
-    Shape();
+    Shape(glm::mat4x4 model = glm::mat4x4());
     virtual ~Shape();
 
-    void setVertexData(GLfloat *data, GLsizeiptr size, int numVertices);
+    glm::mat4x4 getModelMatrix();
+    void setModelMatrix(glm::mat4x4 model);
 
-    void setAttribute(GLuint index, GLint size, GLenum type,
-                      GLboolean normalized, GLsizei stride, GLvoid *pointer);
+    virtual void draw(Graphics::Controller *graphics);
 
-    void draw();
-
-private:
-    GLuint m_vao;
-    GLuint m_vbo;
-    int m_numVertices;
+protected:
+    glm::mat4x4 m_model;
 };
 
 #endif // SHAPE_H

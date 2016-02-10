@@ -1,5 +1,8 @@
-#include "util/CommonIncludes.h"
 #include "engine/Application.h"
+
+#include "util/Settings.h"
+
+#include "engine/Screen.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -11,6 +14,17 @@ Application::Application(QGLWidget *container) :
 
 Application::~Application()
 {
+    QStack<Screen *>::iterator s;
+
+    for(s = m_screenStack.begin(); s != m_screenStack.end(); s++)
+    {
+        delete (*s);
+    }
+}
+
+Screen *Application::getScreen(int index)
+{
+    return m_screenStack[index];
 }
 
 void Application::addScreen(Screen *screen)
@@ -34,7 +48,26 @@ void Application::removeScreen(Screen *screen)
     }
 
     // Remove screen
+    delete m_screenStack[i];
     m_screenStack.remove(i);
+}
+
+void Application::moveScreen(Screen *screen, int index)
+{
+    // Find screen
+    QStack<Screen *>::iterator s;
+    int i = 0;
+
+    for(s = m_screenStack.begin(); s != m_screenStack.end(); s++)
+    {
+        if(*s == screen)
+            break;
+
+        i++;
+    }
+
+    m_screenStack.remove(i);
+    m_screenStack.insert(index, *s);
 }
 
 QGLWidget *Application::getContainer() const
@@ -48,9 +81,9 @@ void Application::paint()
     QStack<Screen *>::iterator s;
     float currentOpacity = 0.f;
 
-    for(s = m_screenStack.begin(); s != m_screenStack.end(); s++)
+    for(int i = m_screenStack.length() - 1; i >= 0; i--)
     {
-        if(!(*s)->paint(currentOpacity))
+        if(!m_screenStack[i]->paint(currentOpacity))
         {
             break;
         }
@@ -68,13 +101,13 @@ void Application::resize(int w, int h)
     }
 }
 
-void Application::tick()
+void Application::tick(float seconds)
 {
     // Tick top of screen stack
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
-        top->tick();
+        top->tick(seconds);
     }
 }
 
@@ -90,10 +123,6 @@ void Application::mousePressEvent(QMouseEvent *event)
 
 void Application::mouseMoveEvent(QMouseEvent *event)
 {
-    // Re-center mouse
-    QCursor::setPos(m_container->mapToGlobal(QPoint(m_container->width() / 2,
-                                                    m_container->height() / 2)));
-
     // Send event to top of the screen stack
     if(!m_screenStack.isEmpty())
     {
@@ -124,12 +153,6 @@ void Application::wheelEvent(QWheelEvent *event)
 
 void Application::keyPressEvent(QKeyEvent *event)
 {
-    // Quit
-    if (event->key() == Qt::Key_Escape)
-    {
-        QApplication::quit();
-    }
-
     // Send event to top of the screen stack
     if(!m_screenStack.isEmpty())
     {

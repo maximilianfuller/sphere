@@ -2,22 +2,23 @@
 #define APPLICATION_H
 
 #include "util/CommonIncludes.h"
-#include "engine/Screen.h"
-#include "util/Settings.h"
 
 #include <QStack>
 
-const int FRAMES_TO_AVERAGE = 30;
+class Settings;
+class Screen;
 
 class Application
 {
 public:
     Application(QGLWidget *container);
-    ~Application();
+    virtual ~Application();
 
     /* Screen Management */
+    Screen *getScreen(int index);
     void addScreen(Screen *screen);
     void removeScreen(Screen *screen);
+    void moveScreen(Screen *screen, int index);
 
     /* Container Management */
     QGLWidget *getContainer() const;
@@ -25,7 +26,7 @@ public:
     /* GL Loop */
     virtual void paint();
     virtual void resize(int w, int h);
-    virtual void tick();
+    virtual void tick(float seconds);
 
     /* Input Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -38,16 +39,14 @@ public:
     virtual void keyReleaseEvent(QKeyEvent *event);
 
     /* Settings */
-    Settings settings;
+    Settings *settings;
 
-private:
+protected:
     // Pointer to QGL container
     QGLWidget *m_container;
 
     // Stack for screen management
     QStack<Screen *> m_screenStack;
-
-    // TODO: set up graphics object
 };
 
 #endif // APPLICATION_H
