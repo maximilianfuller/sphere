@@ -23,7 +23,6 @@ public:
     void removeEntity(Entity *ent);
 
     /* Game Loop */
-    virtual void intersect(Entity *e1, Entity *e2);
     virtual void onTick(float seconds);
     virtual void onDraw(Graphics::Controller *graphics);
 

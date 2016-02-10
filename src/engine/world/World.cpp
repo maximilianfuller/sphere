@@ -50,15 +50,6 @@ void World::removeEntity(Entity *ent)
     m_entities.removeAt(i);
 }
 
-void World::intersect(Entity *e1, Entity *e2)
-{
-    // TODO: set up different types of bounding shapes
-    // TODO: Check intersection with bounding shapes
-    // TODO: Get minimum translation vector with bounding boxes
-    // TODO: Resolve the intersection by translating along mtvs
-    // TODO: Call callbacks
-}
-
 void World::onTick(float seconds)
 {
     int numEntities = m_entities.size();
