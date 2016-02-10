@@ -51,8 +51,7 @@ View::~View()
 
 void View::initializeGL()
 {
-    /* Initialize glew */
-
+    // Initialize glew
     glewExperimental = GL_TRUE;
     GLenum err = glewInit();
     glGetError();
@@ -64,43 +63,21 @@ void View::initializeGL()
 
     std::cout << "Using GLEW " <<  glewGetString( GLEW_VERSION ) << std::endl;
 
-    /* Start engine time */
-
     // Timer at 60fps
     time.start();
     timer.start(1000 / 60);
 
-    /* Initialize devices */
-
     // Center mouse
     QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
-    /* General GL setup */
-
-    // Enable depth testing
-    glEnable(GL_DEPTH_TEST);
-
-    // Enable back-face culling
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
-    // Specify vertex order
-    glFrontFace(GL_CCW);
-
-    /* Setup application */
+    // Setup application
     app = new WarmupApplication(this);
 }
 
 void View::paintGL()
 {
-    // Specify screen clearing color
-    glClearColor(0, 0, 0, 0);
-
-    // Clear the color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
     // Send paint event to application
-    app->paint();
+    app->onDraw();
 }
 
 void View::resizeGL(int w, int h)
@@ -109,7 +86,7 @@ void View::resizeGL(int w, int h)
     glViewport(0, 0, w, h);
 
     // Send resize event to application
-    app->resize(w, h);
+    app->onResize(w, h);
 }
 
 void View::tick()
@@ -136,7 +113,7 @@ void View::tick()
     /* Update application and view */
 
     // Update application
-    app->tick(seconds);
+    app->onTick(seconds);
 
     // Flag this view for repainting
     update();

@@ -3,22 +3,25 @@
 #include "engine/camera/Camera.h"
 #include "engine/graphics/Controller.h"
 #include "engine/shape/Cylinder.h"
+#include "engine/intersect/BoundingCylinder.h"
 
 Player::Player(Camera *camera, float height) :
     m_camera(camera),
-    m_height(height),
     m_moveForward(false),
     m_moveBackward(false),
     m_moveLeft(false),
     m_moveRight(false),
     m_jump(false),
     m_grounded(true),
-    m_pos(0, 0, 0),
-    m_vel(0, 0, 0),
-    m_acc(0, 0, 0),
+    m_yaw(0),
+    m_pitch(0),
+    m_height(height),
     m_goal(0, 0, 0)
 {
+    m_camera->setYaw(m_yaw);
+    m_camera->setPitch(m_pitch);
     m_shape = new Cylinder();
+    m_boundingShape = new BoundingCylinder(m_pos, m_height, 1.0);
 }
 
 Player::~Player()
@@ -151,27 +154,6 @@ void Player::setGoalVelocity(glm::vec3 goal)
     m_goal = goal;
 }
 
-unsigned int Player::getEntityType()
-{
-    return 0;
-}
-
-bool Player::hasIntersection(Entity *ent)
-{
-    return m_pos.y <= 0;
-}
-
-void Player::intersect(unsigned int e)
-{
-    /* Reset height, velocity, and acceleration */
-    m_pos.y = 0;
-    m_vel.y = 0;
-    m_acc.y = 0;
-
-    /* Set grounded flag */
-    m_grounded = true;
-}
-
 void Player::updateCamera()
 {
     glm::vec3 pos = glm::vec3(m_pos.x, m_pos.y + m_height, m_pos.z);
@@ -188,7 +170,24 @@ void Player::updateShape()
     m_shape->setModelMatrix(model);
 }
 
-void Player::tick(float seconds)
+void Player::updateBoundingShape()
+{
+    BoundingCylinder *cyl = dynamic_cast<BoundingCylinder *>(m_boundingShape);
+    cyl->setPosition(m_pos);
+}
+
+void Player::onIntersect(Entity *ent, glm::vec3 mtv)
+{
+    /* Reset height, velocity, and acceleration */
+    m_pos.y = 0;
+    m_vel.y = 0;
+    m_acc.y = 0;
+
+    /* Set grounded flag */
+    m_grounded = true;
+}
+
+void Player::onTick(float seconds)
 {
     // Player direction
     glm::vec3 dir = getDirection();
@@ -257,4 +256,5 @@ void Player::tick(float seconds)
     // Update camera and shape
     updateCamera();
     updateShape();
+    updateBoundingShape();
 }

@@ -1,12 +1,13 @@
 #include "engine/entity/Entity.h"
 
-#include "engine/entity/BoundingShape.h"
+#include "engine/intersect/BoundingShape.h"
 #include "engine/graphics/Controller.h"
 #include "engine/shape/Shape.h"
 
-Entity::Entity() :
+Entity::Entity(glm::vec3 pos) :
+    m_boundingShape(NULL),
     m_shape(NULL),
-    m_boundingShape(NULL)
+    m_pos(pos)
 {
 }
 
@@ -21,12 +22,12 @@ BoundingShape *Entity::getBoundingShape() const
     return m_boundingShape;
 }
 
-bool Entity::hasIntersection(Entity *ent)
+void Entity::onIntersect(Entity *ent, glm::vec3 mtv)
 {
-    return m_boundingShape->intersect(ent->getBoundingShape());
+    return;
 }
 
-void Entity::draw(Graphics::Controller *graphics)
+void Entity::onDraw(Graphics::Controller *graphics)
 {
     m_shape->draw(graphics);
 }

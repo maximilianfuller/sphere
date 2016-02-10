@@ -13,10 +13,6 @@ public:
     GameWorld(PerspectiveCamera *camera);
     ~GameWorld();
 
-    /* Game loop */
-    void tick(float seconds);
-    void draw(Graphics::Controller *graphics);
-
     /* Events */
     virtual void mouseMoveEvent(QMouseEvent *event, int startX,
                                 int startY);

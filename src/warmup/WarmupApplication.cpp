@@ -7,7 +7,7 @@
 #include <QKeyEvent>
 
 WarmupApplication::WarmupApplication(QGLWidget *container) :
-    Application(container)
+    Application(container, true, true, true, glm::vec4(0.4, 0.5, 0.9, 1))
 {
     addScreen(dynamic_cast<Screen *>(new GameScreen(this, 1.f)));
     addScreen(dynamic_cast<Screen *>(new HomeScreen(this, 1.f)));

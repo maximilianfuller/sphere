@@ -7,9 +7,26 @@
 #include <QApplication>
 #include <QKeyEvent>
 
-Application::Application(QGLWidget *container) :
-    m_container(container)
+Application::Application(QGLWidget *container, bool depthTest,
+                         bool cullBack, bool ccw, glm::vec4 clearColor) :
+    m_container(container),
+    m_clearColor(clearColor)
 {
+    if(depthTest)
+    {
+        glEnable(GL_DEPTH_TEST);
+    }
+
+    if(cullBack)
+    {
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+    }
+
+    if(ccw)
+    {
+        glFrontFace(GL_CCW);
+    }
 }
 
 Application::~Application()
@@ -32,7 +49,6 @@ void Application::addScreen(Screen *screen)
     m_screenStack.push(screen);
 }
 
-/* TODO: send user error if screen not in stack */
 void Application::removeScreen(Screen *screen)
 {
     // Find screen
@@ -75,39 +91,45 @@ QGLWidget *Application::getContainer() const
     return m_container;
 }
 
-void Application::paint()
+void Application::onDraw()
 {
+    // Set clear color
+    glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.w);
+
+    // Clear the color and depth buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
     // Send paint events to screen stack
-    QStack<Screen *>::iterator s;
     float currentOpacity = 0.f;
 
     for(int i = m_screenStack.length() - 1; i >= 0; i--)
     {
-        if(!m_screenStack[i]->paint(currentOpacity))
+        if(!m_screenStack[i]->onDraw(currentOpacity))
         {
             break;
         }
     }
 }
 
-void Application::resize(int w, int h)
+void Application::onResize(int w, int h)
 {
     // Send resize events to screen stack
     QStack<Screen *>::iterator s;
 
     for(s = m_screenStack.begin(); s != m_screenStack.end(); s++)
     {
-        (*s)->resize(w, h);
+        (*s)->onResize(w, h);
     }
 }
 
-void Application::tick(float seconds)
+void Application::onTick(float seconds)
 {
     // Tick top of screen stack
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
-        top->tick(seconds);
+        top->onTick(seconds);
     }
 }
 

@@ -19,16 +19,6 @@ GameWorld::~GameWorld()
 {
 }
 
-void GameWorld::tick(float seconds)
-{
-    World::tick(seconds);
-}
-
-void GameWorld::draw(Graphics::Controller *graphics)
-{
-    World::draw(graphics);
-}
-
 void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
                                int startY)
 {

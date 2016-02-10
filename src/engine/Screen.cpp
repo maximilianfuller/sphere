@@ -33,7 +33,19 @@ void Screen::setOpacity(float opacity)
     m_opacity = opacity;
 }
 
-bool Screen::paint(float &currentOpacity)
+void Screen::onResize(int w, int h)
+{
+    // Update camera
+    glm::vec2 size = glm::vec2(static_cast<float>(w), static_cast<float>(h));
+    m_camera->setRatio(size);
+}
+
+void Screen::onTick(float seconds)
+{
+    m_world->onTick(seconds);
+}
+
+bool Screen::onDraw(float &currentOpacity)
 {
     /* Opacity calculation */
     float maxOpacity = 1.f - currentOpacity;
@@ -52,24 +64,12 @@ bool Screen::paint(float &currentOpacity)
     m_camera->setTransforms(m_graphics);
 
     // Render world
-    m_world->draw(m_graphics);
+    m_world->onDraw(m_graphics);
 
     // Unload shader program
     m_graphics->unloadProgram();
 
     return morePaint;
-}
-
-void Screen::resize(int w, int h)
-{
-    // Update camera
-    glm::vec2 size = glm::vec2(static_cast<float>(w), static_cast<float>(h));
-    m_camera->setRatio(size);
-}
-
-void Screen::tick(float seconds)
-{
-    m_world->tick(seconds);
 }
 
 void Screen::mousePressEvent(QMouseEvent *event)

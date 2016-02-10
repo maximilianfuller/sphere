@@ -1,18 +1,13 @@
 #ifndef WELCOMEMESSAGE_H
 #define WELCOMEMESSAGE_H
 
-#include "engine/entity/Entity.h"
+#include "engine/entity/BackgroundEntity.h"
 
-class WelcomeMessage : public Entity
+class WelcomeMessage : public BackgroundEntity
 {
 public:
     WelcomeMessage();
     ~WelcomeMessage();
-
-    unsigned int getEntityType();
-    bool hasIntersection(Entity *ent);
-    void intersect(unsigned int e);
-    void tick(float seconds);
 };
 
 #endif // WELCOMEMESSAGE_H

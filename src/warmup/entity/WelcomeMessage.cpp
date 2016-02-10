@@ -10,21 +10,3 @@ WelcomeMessage::WelcomeMessage()
 WelcomeMessage::~WelcomeMessage()
 {
 }
-
-unsigned int WelcomeMessage::getEntityType()
-{
-    return 1;
-}
-
-bool WelcomeMessage::hasIntersection(Entity *ent)
-{
-    return false;
-}
-
-void WelcomeMessage::intersect(unsigned int e)
-{
-}
-
-void WelcomeMessage::tick(float seconds)
-{
-}

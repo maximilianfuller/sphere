@@ -52,9 +52,6 @@ Global requirements
 [ ] Works at 800x600 and fullscreen resolutions
 [ ] Runs at 30+ UPS and never dips below 20 UPS unless indicated in the specific handout
 
-# NOTE
-I wasn't able to implement a couple of features in time -- just wanted to get some feedback on the project in its current state.
-
 # Verifying requirements
 * Camera
     - See Camera.cpp, and also see how mouse movements affect rendering.
@@ -76,7 +73,10 @@ I wasn't able to implement a couple of features in time -- just wanted to get so
     - See the effect of jumping by pressing the spacebar.
 * Tiled grass texture
     - See the "floor" in the scene, and observe its texture.
+* Screen switching
+    - press w to enter the game from the home screen, and esc to exit to the
+    home screen from the game
 
 
 # Hours
-Not quite done yet, but spent ~12 hours
+~15 hours

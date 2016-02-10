@@ -22,9 +22,9 @@ public:
     void setOpacity(float opacity);
 
     /* Game Loop */
-    virtual bool paint(float &currentOpacity);
-    virtual void resize(int w, int h);
-    virtual void tick(float seconds);
+    virtual void onResize(int w, int h);
+    virtual void onTick(float seconds);
+    virtual bool onDraw(float &currentOpacity);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);

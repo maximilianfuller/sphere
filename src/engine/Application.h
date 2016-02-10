@@ -11,7 +11,9 @@ class Screen;
 class Application
 {
 public:
-    Application(QGLWidget *container);
+    Application(QGLWidget *container, bool depthTest = true,
+                bool cullBack = true, bool ccw = true,
+                glm::vec4 clearColor = glm::vec4(0, 0, 0, 0));
     virtual ~Application();
 
     /* Screen Management */
@@ -24,9 +26,9 @@ public:
     QGLWidget *getContainer() const;
 
     /* GL Loop */
-    virtual void paint();
-    virtual void resize(int w, int h);
-    virtual void tick(float seconds);
+    virtual void onResize(int w, int h);
+    virtual void onTick(float seconds);
+    virtual void onDraw();
 
     /* Input Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -47,6 +49,9 @@ protected:
 
     // Stack for screen management
     QStack<Screen *> m_screenStack;
+
+private:
+    glm::vec4 m_clearColor;
 };
 
 #endif // APPLICATION_H

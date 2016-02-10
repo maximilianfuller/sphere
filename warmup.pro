@@ -28,7 +28,6 @@ SOURCES += \
     src/engine/graphics/VertexData.cpp \
     src/engine/shape/Cylinder.cpp \
     src/engine/entity/Entity.cpp \
-    src/engine/entity/BoundingShape.cpp \
     src/engine/shape/TexturedQuad.cpp \
     src/warmup/WarmupApplication.cpp \
     src/warmup/GameScreen.cpp \
@@ -42,7 +41,13 @@ SOURCES += \
     src/engine/world/World.cpp \
     src/warmup/world/GameWorld.cpp \
     src/warmup/world/WelcomeWorld.cpp \
-    src/warmup/WelcomeScreen.cpp
+    src/warmup/WelcomeScreen.cpp \
+    src/engine/intersect/Intersector.cpp \
+    src/engine/entity/BackgroundEntity.cpp \
+    src/engine/entity/ActiveEntity.cpp \
+    src/engine/intersect/BoundingShape.cpp \
+    src/engine/intersect/BoundingCylinder.cpp \
+    src/engine/intersect/BoundingPlane.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -62,7 +67,6 @@ HEADERS += \
     src/engine/graphics/VertexData.h \
     src/engine/shape/Cylinder.h \
     src/engine/entity/Entity.h \
-    src/engine/entity/BoundingShape.h \
     src/engine/shape/TexturedQuad.h \
     src/warmup/WarmupApplication.h \
     src/warmup/GameScreen.h \
@@ -77,7 +81,13 @@ HEADERS += \
     src/engine/world/World.h \
     src/warmup/world/GameWorld.h \
     src/warmup/world/WelcomeWorld.h \
-    src/warmup/WelcomeScreen.h
+    src/warmup/WelcomeScreen.h \
+    src/engine/intersect/Intersector.h \
+    src/engine/entity/BackgroundEntity.h \
+    src/engine/entity/ActiveEntity.h \
+    src/engine/intersect/BoundingShape.h \
+    src/engine/intersect/BoundingCylinder.h \
+    src/engine/intersect/BoundingPlane.h
 
 
 FORMS += src/mainwindow.ui

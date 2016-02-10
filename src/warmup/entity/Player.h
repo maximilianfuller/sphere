@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include "util/CommonIncludes.h"
-#include "engine/entity/Entity.h"
+#include "engine/entity/ActiveEntity.h"
 
 namespace Graphics
 {
@@ -28,7 +28,7 @@ enum Direction {
     None
 };
 
-class Player : public Entity
+class Player : public ActiveEntity
 {
 public:
     Player(Camera *camera, float height = 1.0);
@@ -70,11 +70,10 @@ public:
 
     void updateCamera();
     void updateShape();
+    void updateBoundingShape();
 
-    unsigned int getEntityType();
-    bool hasIntersection(Entity *ent);
-    void intersect(unsigned int e);
-    void tick(float seconds);
+    void onIntersect(Entity *ent, glm::vec3 mtv);
+    void onTick(float seconds);
 
 private:
     Camera *m_camera;
@@ -90,9 +89,6 @@ private:
     float m_yaw;
     float m_pitch;
 
-    glm::vec3 m_pos;
-    glm::vec3 m_vel;
-    glm::vec3 m_acc;
     glm::vec3 m_goal;
 };
 

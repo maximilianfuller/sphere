@@ -23,9 +23,9 @@ public:
     void removeEntity(Entity *ent);
 
     /* Game Loop */
-    virtual void tick(float seconds);
     virtual void intersect(Entity *e1, Entity *e2);
-    virtual void draw(Graphics::Controller *graphics);
+    virtual void onTick(float seconds);
+    virtual void onDraw(Graphics::Controller *graphics);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);
