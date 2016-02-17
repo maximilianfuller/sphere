@@ -6,28 +6,28 @@
 namespace Graphics {
 class Controller;
 }
+class World;
 class BoundingShape;
 class Shape;
-
-enum EntityType {
-    BackgroundType,
-    ActiveType
-};
 
 class Entity
 {
 public:
-    Entity(glm::vec3 pos = glm::vec3(0, 0, 0));
+    Entity(World *world, glm::vec3 pos = glm::vec3(0, 0, 0));
     virtual ~Entity();
 
     BoundingShape *getBoundingShape() const;
-    virtual EntityType getEntityType() const = 0;
 
+    glm::vec3 getPosition();
+    void setPosition(glm::vec3 pos);
+
+    virtual bool intersect(Entity *ent);
     virtual void onIntersect(Entity *ent, glm::vec3 mtv);
-    virtual void onTick(float seconds) = 0;
+    virtual void onTick(float seconds);
     virtual void onDraw(Graphics::Controller *graphics);
 
 protected:
+    World *m_world;
     BoundingShape *m_boundingShape;
     Shape *m_shape;
 

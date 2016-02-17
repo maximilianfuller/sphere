@@ -3,6 +3,7 @@
 #include "util/Settings.h"
 
 #include "engine/Screen.h"
+#include "engine/graphics/Controller.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -10,7 +11,8 @@
 Application::Application(QGLWidget *container, bool depthTest,
                          bool cullBack, bool ccw, glm::vec4 clearColor) :
     m_container(container),
-    m_clearColor(clearColor)
+    m_clearColor(clearColor),
+    m_graphics(NULL)
 {
     if(depthTest)
     {
@@ -31,6 +33,8 @@ Application::Application(QGLWidget *container, bool depthTest,
 
 Application::~Application()
 {
+    delete m_graphics;
+
     QStack<Screen *>::iterator s;
 
     for(s = m_screenStack.begin(); s != m_screenStack.end(); s++)
@@ -51,7 +55,7 @@ void Application::addScreen(Screen *screen)
 
 void Application::removeScreen(Screen *screen)
 {
-    // Find screen
+    /* Find screen */
     QStack<Screen *>::iterator s;
     int i = 0;
 
@@ -63,14 +67,14 @@ void Application::removeScreen(Screen *screen)
         i++;
     }
 
-    // Remove screen
+    /* Remove screen */
     delete m_screenStack[i];
     m_screenStack.remove(i);
 }
 
 void Application::moveScreen(Screen *screen, int index)
 {
-    // Find screen
+    /* Find screen */
     QStack<Screen *>::iterator s;
     int i = 0;
 
@@ -93,19 +97,19 @@ QGLWidget *Application::getContainer() const
 
 void Application::onDraw()
 {
-    // Set clear color
+    /* Set clear color */
     glClearColor(m_clearColor.x, m_clearColor.y, m_clearColor.z, m_clearColor.w);
 
-    // Clear the color and depth buffers
+    /* Clear the color and depth buffers */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-    // Send paint events to screen stack
+    /* Send paint events to screen stack */
     float currentOpacity = 0.f;
 
     for(int i = m_screenStack.length() - 1; i >= 0; i--)
     {
-        if(!m_screenStack[i]->onDraw(currentOpacity))
+        if(!m_screenStack[i]->onDraw(currentOpacity, m_graphics))
         {
             break;
         }
@@ -114,7 +118,7 @@ void Application::onDraw()
 
 void Application::onResize(int w, int h)
 {
-    // Send resize events to screen stack
+    /* Send resize events to screen stack */
     QStack<Screen *>::iterator s;
 
     for(s = m_screenStack.begin(); s != m_screenStack.end(); s++)
@@ -125,7 +129,7 @@ void Application::onResize(int w, int h)
 
 void Application::onTick(float seconds)
 {
-    // Tick top of screen stack
+    /* Tick top of screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
@@ -135,7 +139,7 @@ void Application::onTick(float seconds)
 
 void Application::mousePressEvent(QMouseEvent *event)
 {
-    // Send event to top of the screen stack
+    /* Send event to top of the screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
@@ -145,7 +149,7 @@ void Application::mousePressEvent(QMouseEvent *event)
 
 void Application::mouseMoveEvent(QMouseEvent *event)
 {
-    // Send event to top of the screen stack
+    /* Send event to top of the screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
@@ -155,7 +159,7 @@ void Application::mouseMoveEvent(QMouseEvent *event)
 
 void Application::mouseReleaseEvent(QMouseEvent *event)
 {
-    // Send event to top of the screen stack
+    /* Send event to top of the screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
@@ -165,7 +169,7 @@ void Application::mouseReleaseEvent(QMouseEvent *event)
 
 void Application::wheelEvent(QWheelEvent *event)
 {
-    // Send event to top of the screen stack
+    /* Send event to top of the screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
@@ -175,7 +179,7 @@ void Application::wheelEvent(QWheelEvent *event)
 
 void Application::keyPressEvent(QKeyEvent *event)
 {
-    // Send event to top of the screen stack
+    /* Send event to top of the screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();
@@ -185,7 +189,7 @@ void Application::keyPressEvent(QKeyEvent *event)
 
 void Application::keyReleaseEvent(QKeyEvent *event)
 {
-    // Send event to top of the screen stack
+    /* Send event to top of the screen stack */
     if(!m_screenStack.isEmpty())
     {
         Screen *top = m_screenStack.top();

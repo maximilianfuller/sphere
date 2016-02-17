@@ -1,5 +1,26 @@
-* Press w to enter the game from the home screen
-* Press esc to go to the home screen from the game
-* Press esc to exit the game from the home screen
-* Use wasd to move forward, left, down, and right
-* Use the mouse to adjust the camera
+# Warmup 2
+
+## Controls
+i - enter the game
+esc - leave the game
+shift - toggle betweent third and first person camera views
+
+w, a, s, d - move the player
+space - jump
+1 - place a mine!
+mouse movement - control the camera
+
+## Gameplay
+You wake up...you are stranded in a poorly textured grass field...and it gets
+worse....
+
+Zombez are coming!
+
+The number of zombez remaining is displayed in the application output (janky,
+but it works).
+
+You will need to kill all of the zombies, using your infinite supply of mines
+in order to "win the game." But beware, explosions may knock you over the
+the edge of the world and into the bottomless abyss below.
+
+But what if you could use the force of the explosions to your advantage...

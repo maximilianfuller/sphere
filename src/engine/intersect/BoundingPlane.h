@@ -3,13 +3,18 @@
 
 #include "engine/intersect/BoundingShape.h"
 
+class BoundingCylinder;
+
 class BoundingPlane : public BoundingShape
 {
 public:
     BoundingPlane(float level);
     ~BoundingPlane();
 
-    ShapeType getShapeType() const;
+    bool intersect(BoundingShape *shape, glm::vec3 &mtv);
+    bool intersect(BoundingPlane *plane, glm::vec3 &mtv);
+    bool intersect(BoundingCylinder *cyl, glm::vec3 &mtv);
+    bool intersect(BoundingBox *box, glm::vec3 &mtv);
 
     float getLevel();
     void setLevel(float level);

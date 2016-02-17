@@ -5,11 +5,11 @@
 
 class Application;
 
-class HomeScreen : public Screen
+class WelcomeScreen : public Screen
 {
 public:
-    HomeScreen(Application *app, float opacity);
-    ~HomeScreen();
+    WelcomeScreen(Application *app, float opacity = 1.f);
+    ~WelcomeScreen();
 
     virtual void keyPressEvent(QKeyEvent *event);
 };

@@ -4,7 +4,7 @@ using namespace Graphics;
 
 VertexData::VertexData()
 {
-    // Generate vao and vbo
+    /* Generate vao and vbo */
     glGenVertexArrays(1, &m_vao);
     glGenBuffers(1, &m_vbo);
 }
@@ -17,10 +17,10 @@ VertexData::~VertexData()
 
 void VertexData::setVertexData(GLfloat *data, GLsizeiptr size, int numVertices)
 {
-    // Set the number of vertices
+    /* Set the number of vertices */
     m_numVertices = numVertices;
 
-    // Send vertex data to GPU
+    /* Send vertex data to GPU */
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 
     glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
@@ -29,9 +29,10 @@ void VertexData::setVertexData(GLfloat *data, GLsizeiptr size, int numVertices)
 }
 
 void VertexData::setAttribute(GLuint index, GLint size, GLenum type,
-                              GLboolean normalized, GLsizei stride, GLvoid *pointer)
+                              GLboolean normalized, GLsizei stride,
+                              GLvoid *pointer)
 {
-    // Enable and describe vertex attribute
+    /* Enable and describe vertex attribute */
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 

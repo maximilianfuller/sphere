@@ -35,6 +35,7 @@ public:
                      int shapeVertexCount, QString key);
     void drawShape(QString key);
 
+    void sendColorUniform(glm::vec3 color, QString key);
     void sendModelUniform(glm::mat4x4 model, QString key);
     void sendViewUniform(glm::mat4x4 model, QString key);
     void sendProjectionUniform(glm::mat4x4 model, QString key);

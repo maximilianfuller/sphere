@@ -8,7 +8,8 @@ namespace Graphics
 {
 class Controller;
 }
-class Entity;
+class ActiveEntity;
+class BackgroundEntity;
 
 class World
 {
@@ -17,10 +18,15 @@ public:
     virtual ~World();
 
     /* Entity management */
-    int getNumEntities();
-    Entity *getEntity(int index);
-    void addEntity(Entity *ent);
-    void removeEntity(Entity *ent);
+    int getNumActiveEntities();
+    ActiveEntity *getActiveEntity(int index);
+    void addActiveEntity(ActiveEntity *ent);
+    void removeActiveEntity(ActiveEntity *ent);
+
+    int getNumBackgroundEntities();
+    BackgroundEntity *getBackgroundEntity(int index);
+    void addBackgroundEntity(BackgroundEntity *ent);
+    void removeBackgroundEntity(BackgroundEntity *ent);
 
     /* Game Loop */
     virtual void onTick(float seconds);
@@ -37,8 +43,9 @@ public:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
-private:
-    QList<Entity *> m_entities;
+protected:
+    QList<ActiveEntity *> m_activeEntities;
+    QList<BackgroundEntity *> m_backgroundEntities;
 };
 
 #endif // SCENE_H

@@ -9,9 +9,9 @@ TiledQuad::TiledQuad()
     glm::mat4x4 model;
     glm::vec3 pos;
 
-    for(int i = -10; i < 10; i++)
+    for(int i = -12; i < 12; i++)
     {
-        for(int j = -10; j < 10; j++)
+        for(int j = -12; j < 12; j++)
         {
             model = glm::mat4x4();
             pos = glm::vec3(i, 0, j);

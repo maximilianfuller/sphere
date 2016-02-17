@@ -5,8 +5,11 @@
 
 #include <QStack>
 
-class Settings;
 class Screen;
+namespace Graphics
+{
+class Controller;
+}
 
 class Application
 {
@@ -40,15 +43,14 @@ public:
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
 
-    /* Settings */
-    Settings *settings;
-
 protected:
-    // Pointer to QGL container
+    /* Pointer to QGL container */
     QGLWidget *m_container;
 
-    // Stack for screen management
+    /* Stack for screen management */
     QStack<Screen *> m_screenStack;
+
+    Graphics::Controller *m_graphics;
 
 private:
     glm::vec4 m_clearColor;

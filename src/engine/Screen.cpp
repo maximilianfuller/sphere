@@ -7,10 +7,11 @@
 
 #include <QKeyEvent>
 
-Screen::Screen(Application *app, float opacity) :
+Screen::Screen(Application *app, float opacity, int width, int height) :
     m_app(app),
     m_opacity(opacity),
-    m_graphics(NULL),
+    m_width(width),
+    m_height(height),
     m_camera(NULL),
     m_world(NULL)
 {
@@ -19,7 +20,6 @@ Screen::Screen(Application *app, float opacity) :
 Screen::~Screen()
 {
     delete m_camera;
-    delete m_graphics;
     delete m_world;
 }
 
@@ -35,7 +35,11 @@ void Screen::setOpacity(float opacity)
 
 void Screen::onResize(int w, int h)
 {
-    // Update camera
+    /* Update width and height */
+    m_width = w;
+    m_height = h;
+
+    /* Update camera */
     glm::vec2 size = glm::vec2(static_cast<float>(w), static_cast<float>(h));
     m_camera->setRatio(size);
 }
@@ -45,7 +49,7 @@ void Screen::onTick(float seconds)
     m_world->onTick(seconds);
 }
 
-bool Screen::onDraw(float &currentOpacity)
+bool Screen::onDraw(float &currentOpacity, Graphics::Controller *graphics)
 {
     /* Opacity calculation */
     float maxOpacity = 1.f - currentOpacity;
@@ -54,20 +58,18 @@ bool Screen::onDraw(float &currentOpacity)
 
     currentOpacity += opacity;
 
-    /* Render the scene */
+    /* Load shader program */
+    graphics->loadProgram("default");
 
-    // Load shader program
-    m_graphics->loadProgram("default");
+    /* Send opacity and camera uniforms */
+    graphics->sendOpacityUniform(opacity, "default");
+    m_camera->setTransforms(graphics);
 
-    // Send opacity and camera uniforms
-    m_graphics->sendOpacityUniform(opacity, "default");
-    m_camera->setTransforms(m_graphics);
+    /* Render world */
+    m_world->onDraw(graphics);
 
-    // Render world
-    m_world->onDraw(m_graphics);
-
-    // Unload shader program
-    m_graphics->unloadProgram();
+    /* Unload shader program */
+    graphics->unloadProgram();
 
     return morePaint;
 }
@@ -79,8 +81,7 @@ void Screen::mousePressEvent(QMouseEvent *event)
 
 void Screen::mouseMoveEvent(QMouseEvent *event)
 {
-    m_world->mouseMoveEvent(event, m_app->getContainer()->width() / 2,
-                            m_app->getContainer()->height() / 2);
+    m_world->mouseMoveEvent(event, m_width / 2, m_height / 2);
 }
 
 void Screen::mouseReleaseEvent(QMouseEvent *event)

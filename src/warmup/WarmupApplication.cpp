@@ -1,5 +1,7 @@
 #include "warmup/WarmupApplication.h"
 
+#include "engine/graphics/Controller.h"
+
 #include "warmup/GameScreen.h"
 #include "warmup/WelcomeScreen.h"
 
@@ -9,8 +11,17 @@
 WarmupApplication::WarmupApplication(QGLWidget *container) :
     Application(container, true, true, true, glm::vec4(0.4, 0.5, 0.9, 1))
 {
-    addScreen(dynamic_cast<Screen *>(new GameScreen(this, 1.f)));
-    addScreen(dynamic_cast<Screen *>(new HomeScreen(this, 1.f)));
+    /* Setup graphics object */
+    m_graphics = new Graphics::Controller();
+
+    m_graphics->createProgram(":/shaders/shader.vert", ":/shaders/shader.frag", "default");
+
+    m_graphics->createTexture(":/images/grass.png", "grass");
+    m_graphics->createTexture(":/images/welcome.jpg", "welcome");
+
+    /* Create screens */
+    addScreen(dynamic_cast<Screen *>(new GameScreen(this)));
+    addScreen(dynamic_cast<Screen *>(new WelcomeScreen(this)));
 }
 
 void WarmupApplication::mouseMoveEvent(QMouseEvent *event)

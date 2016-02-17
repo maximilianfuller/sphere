@@ -1,18 +1,10 @@
 #include "BackgroundEntity.h"
 
-BackgroundEntity::BackgroundEntity()
+BackgroundEntity::BackgroundEntity(World *world) :
+    Entity(world)
 {
 }
 
 BackgroundEntity::~BackgroundEntity()
-{
-}
-
-EntityType BackgroundEntity::getEntityType() const
-{
-    return ActiveType;
-}
-
-void BackgroundEntity::onTick(float seconds)
 {
 }

@@ -2,7 +2,8 @@
 #define BOUNDINGCYLINDER_H
 
 #include "engine/intersect/BoundingShape.h"
-#include "util/CommonIncludes.h"
+
+class BoundingPlane;
 
 class BoundingCylinder : public BoundingShape
 {
@@ -10,19 +11,18 @@ public:
     BoundingCylinder(glm::vec3 pos, float radius, float height);
     ~BoundingCylinder();
 
-    ShapeType getShapeType() const;
-
-    glm::vec3 getPosition();
-    void setPosition(glm::vec3 pos);
-
     float getRadius();
     void setRadius(float radius);
 
     float getHeight();
     void setHeight(float height);
 
+    bool intersect(BoundingShape *shape, glm::vec3 &mtv);
+    bool intersect(BoundingPlane *plane, glm::vec3 &mtv);
+    bool intersect(BoundingCylinder *cyl, glm::vec3 &mtv);
+    bool intersect(BoundingBox *box, glm::vec3 &mtv);
+
 private:
-    glm::vec3 m_pos;
     float m_radius;
     float m_height;
 };

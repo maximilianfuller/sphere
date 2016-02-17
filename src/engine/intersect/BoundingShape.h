@@ -1,18 +1,28 @@
 #ifndef BOUNDINGSHAPE_H
 #define BOUNDINGSHAPE_H
 
-enum ShapeType {
-    PlaneType,
-    CylinderType
-};
+#include "util/CommonIncludes.h"
+
+class BoundingPlane;
+class BoundingCylinder;
+class BoundingBox;
 
 class BoundingShape
 {
 public:
-    BoundingShape();
+    BoundingShape(glm::vec3 pos = glm::vec3(0, 0, 0));
     virtual ~BoundingShape();
 
-    virtual ShapeType getShapeType() const = 0;
+    glm::vec3 getPosition();
+    void setPosition(glm::vec3 pos);
+
+    virtual bool intersect(BoundingShape *shape, glm::vec3 &mtv) = 0;
+    virtual bool intersect(BoundingPlane *plane, glm::vec3 &mtv) = 0;
+    virtual bool intersect(BoundingCylinder *cyl, glm::vec3 &mtv) = 0;
+    virtual bool intersect(BoundingBox *box, glm::vec3 &mtv) = 0;
+
+protected:
+    glm::vec3 m_pos;
 };
 
 #endif // BOUNDINGSHAPE_H

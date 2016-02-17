@@ -22,10 +22,10 @@ void PerspectiveCamera::setTransforms(Graphics::Controller *graphics)
     glm::vec3 look, up, eye;
     glm::mat4x4 view, proj;
 
-    // Orient look vector
+    /* Orient look vector */
     look = getLook();
 
-    // Set up vector
+    /* Set up vector */
     if(m_pitch < 0)
     {
         up = glm::normalize(glm::vec3(look.x, 1.f, look.z));
@@ -35,7 +35,7 @@ void PerspectiveCamera::setTransforms(Graphics::Controller *graphics)
         up = glm::vec3(0, 1.f, 0);
     }
 
-    // Set eye
+    /* Set eye */
     if(m_thirdPerson)
     {
         eye = m_eye - 3.f * look;
@@ -45,12 +45,12 @@ void PerspectiveCamera::setTransforms(Graphics::Controller *graphics)
         eye = m_eye;
     }
 
-    // Create transformation matrices
+    /* Create transformation matrices */
     view = glm::lookAt(eye, eye + look, up);
     proj = glm::perspective(glm::radians(m_fov), m_ratio.x / m_ratio.y,
                             nearPlane, farPlane);
 
-    // Send matrices to the shader
+    /* Send matrices to the shader */
     graphics->sendViewUniform(view, "default");
     graphics->sendProjectionUniform(proj, "default");
 }

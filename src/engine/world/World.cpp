@@ -1,8 +1,10 @@
 #include "engine/world/World.h"
 
-#include "engine/entity/Entity.h"
+#include "engine/entity/ActiveEntity.h"
+#include "engine/entity/BackgroundEntity.h"
 #include "engine/graphics/Controller.h"
 #include "engine/intersect/Intersector.h"
+#include "engine/intersect/BoundingShape.h"
 
 World::World()
 {
@@ -10,75 +12,138 @@ World::World()
 
 World::~World()
 {
-    QList<Entity *>::iterator e;
+    QList<ActiveEntity *>::iterator a;
 
-    for(e = m_entities.begin(); e != m_entities.end(); e++)
+    for(a = m_activeEntities.begin(); a != m_activeEntities.end(); a++)
     {
-        delete (*e);
+        delete (*a);
+    }
+
+    QList<BackgroundEntity *>::iterator b;
+
+    for(b = m_backgroundEntities.begin(); b != m_backgroundEntities.end(); b++)
+    {
+        delete (*b);
     }
 }
 
-int World::getNumEntities()
+int World::getNumActiveEntities()
 {
-    return m_entities.size();
+    return m_activeEntities.size();
 }
 
-Entity *World::getEntity(int index)
+ActiveEntity *World::getActiveEntity(int index)
 {
-    return m_entities[index];
+    return m_activeEntities[index];
 }
 
-void World::addEntity(Entity *ent)
+void World::addActiveEntity(ActiveEntity *ent)
 {
-    m_entities.append(ent);
+    m_activeEntities.append(ent);
 }
 
-void World::removeEntity(Entity *ent)
+void World::removeActiveEntity(ActiveEntity *ent)
 {
-    QList<Entity *>::iterator e;
+    QList<ActiveEntity *>::iterator a;
     int i = 0;
 
-    for(e = m_entities.begin(); e != m_entities.end(); e++)
+    for(a = m_activeEntities.begin(); a != m_activeEntities.end(); a++)
     {
-        if(*e == ent)
+        if(*a == ent)
             break;
 
         i++;
     }
 
-    delete m_entities[i];
-    m_entities.removeAt(i);
+    delete m_activeEntities[i];
+    m_activeEntities.removeAt(i);
+}
+
+int World::getNumBackgroundEntities()
+{
+    return m_backgroundEntities.size();
+}
+
+BackgroundEntity *World::getBackgroundEntity(int index)
+{
+    return m_backgroundEntities[index];
+}
+
+void World::addBackgroundEntity(BackgroundEntity *ent)
+{
+    m_backgroundEntities.append(ent);
+}
+
+void World::removeBackgroundEntity(BackgroundEntity *ent)
+{
+    QList<BackgroundEntity *>::iterator b;
+    int i = 0;
+
+    for(b = m_backgroundEntities.begin(); b != m_backgroundEntities.end(); b++)
+    {
+        if(*b == ent)
+            break;
+
+        i++;
+    }
+
+    delete m_backgroundEntities[i];
+    m_backgroundEntities.removeAt(i);
 }
 
 void World::onTick(float seconds)
 {
-    int numEntities = m_entities.size();
+    int numActiveEntities = m_activeEntities.size();
+    int numBackgroundEntities = m_backgroundEntities.size();
 
-    // Tick entities
-    // Iterate backwards to avoid unexpected behavior
-    for(int i = numEntities - 1; i >= 0; i--)
+    /* Tick active entities. Iterate backwards to avoid unexpected behavior */
+    for(int i = numActiveEntities - 1; i >= 0; i--)
     {
-        m_entities[i]->onTick(seconds);
+        m_activeEntities[i]->onTick(seconds);
     }
 
-    // Intersect entities
-    for(int i = 0; i < numEntities; i++)
+    /* Tick active entities. Iterate backwards to avoid unexpected behavior */
+    for(int i = numBackgroundEntities - 1; i >= 0; i--)
     {
-        for(int j = i + 1; j < numEntities; j++)
+        m_backgroundEntities[i]->onTick(seconds);
+    }
+
+    numActiveEntities = m_activeEntities.size();
+    numBackgroundEntities = m_backgroundEntities.size();
+
+    /* Intersect active entities with eachother */
+    for(int i = 0; i < numActiveEntities; i++)
+    {
+        for(int j = i + 1; j < numActiveEntities; j++)
         {
-            Intersector::intersect(m_entities[i], m_entities[j]);
+            m_activeEntities[i]->intersect(m_activeEntities[j]);
+        }
+    }
+
+    /* Intersect active entities with background entities */
+    for(int i = 0; i < numActiveEntities; i++)
+    {
+        for(int j = 0; j < numBackgroundEntities; j++)
+        {
+            m_activeEntities[i]->intersect(m_backgroundEntities[j]);
         }
     }
 }
 
 void World::onDraw(Graphics::Controller *graphics)
 {
-    QList<Entity *>::iterator e;
-    int count = 0;
+    QList<ActiveEntity *>::iterator a;
 
-    for(e = m_entities.begin(); e != m_entities.end(); e++)
+    for(a = m_activeEntities.begin(); a != m_activeEntities.end(); a++)
     {
-        (*e)->onDraw(graphics);
+        (*a)->onDraw(graphics);
+    }
+
+    QList<BackgroundEntity *>::iterator b;
+
+    for(b = m_backgroundEntities.begin(); b != m_backgroundEntities.end(); b++)
+    {
+        (*b)->onDraw(graphics);
     }
 }
 

@@ -3,22 +3,7 @@
 
 #include "util/CommonIncludes.h"
 #include "engine/entity/ActiveEntity.h"
-
-namespace Graphics
-{
-class Controller;
-}
-class Camera;
-
-const float RATE = 5.0;
-
-const float JUMP_HEIGHT = 2;
-const float JUMP_TIME = 0.5 * RATE;
-const float G = -(2 * JUMP_HEIGHT) / (JUMP_TIME * JUMP_TIME);
-const float JUMP_SPEED = (JUMP_HEIGHT - 0.5 * G * JUMP_TIME * JUMP_TIME) / JUMP_TIME;
-
-const float MU_GROUND = 3.5;
-const float MU_AIR = 0.5;
+#include "warmup/entity/WarmupEntity.h"
 
 enum Direction {
     Up,
@@ -28,23 +13,35 @@ enum Direction {
     None
 };
 
-class Player : public ActiveEntity
+class World;
+class Camera;
+class Floor;
+class Zombie;
+
+class Player : public ActiveEntity, WarmupEntity
 {
 public:
-    Player(Camera *camera, float height = 1.0);
+    Player(World *world, Camera *camera, float height = 1.0);
     ~Player();
 
+    /* User control */
     bool getMoveFoward();
-    bool getMoveBackward();
-    bool getMoveLeft();
-    bool getMoveRight();
-    bool getJump();
-
     void setMoveFoward(bool val);
+
+    bool getMoveBackward();
     void setMoveBackward(bool val);
+
+    bool getMoveLeft();
     void setMoveLeft(bool val);
+
+    bool getMoveRight();
     void setMoveRight(bool val);
+
+    bool getJump();
     void setJump(bool val);
+
+    bool getPlaceBomb();
+    void setPlaceBomb(bool val);
 
     float getYaw();
     void setYaw(float yaw);
@@ -52,44 +49,51 @@ public:
     float getPitch();
     void setPitch(float pitch);
 
+    float getHeight();
+
+    /* Camera direction */
     glm::vec3 getDirection();
 
-    glm::vec3 getPosition();
-    void setPosition(glm::vec3 pos);
-
-    glm::vec3 getVelocity();
-    void setVelocity(glm::vec3 vel);
-
-    glm::vec3 getAcceleration();
-    void setAcceleration(glm::vec3 acc);
-
-    glm::vec3 getGoalVelocity();
-    void setGoalVelocity(glm::vec3 goal);
-
+    /* Actions */
     void rotate(float yaw, float pitch);
+    void jump();
+    void placeBomb();
 
-    void updateCamera();
+    /* Update methods on tick */
+    void updateFriction();
+    void updateGoalVelocity();
+    void updateAcceleration();
+
     void updateShape();
     void updateBoundingShape();
+    void updateCamera();
 
+    /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
+    void onIntersect(Floor *floor, glm::vec3 mtv);
+    void onIntersect(Zombie *zombie, glm::vec3 mtv);
+    void onIntersect(Bomb *bomb, glm::vec3 mtv);
+
     void onTick(float seconds);
 
 private:
     Camera *m_camera;
 
+    /* Movement */
     bool m_moveForward;
     bool m_moveBackward;
     bool m_moveLeft;
     bool m_moveRight;
     bool m_jump;
-    bool m_grounded;
 
+    /* Bomb placement */
+    int m_cooldown;
+    bool m_place;
+
+    /* Attributes */
     float m_height;
     float m_yaw;
     float m_pitch;
-
-    glm::vec3 m_goal;
 };
 
 #endif // PLAYER_H

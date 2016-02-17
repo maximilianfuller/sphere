@@ -5,7 +5,7 @@
 
 WelcomeWorld::WelcomeWorld()
 {
-    addEntity(new WelcomeMessage());
+    addBackgroundEntity(new WelcomeMessage(this));
 }
 
 WelcomeWorld::~WelcomeWorld()

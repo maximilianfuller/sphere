@@ -14,7 +14,8 @@ class World;
 class Screen
 {
 public:
-    Screen(Application *app, float opacity);
+    Screen(Application *app, float opacity = 1.f, int width = 0,
+           int height = 0);
     virtual ~Screen();
 
     /* Screen opacity */
@@ -24,7 +25,7 @@ public:
     /* Game Loop */
     virtual void onResize(int w, int h);
     virtual void onTick(float seconds);
-    virtual bool onDraw(float &currentOpacity);
+    virtual bool onDraw(float &currentOpacity, Graphics::Controller *graphics);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -39,9 +40,11 @@ public:
 protected:
     Application *m_app;
 
-    Graphics::Controller *m_graphics;
     Camera *m_camera;
     World *m_world;
+
+    int m_width;
+    int m_height;
 
     float m_opacity;
 };

@@ -20,7 +20,7 @@ Controller::Controller()
 
 Controller::~Controller()
 {
-    // Delete textures
+    /* Delete textures */
     QHash<QString, GLuint *>::iterator t;
 
     for(t = m_textures.begin(); t != m_textures.end(); t++)
@@ -29,7 +29,7 @@ Controller::~Controller()
         delete (*t);
     }
 
-    // Delete programs
+    /* Delete programs */
     QHash<QString, GLuint>::iterator p;
 
     for(p = m_programs.begin(); p != m_programs.end(); p++)
@@ -37,7 +37,7 @@ Controller::~Controller()
         glDeleteProgram(*p);
     }
 
-    // Delete shapes
+    /* Delete shapes */
     QHash<QString, VertexData *>::iterator s;
 
     for(s = m_shapes.begin(); s != m_shapes.end(); s++)
@@ -56,14 +56,13 @@ GLuint *Controller::getTexture(QString key)
     return m_textures.value(key);
 }
 
-/* TODO: error if texture exists */
 GLuint *Controller::createTexture(QString file, QString key)
 {
-    // Open image file
+    /* Open image file */
     QImage image(file);
     image = QGLWidget::convertToGLFormat(image);
 
-    // Generate texture
+    /* Generate texture */
     GLuint *texture = new GLuint;
 
     glGenTextures(1, texture);
@@ -75,7 +74,7 @@ GLuint *Controller::createTexture(QString file, QString key)
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // Add texture to hash table
+    /* Add texture to hash table */
     m_textures.insert(key, texture);
 
     return texture;
@@ -93,11 +92,10 @@ void Controller::removeTexture(QString key)
 // NOTE: setting the texture uniform causes problems
 GLuint *Controller::loadTexture(QString key, GLenum glTexture)
 {
-    // Get texture from map
+    /* Get texture from map */
     GLuint *texture = m_textures.value(key, 0);
 
-
-    // Bind texture
+    /* Bind texture */
     glActiveTexture(glTexture);
     glBindTexture(GL_TEXTURE_2D, *texture);
 
@@ -122,11 +120,11 @@ GLuint Controller::getProgram(QString key)
 
 GLuint Controller::createProgram(const char *vertexShaderFile, const char *fragmentShaderFile, QString key)
 {
-    // Load program from shaders
+    /* Load program from shaders */
     GLuint program;
     program = ResourceLoader::loadShaders(vertexShaderFile, fragmentShaderFile);
 
-    // Insert program
+    /* Insert program into hash table */
     m_programs.insert(key, program);
 
     return program;
@@ -154,14 +152,18 @@ void Controller::unloadProgram()
 }
 
 void Controller::createShape(GLfloat *shapeVertexBufferData,
-                             int shapeDataSize, int shapeVertexCount, QString key)
+                             int shapeDataSize, int shapeVertexCount,
+                             QString key)
 {
     VertexData *data = new VertexData();
 
     data->setVertexData(shapeVertexBufferData, shapeDataSize, shapeVertexCount);
-    data->setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *) 0);
-    data->setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE, sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 3));
-    data->setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE, sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
+    data->setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
+                       sizeof(GLfloat) * 8, (void *) 0);
+    data->setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
+                       sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 3));
+    data->setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
+                       sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
 
     m_shapes.insert(key, data);
 }
@@ -169,6 +171,12 @@ void Controller::createShape(GLfloat *shapeVertexBufferData,
 void Controller::drawShape(QString key)
 {
     m_shapes.value(key)->draw();
+}
+
+void Controller::sendColorUniform(glm::vec3 color, QString key)
+{
+    glUniform3fv(glGetUniformLocation(getProgram(key), "color"), 1,
+                 glm::value_ptr(color));
 }
 
 void Controller::sendModelUniform(glm::mat4x4 model, QString key)
@@ -196,5 +204,6 @@ void Controller::sendOpacityUniform(float opacity, QString key)
 
 void Controller::sendUseTextureUniform(int useTexture, QString key)
 {
-    glUniform1i(glGetUniformLocation(getProgram(key), "useTexture"), useTexture);
+    glUniform1i(glGetUniformLocation(getProgram(key), "useTexture"),
+                useTexture);
 }

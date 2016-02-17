@@ -3,15 +3,13 @@
 
 #include "engine/entity/Entity.h"
 
-class BackgroundEntity : public Entity
+class World;
+
+class BackgroundEntity : public virtual Entity
 {
 public:
-    BackgroundEntity();
+    BackgroundEntity(World *world);
     ~BackgroundEntity();
-
-    virtual EntityType getEntityType() const;
-
-    virtual void onTick(float seconds);
 };
 
 #endif // BACKGROUNDENTITY_H

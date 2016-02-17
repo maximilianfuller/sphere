@@ -20,9 +20,7 @@ SOURCES += \
     src/engine/Screen.cpp \
     src/engine/Application.cpp \
     src/engine/camera/Camera.cpp \
-    src/util/Settings.cpp \
     src/engine/shape/Shape.cpp \
-    src/engine/light/Light.cpp \
     src/engine/shape/CompositeShape.cpp \
     src/engine/graphics/Controller.cpp \
     src/engine/graphics/VertexData.cpp \
@@ -42,12 +40,23 @@ SOURCES += \
     src/warmup/world/GameWorld.cpp \
     src/warmup/world/WelcomeWorld.cpp \
     src/warmup/WelcomeScreen.cpp \
-    src/engine/intersect/Intersector.cpp \
     src/engine/entity/BackgroundEntity.cpp \
     src/engine/entity/ActiveEntity.cpp \
     src/engine/intersect/BoundingShape.cpp \
     src/engine/intersect/BoundingCylinder.cpp \
-    src/engine/intersect/BoundingPlane.cpp
+    src/engine/intersect/BoundingPlane.cpp \
+    src/warmup/entity/Bomb.cpp \
+    src/warmup/entity/Zombie.cpp \
+    src/warmup/entity/WarmupEntity.cpp \
+    src/engine/voxel/manager/Manager.cpp \
+    src/engine/voxel/chunk/Chunk.cpp \
+    src/minecraft/MinecraftApplication.cpp \
+    src/minecraft/manager/MinecraftManager.cpp \
+    src/minecraft/noise/Noise.cpp \
+    src/engine/voxel/entity/VoxelEntity.cpp \
+    src/engine/intersect/BoundingBox.cpp \
+    src/engine/voxel/shape/BlockFace.cpp \
+    src/engine/voxel/terrain/Terrain.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -56,12 +65,10 @@ HEADERS += \
     src/util/CommonIncludes.h \
     src/util/ResourceLoader.h \
     src/util/CylinderData.h \
-    src/util/Settings.h \
     src/engine/camera/Camera.h \
     src/engine/Application.h \
     src/engine/Screen.h \
     src/engine/shape/Shape.h \
-    src/engine/light/Light.h \
     src/engine/shape/CompositeShape.h \
     src/engine/graphics/Controller.h \
     src/engine/graphics/VertexData.h \
@@ -82,12 +89,25 @@ HEADERS += \
     src/warmup/world/GameWorld.h \
     src/warmup/world/WelcomeWorld.h \
     src/warmup/WelcomeScreen.h \
-    src/engine/intersect/Intersector.h \
     src/engine/entity/BackgroundEntity.h \
     src/engine/entity/ActiveEntity.h \
     src/engine/intersect/BoundingShape.h \
     src/engine/intersect/BoundingCylinder.h \
-    src/engine/intersect/BoundingPlane.h
+    src/engine/intersect/BoundingPlane.h \
+    src/warmup/entity/Bomb.h \
+    src/warmup/entity/Zombie.h \
+    src/warmup/entity/WarmupEntity.h \
+    src/warmup/world/worldconstants.h \
+    src/engine/voxel/manager/Manager.h \
+    src/engine/voxel/chunk/Chunk.h \
+    src/engine/voxel/block/Block.h \
+    src/minecraft/MinecraftApplication.h \
+    src/minecraft/manager/MinecraftManager.h \
+    src/minecraft/noise/Noise.h \
+    src/engine/voxel/entity/VoxelEntity.h \
+    src/engine/intersect/BoundingBox.h \
+    src/engine/voxel/shape/BlockFace.h \
+    src/engine/voxel/terrain/Terrain.h
 
 
 FORMS += src/mainwindow.ui

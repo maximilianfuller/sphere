@@ -6,7 +6,7 @@
 class WelcomeMessage : public BackgroundEntity
 {
 public:
-    WelcomeMessage();
+    WelcomeMessage(World *world);
     ~WelcomeMessage();
 };
 

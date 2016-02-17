@@ -1,30 +1,42 @@
 # This project
-* Move graphics constants to separate file
-* Move world constants to separate file
 
-* 3rd person camera
+* Shape updating methods abstracted to base entity (Mid)
 
-* Bounding shapes
-* EntityType enum for intersection
-* Intersections
-        - detection
-        - resolution
-        - response (container of collision info)
+* Shape dimensions (Mid)
 
-* Get opacity to work
-* Program objects
-* Make things protected
-* Callback names
-        - onTick
-        - onDraw
-        - onCollide
+* Shape model manipulation methods (Mid)
 
-# Next project
-* Entity types
-        - Passive, active
+* Screen opacity (Mid)
+
+* Program objects (Mid-low)
+
+* What values are passed in constructors (level of customization) (Mid-low)
+
+* Namespace things (Mid-low)
+
+* Constants to separate files (low)
+
+* Jump, speed, etc. specification for active entities (low)
+
+# Cool features
 * Errors
 * Bounding shapes have actually shapes if debug is turned on
-    - Actual bounding object collision.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Questions
 * Is this model generalizable to different types of games?
