@@ -5,9 +5,9 @@ class Terrain
 {
 public:
     Terrain();
-    ~Terrain();
+    virtual ~Terrain();
 
-    virtual float getHeight(float x, float z) = 0;
+    virtual float getHeight(int x, int z) = 0;
 };
 
 #endif // TERRAIN_H

@@ -16,9 +16,9 @@ public:
     ~Bomb();
 
     bool getExploding();
+    void explode();
 
     /* Update methdods on tick */
-    void updateShape();
     void updateBoundingShape();
 
     /* Game loop */

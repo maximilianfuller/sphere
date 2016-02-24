@@ -12,16 +12,12 @@ Bomb::Bomb(World *world, glm::vec3 pos, float height) :
     m_height(height),
     m_scale(1.0),
     m_exploding(false),
-    Entity(world, pos),
+    WarmupEntity(world),
     BackgroundEntity(world),
-    WarmupEntity(world)
+    Entity(world, pos)
 {
-    m_pos = pos;
-    m_shape = new Cylinder(glm::vec3(0, 0.5, 0));
-    m_boundingShape = new BoundingCylinder(m_pos, 0.5, m_height);
-
-    updateShape();
-    updateBoundingShape();
+    m_shape = new Cylinder(m_pos, m_dims, glm::vec3(0, 0.5, 0));
+    m_boundingShape = new BoundingCylinder(m_pos, m_dims);
 }
 
 Bomb::~Bomb()
@@ -33,38 +29,16 @@ bool Bomb::getExploding()
     return m_exploding;
 }
 
-void Bomb::updateShape()
+void Bomb::explode()
 {
-    glm::vec3 pos = glm::vec3(m_pos.x, m_pos.y + m_height / 2, m_pos.z);
-    glm::vec3 scale = glm::vec3(1, m_height, 1);
-
-    if(m_exploding)
-    {
-        scale.x *= m_scale;
-        scale.y *= m_scale * 2;
-        scale.z *= m_scale;
-    }
-
-    glm::mat4x4 model = glm::mat4x4();
-    model = glm::translate(model, pos);
-    model = glm::scale(model, scale);
-
-    m_shape->setModelMatrix(model);
+    m_dims.x += 0.2;
+    m_dims.y += 0.2;
+    m_dims.z += 0.2;
 }
 
 void Bomb::updateBoundingShape()
 {
-    BoundingCylinder *cyl = dynamic_cast<BoundingCylinder *>(m_boundingShape);
-    cyl->setPosition(m_pos);
-    cyl->setHeight(m_height);
-    cyl->setRadius(0.5);
-
-    if(m_exploding)
-    {
-        cyl->setPosition(glm::vec3(m_pos.x, m_height * 1.5, m_pos.z));
-        cyl->setHeight(m_height * m_scale * 2 * 1.5);
-        cyl->setRadius(m_scale * 1.2);
-    }
+    Entity::updateBoundingShape();
 }
 
 void Bomb::onIntersect(Entity *ent, glm::vec3 mtv)
@@ -83,7 +57,6 @@ void Bomb::onIntersect(Player *player, glm::vec3 mtv)
 
 void Bomb::onIntersect(Zombie *zombie, glm::vec3 mtv)
 {
-    std::cout << "here" << std::endl;
     m_exploding = true;
 }
 
@@ -91,7 +64,8 @@ void Bomb::onTick(float seconds)
 {
     if(m_exploding)
     {
-        m_scale *= 1.2;
+        m_scale *= 1.1;
+        explode();
     }
 
     if(m_scale > 5.0)
@@ -100,6 +74,5 @@ void Bomb::onTick(float seconds)
         return;
     }
 
-    updateShape();
-    updateBoundingShape();
+    BackgroundEntity::onTick(seconds);
 }

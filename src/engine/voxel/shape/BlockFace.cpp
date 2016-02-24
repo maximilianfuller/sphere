@@ -1,8 +1,9 @@
 #include "engine/voxel/shape//BlockFace.h"
 
-BlockFace::BlockFace(QString shapeKey, glm::mat4x4 model) :
+BlockFace::BlockFace(QString shapeKey, glm::vec3 color,
+                     glm::mat4x4 model) :
     m_shapeKey(shapeKey),
-    Shape(model)
+    Shape(model, color)
 {
 }
 
@@ -12,10 +13,12 @@ BlockFace::~BlockFace()
 
 void BlockFace::draw(Graphics::Controller *graphics, glm::vec3 blockPos)
 {
-    Shape::draw(graphics);
+    glm::mat4x4 model;
+    model = glm::translate(model, blockPos);
+    model = model * m_model;
 
-    glm::mat4x4 model = glm::mat4x4();
-    m_model = glm::translate(model, blockPos);
+    graphics->sendModelUniform(model, "default");
+    graphics->sendColorUniform(m_color, "default");
 
     graphics->sendUseTextureUniform(1, "default");
     graphics->drawShape(m_shapeKey);

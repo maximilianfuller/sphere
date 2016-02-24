@@ -11,8 +11,9 @@ class Controller;
 class Cylinder : public Shape
 {
 public:
-    Cylinder(glm::vec3 color = glm::vec3(0.5, 0.5, 0.5),
-             glm::mat4x4 model = glm::mat4x4());
+    Cylinder(glm::vec3 pos = glm::vec3(0, 0, 0),
+             glm::vec3 dims = glm::vec3(1, 1, 1),
+             glm::vec3 color = glm::vec3(0.5, 0.5, 0.5));
     ~Cylinder();
 
     void draw(Graphics::Controller *graphics);

@@ -10,6 +10,8 @@ class BackgroundEntity : public virtual Entity
 public:
     BackgroundEntity(World *world);
     ~BackgroundEntity();
+
+    virtual void onTick(float seconds);
 };
 
 #endif // BACKGROUNDENTITY_H

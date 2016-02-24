@@ -3,10 +3,7 @@
 #include "engine/intersect/BoundingCylinder.h"
 #include "engine/intersect/BoundingPlane.h"
 
-BoundingBox::BoundingBox(float width, float height, float depth) :
-    m_width(width),
-    m_height(height),
-    m_depth(depth)
+BoundingBox::BoundingBox()
 {
 }
 

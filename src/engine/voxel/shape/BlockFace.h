@@ -8,7 +8,8 @@
 class BlockFace : public Shape
 {
 public:
-    BlockFace(QString shapeKey, glm::mat4x4 model = glm::mat4x4());
+    BlockFace(QString shapeKey, glm::vec3 color = glm::vec3(0.5, 0.5, 0.5),
+              glm::mat4x4 model = glm::mat4x4());
     ~BlockFace();
 
     void draw(Graphics::Controller *graphics, glm::vec3 blockPos);

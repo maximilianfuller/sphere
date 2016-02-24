@@ -26,21 +26,17 @@ Player::Player(World *world, Camera *camera, float height) :
     m_pitch(0),
     m_height(height),
     // Constructors
-    Entity(world),
+    WarmupEntity(world),
     ActiveEntity(world, 5),
-    WarmupEntity(world)
+    Entity(world)
 {
     /* Initialize camera */
     m_camera->setYaw(m_yaw);
     m_camera->setPitch(m_pitch);
 
     /* Create shape and bounding shape */
-    m_shape = new Cylinder();
-    m_boundingShape = new BoundingCylinder(m_pos, 0.5, m_height);
-
-    /* Update shape and bounding shape to correspond to player's dimentions */
-    updateShape();
-    updateBoundingShape();
+    m_shape = new Cylinder(m_pos, m_dims);
+    m_boundingShape = new BoundingCylinder(m_pos, m_dims);
 }
 
 Player::~Player()
@@ -215,27 +211,10 @@ void Player::updateAcceleration()
     m_acc.z = diff.z;
 }
 
-void Player::updateShape()
-{
-    glm::vec3 pos = glm::vec3(m_pos.x, m_pos.y + m_height / 2, m_pos.z);
-    glm::vec3 scale = glm::vec3(1, m_height, 1);
-
-    glm::mat4x4 model = glm::mat4x4();
-    model = glm::translate(model, pos);
-    model = glm::scale(model, scale);
-
-    m_shape->setModelMatrix(model);
-}
-
-void Player::updateBoundingShape()
-{
-    BoundingCylinder *cyl = dynamic_cast<BoundingCylinder *>(m_boundingShape);
-    cyl->setPosition(m_pos);
-}
-
 void Player::updateCamera()
 {
-    glm::vec3 pos = glm::vec3(m_pos.x, m_pos.y + m_height, m_pos.z);
+    glm::vec3 pos = m_pos;
+    pos.y += 0.5f * m_dims.y;
     m_camera->setEye(pos);
 }
 
@@ -270,7 +249,7 @@ void Player::onIntersect(Zombie *zombie, glm::vec3 mtv)
         m_grounded = true;
     }
 
-    if(m_pos.y < 0.75 * zombie->getHeight())
+    if(m_pos.y < zombie->getPosition().y + 0.75 * zombie->getHeight())
     {
         world->setGameOver(true);
     }

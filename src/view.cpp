@@ -3,6 +3,7 @@
 #include "util/ResourceLoader.h"
 #include "engine/Application.h"
 #include "warmup/WarmupApplication.h"
+#include "minecraft/MinecraftApplication.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -71,7 +72,7 @@ void View::initializeGL()
     QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
     // Setup application
-    app = new WarmupApplication(this);
+    app = new MinecraftApplication(this);
 }
 
 void View::paintGL()

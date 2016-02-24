@@ -56,7 +56,11 @@ SOURCES += \
     src/engine/voxel/entity/VoxelEntity.cpp \
     src/engine/intersect/BoundingBox.cpp \
     src/engine/voxel/shape/BlockFace.cpp \
-    src/engine/voxel/terrain/Terrain.cpp
+    src/engine/voxel/terrain/Terrain.cpp \
+    src/minecraft/terrain/ValueTerrain.cpp \
+    src/minecraft/entity/MinecraftPlayer.cpp \
+    src/minecraft/MinecraftScreen.cpp \
+    src/engine/voxel/shape/VoxelCube.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -107,7 +111,12 @@ HEADERS += \
     src/engine/voxel/entity/VoxelEntity.h \
     src/engine/intersect/BoundingBox.h \
     src/engine/voxel/shape/BlockFace.h \
-    src/engine/voxel/terrain/Terrain.h
+    src/engine/voxel/terrain/Terrain.h \
+    src/minecraft/terrain/ValueTerrain.h \
+    src/minecraft/entity/MinecraftPlayer.h \
+    src/minecraft/MinecraftScreen.h \
+    src/engine/voxel/shape/VoxelCube.h \
+    src/engine/voxel/shape/cubedata.h
 
 
 FORMS += src/mainwindow.ui

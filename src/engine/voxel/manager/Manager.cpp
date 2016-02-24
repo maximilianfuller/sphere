@@ -3,7 +3,8 @@
 #include "engine/voxel/entity/VoxelEntity.h"
 #include "engine/voxel/block/Block.h"
 
-Voxel::Manager::Manager()
+Voxel::Manager::Manager(QString atlasKey) :
+    m_atlasKey(atlasKey)
 {
 }
 
@@ -27,19 +28,26 @@ void Voxel::Manager::onTick(float seconds)
 
     for(int i = 0; i < numActiveEntities; i++)
     {
-        for(int j = 0; j < 4; i++)
+        for(int j = 0; j < 4; j++)
         {
             m_chunks[j]->intersect(
                         dynamic_cast<VoxelEntity *>(m_activeEntities[i]));
         }
     }
+
+    World::onTick(seconds);
 }
 
 void Voxel::Manager::onDraw(Graphics::Controller *graphics)
 {
-    /* TODO: load texture atlas */
+    World::onDraw(graphics);
+
+    graphics->loadTexture(m_atlasKey, GL_TEXTURE0);
+
     for(int i = 0; i < 4; i++)
     {
         m_chunks[i]->onDraw(graphics);
     }
+
+    graphics->unloadTexture(GL_TEXTURE0);
 }

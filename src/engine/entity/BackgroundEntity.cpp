@@ -8,3 +8,9 @@ BackgroundEntity::BackgroundEntity(World *world) :
 BackgroundEntity::~BackgroundEntity()
 {
 }
+
+void BackgroundEntity::onTick(float seconds)
+{
+    updateShape();
+    updateBoundingShape();
+}

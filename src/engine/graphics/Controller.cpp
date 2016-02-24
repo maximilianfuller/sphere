@@ -68,8 +68,8 @@ GLuint *Controller::createTexture(QString file, QString key)
     glGenTextures(1, texture);
     glBindTexture(GL_TEXTURE_2D, *texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -158,6 +158,35 @@ void Controller::createShape(GLfloat *shapeVertexBufferData,
     VertexData *data = new VertexData();
 
     data->setVertexData(shapeVertexBufferData, shapeDataSize, shapeVertexCount);
+    data->setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
+                       sizeof(GLfloat) * 8, (void *) 0);
+    data->setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
+                       sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 3));
+    data->setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
+                       sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
+
+    m_shapes.insert(key, data);
+}
+
+void Controller::createQuad(float startU, float startV, float endU, float endV,
+                            QString key)
+{
+    int quadVertexCount = 6;
+
+    int quadDataSize = 48 * sizeof(GLfloat);
+
+    GLfloat quadVertexBufferData[48] = {
+        -.5f,0.f,-.5f, 0.f,1.f,0.f, startU,endV,
+        -.5f,0.f,.5f, 0.f,1.f,0.f, startU,startV,
+        .5f,0.f,-.5f, 0.f,1.f,0.f, endU,endV,
+        .5f,0.f,-.5f, 0.f,1.f,0.f, endU,endV,
+        -.5f,0.f,.5f, 0.f,1.f,0.f, startU,startV,
+        .5f,0.f,.5f, 0.f,1.f,0.f, endU,startV
+    };
+
+    VertexData *data = new VertexData();
+
+    data->setVertexData(quadVertexBufferData, quadDataSize, quadVertexCount);
     data->setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) 0);
     data->setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,

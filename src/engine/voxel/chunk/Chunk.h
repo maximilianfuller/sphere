@@ -4,12 +4,11 @@
 #define CHUNK_SIZE 32
 
 #include "util/CommonIncludes.h"
+#include "engine/graphics/VertexData.h"
 
-/* Chunk generation constants */
-const int BASE_HEIGHT = 16;
-const int DIRT_START = 15;
+const int BASE_HEIGHT = 15;
+const int DIRT_START = 16;
 
-/* Foward declarations */
 typedef unsigned char BlockPointer;
 
 namespace Voxel
@@ -38,6 +37,8 @@ public:
 
     glm::vec3 getPosition();
 
+    void updateBlockVertexBuffer();
+
     virtual void intersect(VoxelEntity *ent);
     virtual void onTick(float seconds);
     virtual void onDraw(Graphics::Controller *graphics);
@@ -46,7 +47,15 @@ protected:
     Voxel::Manager *m_manager;
 
     glm::vec3 m_pos;
+
     BlockPointer m_blocks[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
+    bool m_visibleMap[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
+
+    Graphics::VertexData m_blockVertexBuffer;
+    float m_blockVertexData[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 8];
+    int m_blockNumVertices;
+
+    bool m_vertexUpdate;
 };
 
 #endif // CHUNK_H

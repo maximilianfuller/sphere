@@ -4,16 +4,15 @@
 #include "engine/intersect/BoundingShape.h"
 #include "engine/entity/BackgroundEntity.h"
 
-ActiveEntity::ActiveEntity(World *world, float speed, glm::vec3 pos,
-                           glm::vec3 vel, glm::vec3 acc, glm::vec3 goal,
-                           float friction) :
+ActiveEntity::ActiveEntity(World *world, float speed, glm::vec3 vel, glm::vec3 acc,
+                           glm::vec3 goal, float friction) :
     m_vel(vel),
     m_acc(acc),
     m_goal(goal),
     m_speed(speed),
     m_friction(friction),
     m_grounded(true),
-    Entity(world, pos)
+    Entity(world)
 {
 }
 
@@ -115,7 +114,7 @@ void ActiveEntity::updateVelocity(float seconds)
 void ActiveEntity::updatePosition(float seconds)
 {
     m_pos.x += m_speed * m_vel.x * seconds;
-    m_pos.y += m_vel.y * seconds;
+    m_pos.y += m_speed * m_vel.y * seconds;
     m_pos.z += m_speed * m_vel.z * seconds;
 }
 
@@ -128,9 +127,8 @@ void ActiveEntity::onTick(float seconds)
     updateVelocity(seconds);
     updatePosition(seconds);
 
-    /* Appearance update */
-    updateShape();
+    m_acc = glm::vec3(0, 0, 0);
 
-    /* Bounding shape update */
+    updateShape();
     updateBoundingShape();
 }

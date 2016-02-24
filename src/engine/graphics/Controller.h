@@ -33,6 +33,7 @@ public:
 
     void createShape(GLfloat *shapeVertexBufferData, int shapeDataSize,
                      int shapeVertexCount, QString key);
+    void createQuad(float startU, float startV, float endU, float endV, QString key);
     void drawShape(QString key);
 
     void sendColorUniform(glm::vec3 color, QString key);

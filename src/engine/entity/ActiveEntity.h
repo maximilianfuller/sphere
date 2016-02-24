@@ -12,7 +12,6 @@ class ActiveEntity : public virtual Entity
 {
 public:
     ActiveEntity(World *world, float speed = 1,
-                 glm::vec3 pos = glm::vec3(0, 0, 0),
                  glm::vec3 vel = glm::vec3(0, 0, 0),
                  glm::vec3 acc = glm::vec3(0, G, 0),
                  glm::vec3 goal = glm::vec3(0, 0, 0),
@@ -42,9 +41,6 @@ public:
     virtual void updateAcceleration() = 0;
     virtual void updateVelocity(float seconds);
     virtual void updatePosition(float seconds);
-
-    virtual void updateShape() = 0;
-    virtual void updateBoundingShape() = 0;
 
     virtual void onTick(float seconds);
 

@@ -5,11 +5,12 @@
 #include "engine/graphics/Controller.h"
 #include "engine/shape/Shape.h"
 
-Entity::Entity(World *world, glm::vec3 pos) :
+Entity::Entity(World *world, glm::vec3 pos, glm::vec3 dims) :
     m_world(world),
     m_boundingShape(NULL),
     m_shape(NULL),
-    m_pos(pos)
+    m_pos(pos),
+    m_dims(dims)
 {
 }
 
@@ -32,6 +33,21 @@ glm::vec3 Entity::getPosition()
 void Entity::setPosition(glm::vec3 pos)
 {
     m_pos = pos;
+}
+
+void Entity::updateShape()
+{
+    m_shape->setDimensions(m_dims);
+    m_shape->setPosition(m_pos);
+}
+
+void Entity::updateBoundingShape()
+{
+    if(m_boundingShape)
+    {
+        m_boundingShape->setDimensions(m_dims);
+        m_boundingShape->setPosition(m_pos);
+    }
 }
 
 bool Entity::intersect(Entity *ent)

@@ -14,16 +14,12 @@ Zombie::Zombie(World *world, glm::vec3 pos, float height) :
     m_height(height),
     m_dead(false),
     m_untilDead(30),
-    ActiveEntity(world, 3, pos),
     WarmupEntity(world),
-    Entity(world)
+    ActiveEntity(world, 3),
+    Entity(world, pos)
 {
-    m_pos = pos;
-    m_shape = new Cylinder(glm::vec3(0.5, 0, 0));
-    m_boundingShape = new BoundingCylinder(m_pos, 0.5, m_height);
-
-    updateShape();
-    updateBoundingShape();
+    m_shape = new Cylinder(m_pos, m_dims, glm::vec3(0.5, 0, 0));
+    m_boundingShape = new BoundingCylinder(m_pos, m_dims);
 }
 
 Zombie::~Zombie()
@@ -61,24 +57,6 @@ void Zombie::updateAcceleration()
 
     m_acc.x = diff.x;
     m_acc.z = diff.z;
-}
-
-void Zombie::updateShape()
-{
-    glm::vec3 pos = glm::vec3(m_pos.x, m_pos.y + m_height / 2, m_pos.z);
-    glm::vec3 scale = glm::vec3(1, m_height, 1);
-
-    glm::mat4x4 model = glm::mat4x4();
-    model = glm::translate(model, pos);
-    model = glm::scale(model, scale);
-
-    m_shape->setModelMatrix(model);
-}
-
-void Zombie::updateBoundingShape()
-{
-    BoundingCylinder *cyl = dynamic_cast<BoundingCylinder *>(m_boundingShape);
-    cyl->setPosition(m_pos);
 }
 
 void Zombie::onIntersect(Entity *ent, glm::vec3 mtv)

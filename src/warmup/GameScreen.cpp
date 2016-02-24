@@ -3,7 +3,6 @@
 #include "engine/Application.h"
 #include "engine/camera/Camera.h"
 #include "engine/camera/PerspectiveCamera.h"
-#include "engine/Application.h"
 
 #include "warmup/world/GameWorld.h"
 #include "warmup/entity/Player.h"

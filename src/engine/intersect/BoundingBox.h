@@ -7,7 +7,7 @@
 class BoundingBox : public BoundingShape
 {
 public:
-    BoundingBox(float width = 1.f, float height = 1.f, float depth = 1.f);
+    BoundingBox();
     ~BoundingBox();
 
     bool intersect(BoundingShape *shape, glm::vec3 &mtv);

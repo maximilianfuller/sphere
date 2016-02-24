@@ -1,11 +1,5 @@
 # This project
 
-* Shape updating methods abstracted to base entity (Mid)
-
-* Shape dimensions (Mid)
-
-* Shape model manipulation methods (Mid)
-
 * Screen opacity (Mid)
 
 * Program objects (Mid-low)
@@ -18,25 +12,13 @@
 
 * Jump, speed, etc. specification for active entities (low)
 
+* Fix Warmup2 explosion
+
+* Option for texture filter
+
 # Cool features
 * Errors
 * Bounding shapes have actually shapes if debug is turned on
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # Questions
 * Is this model generalizable to different types of games?

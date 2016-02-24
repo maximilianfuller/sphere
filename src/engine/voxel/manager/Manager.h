@@ -5,6 +5,8 @@
 
 #include "engine/voxel/chunk/Chunk.h"
 
+#include <QString>
+
 typedef unsigned char BlockPointer;
 
 class Block;
@@ -15,7 +17,7 @@ namespace Voxel
 class Manager : public World
 {
 public:
-    Manager();
+    Manager(QString atlasKey = "atlas");
     virtual ~Manager();
 
     Block *getBlock(BlockPointer p);
@@ -24,6 +26,8 @@ public:
     virtual void onDraw(Graphics::Controller *graphics);
 
 protected:
+    QString m_atlasKey;
+
     Block *m_blockTypes[256];
 
     Chunk *m_chunks[4];

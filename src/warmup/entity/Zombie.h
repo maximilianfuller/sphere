@@ -22,9 +22,6 @@ public:
     void updateGoalVelocity();
     void updateAcceleration();
 
-    void updateShape();
-    void updateBoundingShape();
-
     /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
     void onIntersect(Floor *floor, glm::vec3 mtv);
