@@ -7,9 +7,14 @@
 
 #include <QString>
 
+const int CHUNKS_WIDTH = 4;
+const int CHUNKS_HEIGHT = 1;
+const int NUM_CHUNKS = CHUNKS_WIDTH * CHUNKS_WIDTH * CHUNKS_HEIGHT;
+
 typedef unsigned char BlockPointer;
 
 class Block;
+class Terrain;
 
 namespace Voxel
 {
@@ -17,7 +22,7 @@ namespace Voxel
 class Manager : public World
 {
 public:
-    Manager(QString atlasKey = "atlas");
+    Manager(Terrain *terrain, QString atlasKey = "atlas");
     virtual ~Manager();
 
     Block *getBlock(BlockPointer p);
@@ -30,7 +35,9 @@ protected:
 
     Block *m_blockTypes[256];
 
-    Chunk *m_chunks[4];
+    Chunk *m_chunks[NUM_CHUNKS];
+
+    Terrain *m_terrain;
 };
 
 }

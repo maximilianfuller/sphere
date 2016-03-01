@@ -1,6 +1,6 @@
 #include "warmup/world/GameWorld.h"
 
-#include "engine/camera/PerspectiveCamera.h"
+#include "engine/camera/Camera.h"
 
 #include "warmup/entity/Player.h"
 #include "warmup/entity/Floor.h"
@@ -9,7 +9,7 @@
 
 #include <QKeyEvent>
 
-GameWorld::GameWorld(PerspectiveCamera *camera) :
+GameWorld::GameWorld(Camera *camera) :
     m_camera(camera),
     m_spawnCounter(30),
     m_numLeft(40),

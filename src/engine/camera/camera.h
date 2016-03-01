@@ -35,18 +35,29 @@ public:
 
     glm::vec3 getLook();
 
+    void toggleThirdPerson();
+
+    void updateTransforms();
+    void updateFrustumPlanes(Graphics::Controller *graphics);
+
     void translate(glm::vec3 vec);
     void rotate(float yaw, float pitch);
 
-    virtual void setTransforms(Graphics::Controller *graphics) = 0;
+    virtual void setTransforms(Graphics::Controller *graphics);
 
 protected:
+    float m_yaw, m_pitch;
+    float m_fov;
+
     glm::vec2 m_ratio;
     glm::vec3 m_eye;
 
-    float m_yaw;
-    float m_pitch;
-    float m_fov;
+    glm::vec3 m_look, m_up;
+
+    glm::mat4x4 m_view, m_proj, m_persp;
+
+    bool m_update;
+    bool m_thirdPerson;
 };
 
 #endif // CAMERA_H

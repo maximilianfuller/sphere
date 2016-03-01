@@ -12,11 +12,6 @@ PerspectiveCamera::~PerspectiveCamera()
 {
 }
 
-void PerspectiveCamera::toggleThirdPerson()
-{
-    m_thirdPerson = !m_thirdPerson;
-}
-
 void PerspectiveCamera::setTransforms(Graphics::Controller *graphics)
 {
     glm::vec3 look, up, eye;

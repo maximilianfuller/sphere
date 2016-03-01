@@ -2,7 +2,7 @@
 #define WORLDCONSTANTS_H
 
 const float MU_GROUND = 17.5;
-const float MU_AIR = 2.5;
+const float MU_AIR = 4.5;
 
 const float JUMP_HEIGHT = 1.2;
 const float JUMP_TIME = 0.5;

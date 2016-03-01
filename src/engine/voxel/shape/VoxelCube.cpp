@@ -2,7 +2,7 @@
 
 #include "engine/graphics/Controller.h"
 
-#include "engine/voxel/shape/cubedata.h"
+#include "engine/voxel/shape/CubeData.h"
 
 VoxelCube::VoxelCube(glm::vec2 ls, glm::vec2 le,
                      glm::vec2 rs, glm::vec2 re,

@@ -202,6 +202,20 @@ void Controller::drawShape(QString key)
     m_shapes.value(key)->draw();
 }
 
+void Controller::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
+                                  glm::vec4 fny, glm::vec4 fy,
+                                  glm::vec4 fnz, glm::vec4 fz)
+{
+    frustumPlanes[0] = fnx;
+    frustumPlanes[1] = fx;
+
+    frustumPlanes[2] = fny;
+    frustumPlanes[3] = fy;
+
+    frustumPlanes[4] = fnz;
+    frustumPlanes[5] = fz;
+}
+
 void Controller::sendColorUniform(glm::vec3 color, QString key)
 {
     glUniform3fv(glGetUniformLocation(getProgram(key), "color"), 1,

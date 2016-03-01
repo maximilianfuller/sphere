@@ -2,7 +2,7 @@
 
 #include "engine/Application.h"
 #include "engine/camera/Camera.h"
-#include "engine/camera/PerspectiveCamera.h"
+#include "engine/camera/Camera.h"
 
 #include "warmup/world/GameWorld.h"
 #include "warmup/entity/Player.h"
@@ -13,11 +13,10 @@ GameScreen::GameScreen(Application *app, float opacity) :
     Screen(app, opacity)
 {
     /* Setup camera */
-    m_camera = dynamic_cast<Camera *>(new PerspectiveCamera());
+    m_camera = new Camera();
 
     /* Setup world */
-    m_world = dynamic_cast<World *>(
-                new GameWorld(dynamic_cast<PerspectiveCamera *>(m_camera)));
+    m_world = dynamic_cast<World *>(new GameWorld(m_camera));
 }
 
 GameScreen::~GameScreen()
@@ -42,9 +41,9 @@ void GameScreen::onTick(float seconds)
     {
         m_app->moveScreen(this, 0);
 
-        PerspectiveCamera *temp = new PerspectiveCamera(m_camera->getRatio());
+        Camera *temp = new Camera(m_camera->getRatio());
         delete m_camera;
-        m_camera = dynamic_cast<Camera *>(temp);
+        m_camera = temp;
 
         delete m_world;
         m_world = dynamic_cast<World *>(new GameWorld(temp));

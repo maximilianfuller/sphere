@@ -11,13 +11,15 @@ Chunk::Chunk(Voxel::Manager *manager, Terrain *terrain, glm::vec3 pos) :
     m_manager(manager),
     m_pos(pos),
     m_blockNumVertices(0),
-    m_vertexUpdate(true)
+    m_vertexUpdate(true),
+    m_blockVertexData(new float[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 8])
 {
     generateBlocks(terrain);
 }
 
 Chunk::~Chunk()
 {
+    delete[] m_blockVertexData;
 }
 
 void Chunk::generateBlocks(Terrain *terrain)
@@ -34,6 +36,7 @@ void Chunk::generateBlocks(Terrain *terrain)
                 height = terrain->getHeight(m_pos.x + x, m_pos.z + z)
                         + BASE_HEIGHT;
 
+                /* Choose block type */
                 if(y > height)
                 {
                     m_blocks[blockIndex] = BLOCK_AIR;
@@ -76,6 +79,37 @@ glm::vec3 Chunk::getPosition()
     return m_pos;
 }
 
+bool Chunk::inFrustum(Graphics::Controller *graphics)
+{
+    glm::vec4 pos;
+
+    bool allBehind;
+
+    for(int i = 0; i < 6; i++)
+    {
+        allBehind = true;
+
+        for(int x = 0; x <= 1; x++)
+        {
+            for(int y = 0; y <= 1; y++)
+            {
+                for(int z = 0; z <= 1; z++)
+                {
+                    pos = glm::vec4(m_pos.x, m_pos.y, m_pos.z, 1)
+                            + glm::vec4(CHUNK_SIZE * x, CHUNK_SIZE * y, CHUNK_SIZE * z, 0);
+
+                    allBehind = allBehind && (glm::dot(graphics->frustumPlanes[0], pos) < 0);
+                }
+            }
+        }
+
+        if(allBehind)
+            return false;
+    }
+
+    return true;
+}
+
 void Chunk::updateBlockVertexBuffer()
 {
     Block *block;
@@ -90,6 +124,7 @@ void Chunk::updateBlockVertexBuffer()
             {
                 block = m_manager->getBlock(m_blocks[blockIndex]);
 
+                /* Draw block if passable */
                 if(block->passable)
                 {
                     glm::vec3 blockPos = m_pos + glm::vec3(x, y, z);
@@ -107,6 +142,7 @@ void Chunk::updateBlockVertexBuffer()
         }
     }
 
+    /* Update VBO with new vertex data */
     m_blockVertexBuffer.setVertexData(m_blockVertexData,
                                       m_blockNumVertices * sizeof(GLfloat),
                                       m_blockNumVertices);
@@ -117,11 +153,13 @@ void Chunk::updateBlockVertexBuffer()
     m_blockVertexBuffer.setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
 
+    /* Do not update chunks */
     m_vertexUpdate = false;
+
+    /* Reset the number of vertices */
     m_blockNumVertices = 0;
 }
 
-// NOTE: should blocks be entities? should chunks be entities?
 void Chunk::intersect(VoxelEntity *ent)
 {
     Block *block;
@@ -152,14 +190,17 @@ void Chunk::onTick(float seconds)
 
 void Chunk::onDraw(Graphics::Controller *graphics)
 {
-    graphics->sendColorUniform(glm::vec3(0.5, 0.5, 0.5), "default");
-    graphics->sendUseTextureUniform(1, "default");
-    graphics->sendModelUniform(glm::mat4x4(), "default");
-
-    if(m_vertexUpdate)
+    if(inFrustum(graphics))
     {
-        updateBlockVertexBuffer();
-    }
+        graphics->sendColorUniform(glm::vec3(0.5, 0.5, 0.5), "default");
+        graphics->sendUseTextureUniform(1, "default");
+        graphics->sendModelUniform(glm::mat4x4(), "default");
 
-    m_blockVertexBuffer.draw();
+        if(m_vertexUpdate)
+        {
+            updateBlockVertexBuffer();
+        }
+
+        m_blockVertexBuffer.draw();
+    }
 }

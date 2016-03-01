@@ -4,13 +4,6 @@
 
 ValueTerrain::ValueTerrain()
 {
-    for(int i = 0; i < 100; i++)
-    {
-        for(int j = 0; j < 100; j++)
-        {
-            m_randArray[100 * i + j] = std::rand();
-        }
-    }
 }
 
 ValueTerrain::~ValueTerrain()
@@ -19,7 +12,7 @@ ValueTerrain::~ValueTerrain()
 
 float ValueTerrain::noise(int x, int z)
 {
-    return m_randArray[(x % 100) * 100 + z % 100] / static_cast<float>(INT_MAX);
+    return sin(x * 1000 + z * 94300);
 }
 
 float ValueTerrain::smoothNoise(int x, int z)

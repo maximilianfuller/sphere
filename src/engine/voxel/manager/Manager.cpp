@@ -2,14 +2,35 @@
 
 #include "engine/voxel/entity/VoxelEntity.h"
 #include "engine/voxel/block/Block.h"
+#include "engine/voxel/terrain/Terrain.h"
 
-Voxel::Manager::Manager(QString atlasKey) :
+Voxel::Manager::Manager(Terrain *terrain, QString atlasKey) :
+    m_terrain(terrain),
     m_atlasKey(atlasKey)
 {
+    int chunkIndex = 0;
+
+    for(int y = 0; y < CHUNKS_HEIGHT; y++)
+    {
+        for(int x = 0; x < CHUNKS_WIDTH; x++)
+        {
+            for(int z = 0; z < CHUNKS_WIDTH; z++)
+            {
+                m_chunks[chunkIndex++] = new Chunk(this, m_terrain,
+                                                   glm::vec3(CHUNK_SIZE * x, CHUNK_SIZE * y, CHUNK_SIZE * z));
+            }
+        }
+    }
 }
 
 Voxel::Manager::~Manager()
 {
+    for(int i = 0; i < NUM_CHUNKS; i++)
+    {
+        delete m_chunks[i];
+    }
+
+    delete m_terrain;
 }
 
 Block *Voxel::Manager::getBlock(BlockPointer p)
@@ -19,7 +40,7 @@ Block *Voxel::Manager::getBlock(BlockPointer p)
 
 void Voxel::Manager::onTick(float seconds)
 {
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < NUM_CHUNKS; i++)
     {
         m_chunks[i]->onTick(seconds);
     }
@@ -28,7 +49,7 @@ void Voxel::Manager::onTick(float seconds)
 
     for(int i = 0; i < numActiveEntities; i++)
     {
-        for(int j = 0; j < 4; j++)
+        for(int j = 0; j < NUM_CHUNKS; j++)
         {
             m_chunks[j]->intersect(
                         dynamic_cast<VoxelEntity *>(m_activeEntities[i]));
@@ -44,7 +65,7 @@ void Voxel::Manager::onDraw(Graphics::Controller *graphics)
 
     graphics->loadTexture(m_atlasKey, GL_TEXTURE0);
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < NUM_CHUNKS; i++)
     {
         m_chunks[i]->onDraw(graphics);
     }

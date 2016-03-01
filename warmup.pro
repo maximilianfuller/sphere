@@ -34,7 +34,6 @@ SOURCES += \
     src/warmup/shape/TiledQuad.cpp \
     src/warmup/entity/WelcomeMessage.cpp \
     src/engine/camera/SimpleCamera.cpp \
-    src/engine/camera/PerspectiveCamera.cpp \
     src/engine/shape/FullscreenQuad.cpp \
     src/engine/world/World.cpp \
     src/warmup/world/GameWorld.cpp \
@@ -87,7 +86,6 @@ HEADERS += \
     src/util/QuadData.h \
     src/warmup/entity/WelcomeMessage.h \
     src/engine/camera/SimpleCamera.h \
-    src/engine/camera/PerspectiveCamera.h \
     src/engine/shape/FullscreenQuad.h \
     src/engine/world/World.h \
     src/warmup/world/GameWorld.h \
@@ -101,7 +99,6 @@ HEADERS += \
     src/warmup/entity/Bomb.h \
     src/warmup/entity/Zombie.h \
     src/warmup/entity/WarmupEntity.h \
-    src/warmup/world/worldconstants.h \
     src/engine/voxel/manager/Manager.h \
     src/engine/voxel/chunk/Chunk.h \
     src/engine/voxel/block/Block.h \
@@ -116,7 +113,8 @@ HEADERS += \
     src/minecraft/entity/MinecraftPlayer.h \
     src/minecraft/MinecraftScreen.h \
     src/engine/voxel/shape/VoxelCube.h \
-    src/engine/voxel/shape/cubedata.h
+    src/engine/voxel/shape/CubeData.h \
+    src/engine/world/WorldConstants.h
 
 
 FORMS += src/mainwindow.ui

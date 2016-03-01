@@ -36,12 +36,19 @@ public:
     void createQuad(float startU, float startV, float endU, float endV, QString key);
     void drawShape(QString key);
 
+    void setFrustumPlanes(glm::vec4 frustumNX, glm::vec4 frustumX,
+                          glm::vec4 frustumNY, glm::vec4 frustumY,
+                          glm::vec4 frustumNZ, glm::vec4 frustumZ);
+
     void sendColorUniform(glm::vec3 color, QString key);
     void sendModelUniform(glm::mat4x4 model, QString key);
     void sendViewUniform(glm::mat4x4 model, QString key);
     void sendProjectionUniform(glm::mat4x4 model, QString key);
     void sendOpacityUniform(float opacity, QString key);
     void sendUseTextureUniform(int useTexture, QString key);
+
+    // View frustum plane equations
+    glm::vec4 frustumPlanes[6];
 
 private:
     // Texture Map
