@@ -12,8 +12,12 @@ MinecraftApplication::MinecraftApplication(QGLWidget *container) :
 {
     /* Setup graphics object */
     m_graphics = new Graphics::Controller();
+
     m_graphics->createProgram(":/shaders/shader.vert", ":/shaders/shader.frag", "default");
+    m_graphics->setActiveProgram("default");
+
     m_graphics->createTexture(":/images/terrain.png", "atlas");
+    m_graphics->loadTexture("atlas", GL_TEXTURE0);
 
     /* Create screen */
     addScreen(dynamic_cast<Screen *>(new MinecraftScreen(this)));

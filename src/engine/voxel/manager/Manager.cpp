@@ -2,52 +2,69 @@
 
 #include "engine/voxel/entity/VoxelEntity.h"
 #include "engine/voxel/block/Block.h"
+#include "engine/voxel/terrain/Terrain.h"
+#include "engine/voxel/intersect/VoxelCollisionManager.h"
 
-Voxel::Manager::Manager(QString atlasKey) :
+Manager::Manager(Terrain *terrain, QString atlasKey) :
+    m_terrain(terrain),
     m_atlasKey(atlasKey)
 {
+    int chunkIndex = 0;
+
+    for(int y = 0; y < CHUNKS_HEIGHT; y++)
+    {
+        for(int x = 0; x < CHUNKS_WIDTH; x++)
+        {
+            for(int z = 0; z < CHUNKS_WIDTH; z++)
+            {
+                m_chunks[chunkIndex++] = new Chunk(this, m_terrain,
+                                                   glm::vec3(CHUNK_SIZE * x, CHUNK_SIZE * y, CHUNK_SIZE * z));
+            }
+        }
+    }
+
+    m_cmanager = new VoxelCollisionManager(m_chunks, NUM_CHUNKS, m_activeEntities, m_backgroundEntities);
 }
 
-Voxel::Manager::~Manager()
+Manager::~Manager()
 {
+    for(int i = 0; i < NUM_CHUNKS; i++)
+    {
+        delete m_chunks[i];
+    }
+
+    delete m_terrain;
+
+    delete m_cmanager;
 }
 
-Block *Voxel::Manager::getBlock(BlockPointer p)
+Block *Manager::getBlock(BlockPointer p)
 {
     return m_blockTypes[p];
 }
 
-void Voxel::Manager::onTick(float seconds)
+void Manager::onTick(float seconds)
 {
-    for(int i = 0; i < 4; i++)
-    {
-        m_chunks[i]->onTick(seconds);
-    }
+    m_cmanager->onTick(seconds);
 
     int numActiveEntities = m_activeEntities.size();
 
-    for(int i = 0; i < numActiveEntities; i++)
+    for(int i = 0; i < numEntities; i++)
     {
-        for(int j = 0; j < 4; j++)
-        {
-            m_chunks[j]->intersect(
-                        dynamic_cast<VoxelEntity *>(m_activeEntities[i]));
-        }
+        m_activeEntities[i]->onTick(seconds);
     }
-
-    World::onTick(seconds);
 }
 
-void Voxel::Manager::onDraw(Graphics::Controller *graphics)
+void Manager::onDraw(Graphics::Controller *graphics)
 {
     World::onDraw(graphics);
 
-    graphics->loadTexture(m_atlasKey, GL_TEXTURE0);
+    graphics->sendColorUniform(glm::vec3(0.5, 0.5, 0.5), "default");
+    graphics->sendUseTextureUniform(1, "default");
+    graphics->sendModelUniform(glm::mat4x4(), "default");
 
-    for(int i = 0; i < 4; i++)
+    for(int i = 0; i < NUM_CHUNKS; i++)
     {
         m_chunks[i]->onDraw(graphics);
     }
-
-    graphics->unloadTexture(GL_TEXTURE0);
 }

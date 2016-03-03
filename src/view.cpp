@@ -23,7 +23,7 @@ QGLFormat View::getFormat()
 /** Instance methods **/
 
 View::View(QWidget *parent) :
-    QGLWidget(getFormat(), parent)
+    QGLWidget(parent)
 {
     // Enable all mouse events
     setMouseTracking(true);
@@ -79,6 +79,7 @@ void View::paintGL()
 {
     // Send paint event to application
     app->onDraw();
+    renderText(10, 20, "FPS: " + QString::number((int) (fps)), this->font());
 }
 
 void View::resizeGL(int w, int h)

@@ -3,13 +3,13 @@
 
 #include "engine/voxel/manager/Manager.h"
 
-class PerspectiveCamera;
+class Camera;
 class MinecraftPlayer;
 
-class MinecraftManager : public Voxel::Manager
+class MinecraftManager : public Manager
 {
 public:
-    MinecraftManager(PerspectiveCamera *camera);
+    MinecraftManager(Camera *camera);
     ~MinecraftManager();
 
     MinecraftPlayer *getPlayer();
@@ -21,7 +21,7 @@ public:
     virtual void keyReleaseEvent(QKeyEvent *event);
 
 private:
-    PerspectiveCamera *m_camera;
+    Camera *m_camera;
     MinecraftPlayer *m_player;
 };
 

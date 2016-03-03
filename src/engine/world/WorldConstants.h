@@ -2,10 +2,10 @@
 #define WORLDCONSTANTS_H
 
 const float MU_GROUND = 17.5;
-const float MU_AIR = 2.5;
+const float MU_AIR = 4.5;
 
-const float JUMP_HEIGHT = 1.2;
-const float JUMP_TIME = 0.5;
+const float JUMP_HEIGHT = 0.4;
+const float JUMP_TIME = 0.4;
 const float G = -(2 * JUMP_HEIGHT) / (JUMP_TIME * JUMP_TIME);
 const float JUMP_SPEED = (JUMP_HEIGHT - 0.5 * G * JUMP_TIME * JUMP_TIME) / JUMP_TIME;
 

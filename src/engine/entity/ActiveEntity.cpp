@@ -21,6 +21,16 @@ ActiveEntity::~ActiveEntity()
 
 }
 
+float ActiveEntity::getSpeed()
+{
+    return m_speed;
+}
+
+void ActiveEntity::setSpeed(float speed)
+{
+    m_speed = speed;
+}
+
 glm::vec3 ActiveEntity::getVelocity()
 {
     return m_vel;
@@ -127,7 +137,7 @@ void ActiveEntity::onTick(float seconds)
     updateVelocity(seconds);
     updatePosition(seconds);
 
-    m_acc = glm::vec3(0, 0, 0);
+    m_acc = glm::vec3(0, G, 0);
 
     updateShape();
     updateBoundingShape();

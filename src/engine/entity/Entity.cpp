@@ -35,6 +35,16 @@ void Entity::setPosition(glm::vec3 pos)
     m_pos = pos;
 }
 
+glm::vec3 Entity::getDimensions()
+{
+    return m_dims;
+}
+
+void Entity::setDimensions(glm::vec3 dims)
+{
+    m_dims = dims;
+}
+
 void Entity::updateShape()
 {
     m_shape->setDimensions(m_dims);

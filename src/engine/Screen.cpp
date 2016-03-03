@@ -59,10 +59,10 @@ bool Screen::onDraw(float &currentOpacity, Graphics::Controller *graphics)
     currentOpacity += opacity;
 
     /* Load shader program */
-    graphics->loadProgram("default");
+    graphics->loadActiveProgram();
 
     /* Send opacity and camera uniforms */
-    graphics->sendOpacityUniform(opacity, "default");
+    //graphics->sendOpacityUniform(opacity, "default");
     m_camera->setTransforms(graphics);
 
     /* Render world */

@@ -21,7 +21,6 @@ SOURCES += \
     src/engine/Application.cpp \
     src/engine/camera/Camera.cpp \
     src/engine/shape/Shape.cpp \
-    src/engine/shape/CompositeShape.cpp \
     src/engine/graphics/Controller.cpp \
     src/engine/graphics/VertexData.cpp \
     src/engine/shape/Cylinder.cpp \
@@ -34,7 +33,6 @@ SOURCES += \
     src/warmup/shape/TiledQuad.cpp \
     src/warmup/entity/WelcomeMessage.cpp \
     src/engine/camera/SimpleCamera.cpp \
-    src/engine/camera/PerspectiveCamera.cpp \
     src/engine/shape/FullscreenQuad.cpp \
     src/engine/world/World.cpp \
     src/warmup/world/GameWorld.cpp \
@@ -60,7 +58,9 @@ SOURCES += \
     src/minecraft/terrain/ValueTerrain.cpp \
     src/minecraft/entity/MinecraftPlayer.cpp \
     src/minecraft/MinecraftScreen.cpp \
-    src/engine/voxel/shape/VoxelCube.cpp
+    src/engine/voxel/shape/VoxelCube.cpp \
+    src/engine/intersect/CollisionManager.cpp \
+    src/engine/voxel/intersect/VoxelCollisionManager.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -73,7 +73,6 @@ HEADERS += \
     src/engine/Application.h \
     src/engine/Screen.h \
     src/engine/shape/Shape.h \
-    src/engine/shape/CompositeShape.h \
     src/engine/graphics/Controller.h \
     src/engine/graphics/VertexData.h \
     src/engine/shape/Cylinder.h \
@@ -87,7 +86,6 @@ HEADERS += \
     src/util/QuadData.h \
     src/warmup/entity/WelcomeMessage.h \
     src/engine/camera/SimpleCamera.h \
-    src/engine/camera/PerspectiveCamera.h \
     src/engine/shape/FullscreenQuad.h \
     src/engine/world/World.h \
     src/warmup/world/GameWorld.h \
@@ -101,7 +99,6 @@ HEADERS += \
     src/warmup/entity/Bomb.h \
     src/warmup/entity/Zombie.h \
     src/warmup/entity/WarmupEntity.h \
-    src/warmup/world/worldconstants.h \
     src/engine/voxel/manager/Manager.h \
     src/engine/voxel/chunk/Chunk.h \
     src/engine/voxel/block/Block.h \
@@ -116,7 +113,10 @@ HEADERS += \
     src/minecraft/entity/MinecraftPlayer.h \
     src/minecraft/MinecraftScreen.h \
     src/engine/voxel/shape/VoxelCube.h \
-    src/engine/voxel/shape/cubedata.h
+    src/engine/voxel/shape/CubeData.h \
+    src/engine/world/WorldConstants.h \
+    src/engine/intersect/CollisionManager.h \
+    src/engine/voxel/intersect/VoxelCollisionManager.h
 
 
 FORMS += src/mainwindow.ui

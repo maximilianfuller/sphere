@@ -9,7 +9,7 @@ class MinecraftManager;
 class MinecraftPlayer : public VoxelEntity
 {
 public:
-    MinecraftPlayer(MinecraftManager *manager, Camera *camera, float height = 1.0);
+    MinecraftPlayer(MinecraftManager *manager, Camera *camera);
     ~MinecraftPlayer();
 
     /* User control */
@@ -25,11 +25,8 @@ public:
     bool getMoveRight();
     void setMoveRight(bool val);
 
-    bool getMoveUp();
-    void setMoveUp(bool val);
-
-    bool getMoveDown();
-    void setMoveDown(bool val);
+    bool getJump();
+    void setJump(bool val);
 
     float getYaw();
     void setYaw(float yaw);
@@ -44,6 +41,7 @@ public:
 
     /* Actions */
     void rotate(float yaw, float pitch);
+    void jump();
 
     /* Update methods on tick */
     void updateFriction();
@@ -54,7 +52,6 @@ public:
 
     /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
-    void onIntersect(Block *block, glm::vec3 mtv);
 
     void onTick(float seconds);
 
@@ -66,11 +63,9 @@ private:
     bool m_moveBackward;
     bool m_moveLeft;
     bool m_moveRight;
-    bool m_moveUp;
-    bool m_moveDown;
+    bool m_jump;
 
     /* Attributes */
-    float m_height;
     float m_yaw;
     float m_pitch;
 };

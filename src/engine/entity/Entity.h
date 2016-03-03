@@ -22,6 +22,9 @@ public:
     glm::vec3 getPosition();
     void setPosition(glm::vec3 pos);
 
+    glm::vec3 getDimensions();
+    void setDimensions(glm::vec3 dims);
+
     virtual void updateShape();
     virtual void updateBoundingShape();
 

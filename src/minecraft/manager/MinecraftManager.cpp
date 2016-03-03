@@ -1,6 +1,6 @@
 #include "minecraft/manager/MinecraftManager.h"
 
-#include "engine/camera/PerspectiveCamera.h"
+#include "engine/camera/Camera.h"
 #include "engine/voxel/chunk/Chunk.h"
 #include "engine/voxel/block/Block.h"
 #include "engine/voxel/shape/VoxelCube.h"
@@ -10,19 +10,12 @@
 
 #include <QKeyEvent>
 
-MinecraftManager::MinecraftManager(PerspectiveCamera *camera) :
-    m_camera(camera)
+MinecraftManager::MinecraftManager(Camera *camera) :
+    m_camera(camera),
+    Manager(new ValueTerrain())
 {
-    m_player = new MinecraftPlayer(this, camera, 1.0);
+    m_player = new MinecraftPlayer(this, camera);
     addActiveEntity(m_player);
-
-    /* Setup chunks */
-    ValueTerrain terrain = ValueTerrain();
-
-    m_chunks[0] = new Chunk(this, &terrain, glm::vec3(-CHUNK_SIZE, 0, -CHUNK_SIZE));
-    m_chunks[1] = new Chunk(this, &terrain, glm::vec3(0, 0, -CHUNK_SIZE));
-    m_chunks[2] = new Chunk(this, &terrain, glm::vec3(-CHUNK_SIZE, 0, 0));
-    m_chunks[3] = new Chunk(this, &terrain, glm::vec3(0, 0, 0));
 
     /* Set up blocks */
     float step = 1.0 / 16.0;
@@ -68,10 +61,6 @@ MinecraftManager::MinecraftManager(PerspectiveCamera *camera) :
 
 MinecraftManager::~MinecraftManager()
 {
-    delete m_chunks[0];
-    delete m_chunks[1];
-    delete m_chunks[2];
-    delete m_chunks[3];
 }
 
 MinecraftPlayer *MinecraftManager::getPlayer()
@@ -108,13 +97,9 @@ void MinecraftManager::keyPressEvent(QKeyEvent *event)
     }
     else if(event->key() == Qt::Key_Space)
     {
-        m_player->setMoveUp(true);
+        m_player->setJump(true);
     }
     else if(event->key() == Qt::Key_Shift)
-    {
-        m_player->setMoveDown(true);
-    }
-    else if(event->key() == Qt::Key_1)
     {
         m_camera->toggleThirdPerson();
     }
@@ -139,12 +124,8 @@ void MinecraftManager::keyReleaseEvent(QKeyEvent *event)
     {
         m_player->setMoveRight(false);
     }
-    else if(event->key() == Qt::Key_Space && m_player->getMoveUp())
+    else if(event->key() == Qt::Key_Space && m_player->getJump())
     {
-        m_player->setMoveUp(false);
-    }
-    else if(event->key() == Qt::Key_Shift && m_player->getMoveDown())
-    {
-        m_player->setMoveDown(false);
+        m_player->setJump(false);
     }
 }

@@ -1,7 +1,5 @@
 #include "engine/Application.h"
 
-#include "util/Settings.h"
-
 #include "engine/Screen.h"
 #include "engine/graphics/Controller.h"
 

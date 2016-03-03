@@ -3,39 +3,24 @@ COMPLETE/INCOMPLETE
 Retries used: NONE (2 extra retries left)
 
 [ ] Completed a design check
+[ ] Participated in playtesting
 
 Common Engine Requirements
 ========================================
-[ ] First person camera support
-	[ ] Yaws around the up (positive Y in OpenGL) axis
-	[ ] Pitches in the horizontal plane
-	[ ] Camera pitch is locked to the range (-pi/2, pi/2)
-	[ ] Forward-backward and left-right strafe style movement of the eye
-[ ] Screen management
-	[ ] Virtual Screen class representing a logical subscreen of a game which (minimally) supports:
-		[ ] Timed updates (tick)
-		[ ] Render events (draw)
-		[ ] Input events (mouse and keyboard)
-		[ ] Window size updates (resize)
-	[ ] Virtual Application class representing a whole game which supports custom OpenGL initialization and, minimally, a stack of Screens
-[ ] Custom Graphics object
-	[ ] Supports the loading of textures from image files
-	[ ] Supports the storage and binding of unique OpenGL texture IDs by a string key
-	[ ] Supports rendering a 1x1 textured quad
-    [ ] Maintains an active shader program that is used for drawing
+[ ] Camera or graphics object supports view frustum culling of axis-aligned bounding boxes
+
+Voxel Engine Requirements
+========================================
+[ ] Collision detection and sliding response with collided blocks for arbitrary size axis-asligned bounding boxes
+[ ] Per-chunk dynamic VBOs
+[ ] Texture atlas support for per-chunk VBOs (must use the texture coordinates in the VBO)
 
 Game Requirements
 ========================================
-[ ] The player must be able to move using standard first person camera controls, meaning:
-	[ ] Horizontal mouse movements change the yaw of the camera
-	[ ] Vertical mouse movements change the pitch of the camera
-	[ ] Standard WASD keyboard controls (W moves forwards, S moves backwards, A strafes left, D strafes right) change the eye of the camera
-[ ] The player must never fall through the ground at y = 0
-[ ] The player must be able to jump off the ground using the spacebar or a mouse button
-[ ] The player can only jump when on the ground
-[ ] Gravity must act downwards on the player
-[ ] The ground must consist of planar geometry with a tiled grass texture
-[ ] The game must have at least two screens, one of which requires player input to get to the other
+[ ] Movement and view controls must the same as warmup (including gravity and jumping)
+[ ] The world must consists of a 10x2x10 grid of size C = 32 chunks
+[ ] The game must run at 40+ FPS on department machines: this requirement overrides the standard 30+ FPS requirement
+[ ] All terrain is textured from a single atlas
 
 Global requirements
 ========================================
@@ -52,31 +37,11 @@ Global requirements
 [ ] Works at 800x600 and fullscreen resolutions
 [ ] Runs at 30+ UPS and never dips below 20 UPS unless indicated in the specific handout
 
-# Verifying requirements
-* Camera
-    - See Camera.cpp, and also see how mouse movements affect rendering.
-* Screen Management
-    - See Application.cpp, and Screen.cpp, specifically methods of Application which pass events from the view down to screens.
-* Custom graphics object
-    - See Controller.cpp
-    - See textured rendering of quad in game
+# Common Engine Reqs
+* See camera and graphics object
 
-# Verifying game requirements
-* Camera controls
-    - Move the mouse, and see the effect of the movement on the rendering of the scene
-* Player doesn't fall through the ground
-    - Stand still, notice how the player doesn't fall through the ground.
-    - Jump. Notice how the player doesn't fall through the ground.
-* Player can only jump when on the ground
-    - Press the spacebar in rapid succession, and notice how the player only jumps when on the ground.
-* Gravity acts on the player
-    - See the effect of jumping by pressing the spacebar.
-* Tiled grass texture
-    - See the "floor" in the scene, and observe its texture.
-* Screen switching
-    - press w to enter the game from the home screen, and esc to exit to the
-    home screen from the game
+# Voxel Engine Requirements
+* Play the game and see the world for yourself.
 
-
-# Hours
-~15 hours
+# Game requirements
+* Same as above.

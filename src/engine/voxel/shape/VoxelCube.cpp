@@ -2,7 +2,7 @@
 
 #include "engine/graphics/Controller.h"
 
-#include "engine/voxel/shape/cubedata.h"
+#include "engine/voxel/shape/CubeData.h"
 
 VoxelCube::VoxelCube(glm::vec2 ls, glm::vec2 le,
                      glm::vec2 rs, glm::vec2 re,
@@ -69,9 +69,9 @@ void VoxelCube::drawLeftFace(float *vertexData, int &numVertices)
 {
     for(int index = 0; index < 48; index += 8)
     {
-        vertexData[numVertices + index] = leftFaceData[index] + m_pos.x + 0.5;
-        vertexData[numVertices + index + 1] = leftFaceData[index + 1] + m_pos.y + 0.5;
-        vertexData[numVertices + index + 2] = leftFaceData[index + 2] + m_pos.z + 0.5;
+        vertexData[numVertices + index] = leftFaceData[index] + m_pos.x;
+        vertexData[numVertices + index + 1] = leftFaceData[index + 1] + m_pos.y;
+        vertexData[numVertices + index + 2] = leftFaceData[index + 2] + m_pos.z;
 
         vertexData[numVertices + index + 3] = leftFaceData[index + 3];
         vertexData[numVertices + index + 4] = leftFaceData[index + 4];
@@ -90,9 +90,9 @@ void VoxelCube::drawRightFace(float *vertexData, int &numVertices)
 {
     for(int index = 0; index < 48; index += 8)
     {
-        vertexData[numVertices + index] = rightFaceData[index] + m_pos.x + 0.5;
-        vertexData[numVertices + index + 1] = rightFaceData[index + 1] + m_pos.y + 0.5;
-        vertexData[numVertices + index + 2] = rightFaceData[index + 2] + m_pos.z + 0.5;
+        vertexData[numVertices + index] = rightFaceData[index] + m_pos.x;
+        vertexData[numVertices + index + 1] = rightFaceData[index + 1] + m_pos.y;
+        vertexData[numVertices + index + 2] = rightFaceData[index + 2] + m_pos.z;
 
         vertexData[numVertices + index + 3] = rightFaceData[index + 3];
         vertexData[numVertices + index + 4] = rightFaceData[index + 4];
@@ -111,9 +111,9 @@ void VoxelCube::drawBotFace(float *vertexData, int &numVertices)
 {
     for(int index = 0; index < 48; index += 8)
     {
-        vertexData[numVertices + index] = botFaceData[index] + m_pos.x + 0.5;
-        vertexData[numVertices + index + 1] = botFaceData[index + 1] + m_pos.y + 0.5;
-        vertexData[numVertices + index + 2] = botFaceData[index + 2] + m_pos.z + 0.5;
+        vertexData[numVertices + index] = botFaceData[index] + m_pos.x;
+        vertexData[numVertices + index + 1] = botFaceData[index + 1] + m_pos.y;
+        vertexData[numVertices + index + 2] = botFaceData[index + 2] + m_pos.z;
 
         vertexData[numVertices + index + 3] = botFaceData[index + 3];
         vertexData[numVertices + index + 4] = botFaceData[index + 4];
@@ -132,9 +132,9 @@ void VoxelCube::drawTopFace(float *vertexData, int &numVertices)
 {
     for(int index = 0; index < 48; index += 8)
     {
-        vertexData[numVertices + index] = topFaceData[index] + m_pos.x + 0.5;
-        vertexData[numVertices + index + 1] = topFaceData[index + 1] + m_pos.y + 0.5;
-        vertexData[numVertices + index + 2] = topFaceData[index + 2] + m_pos.z + 0.5;
+        vertexData[numVertices + index] = topFaceData[index] + m_pos.x;
+        vertexData[numVertices + index + 1] = topFaceData[index + 1] + m_pos.y;
+        vertexData[numVertices + index + 2] = topFaceData[index + 2] + m_pos.z;
 
         vertexData[numVertices + index + 3] = topFaceData[index + 3];
         vertexData[numVertices + index + 4] = topFaceData[index + 4];
@@ -153,9 +153,9 @@ void VoxelCube::drawBackFace(float *vertexData, int &numVertices)
 {
     for(int index = 0; index < 48; index += 8)
     {
-        vertexData[numVertices + index] = backFaceData[index] + m_pos.x + 0.5;
-        vertexData[numVertices + index + 1] = backFaceData[index + 1] + m_pos.y + 0.5;
-        vertexData[numVertices + index + 2] = backFaceData[index + 2] + m_pos.z + 0.5;
+        vertexData[numVertices + index] = backFaceData[index] + m_pos.x;
+        vertexData[numVertices + index + 1] = backFaceData[index + 1] + m_pos.y;
+        vertexData[numVertices + index + 2] = backFaceData[index + 2] + m_pos.z;
 
         vertexData[numVertices + index + 3] = backFaceData[index + 3];
         vertexData[numVertices + index + 4] = backFaceData[index + 4];
@@ -174,9 +174,9 @@ void VoxelCube::drawFrontFace(float *vertexData, int &numVertices)
 {
     for(int index = 0; index < 48; index += 8)
     {
-        vertexData[numVertices + index] = frontFaceData[index] + m_pos.x + 0.5;
-        vertexData[numVertices + index + 1] = frontFaceData[index + 1] + m_pos.y + 0.5;
-        vertexData[numVertices + index + 2] = frontFaceData[index + 2] + m_pos.z + 0.5;
+        vertexData[numVertices + index] = frontFaceData[index] + m_pos.x;
+        vertexData[numVertices + index + 1] = frontFaceData[index + 1] + m_pos.y;
+        vertexData[numVertices + index + 2] = frontFaceData[index + 2] + m_pos.z;
 
         vertexData[numVertices + index + 3] = frontFaceData[index + 3];
         vertexData[numVertices + index + 4] = frontFaceData[index + 4];

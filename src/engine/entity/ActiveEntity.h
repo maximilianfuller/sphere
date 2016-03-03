@@ -3,7 +3,7 @@
 
 #include "engine/entity/Entity.h"
 
-#include "warmup/world/worldconstants.h"
+#include "engine/world/WorldConstants.h"
 
 class World;
 class BackgroundEntity;
@@ -17,6 +17,9 @@ public:
                  glm::vec3 goal = glm::vec3(0, 0, 0),
                  float friction = MU_GROUND);
     ~ActiveEntity();
+
+    float getSpeed();
+    void setSpeed(float speed);
 
     glm::vec3 getVelocity();
     void setVelocity(glm::vec3 vel);

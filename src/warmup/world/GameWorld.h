@@ -4,13 +4,13 @@
 #include "engine/graphics/Controller.h"
 #include "engine/world/World.h"
 
-class PerspectiveCamera;
+class Camera;
 class Player;
 
 class GameWorld : public World
 {
 public:
-    GameWorld(PerspectiveCamera *camera);
+    GameWorld(Camera *camera);
     ~GameWorld();
 
     Player *getPlayer();
@@ -31,7 +31,7 @@ public:
     void onTick(float seconds);
 
 private:
-    PerspectiveCamera *m_camera;
+    Camera *m_camera;
     Player *m_player;
 
     int m_spawnCounter;

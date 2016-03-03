@@ -90,7 +90,7 @@ void Controller::removeTexture(QString key)
 }
 
 // NOTE: setting the texture uniform causes problems
-GLuint *Controller::loadTexture(QString key, GLenum glTexture)
+void Controller::loadTexture(QString key, GLenum glTexture)
 {
     /* Get texture from map */
     GLuint *texture = m_textures.value(key, 0);
@@ -98,8 +98,6 @@ GLuint *Controller::loadTexture(QString key, GLenum glTexture)
     /* Bind texture */
     glActiveTexture(glTexture);
     glBindTexture(GL_TEXTURE_2D, *texture);
-
-    return texture;
 }
 
 void Controller::unloadTexture(GLenum glTexture)
@@ -138,12 +136,15 @@ void Controller::removeProgram(QString key)
     m_programs.remove(key);
 }
 
-GLuint Controller::loadProgram(QString key)
+void Controller::setActiveProgram(QString key)
 {
     GLuint program = m_programs.value(key, -1);
-    glUseProgram(program);
+    m_activeProgram = program;
+}
 
-    return program;
+void Controller::loadActiveProgram()
+{
+    glUseProgram(m_activeProgram);
 }
 
 void Controller::unloadProgram()
@@ -200,6 +201,20 @@ void Controller::createQuad(float startU, float startV, float endU, float endV,
 void Controller::drawShape(QString key)
 {
     m_shapes.value(key)->draw();
+}
+
+void Controller::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
+                                  glm::vec4 fny, glm::vec4 fy,
+                                  glm::vec4 fnz, glm::vec4 fz)
+{
+    frustumPlanes[0] = fnx;
+    frustumPlanes[1] = fx;
+
+    frustumPlanes[2] = fny;
+    frustumPlanes[3] = fy;
+
+    frustumPlanes[4] = fnz;
+    frustumPlanes[5] = fz;
 }
 
 void Controller::sendColorUniform(glm::vec3 color, QString key)

@@ -16,12 +16,7 @@ public:
                       float pitch = 0, float fov = 60.f, bool thirdPerson = false);
     virtual ~PerspectiveCamera();
 
-    void toggleThirdPerson();
-
     void setTransforms(Graphics::Controller *graphics);
-
-private:
-    bool m_thirdPerson;
 };
 
 #endif // PERSPECTIVECAMERA_H
