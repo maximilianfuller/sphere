@@ -12,7 +12,7 @@ public:
     MinecraftManager(Camera *camera);
     ~MinecraftManager();
 
-    MinecraftPlayer *getPlayer();
+    MinecraftPlayer *getMinecraftPlayer();
 
     /* Events */
     virtual void mouseMoveEvent(QMouseEvent *event, int startX,
@@ -22,7 +22,6 @@ public:
 
 private:
     Camera *m_camera;
-    MinecraftPlayer *m_player;
 };
 
 

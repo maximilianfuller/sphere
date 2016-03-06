@@ -3,28 +3,28 @@
 
 #include "engine/intersect/CollisionManager.h"
 
-const float EPS = 0.05;
+const float EPS = 0.001;
 
 class Chunk;
+class VoxelEntity;
 
 class VoxelCollisionManager : public CollisionManager
 {
 public:
-    VoxelCollisionManager(Chunk **chunks, int numChunks,
+    VoxelCollisionManager(QList<Chunk *> &chunks,
                           QList<ActiveEntity *> &activeEnts,
                           QList<BackgroundEntity *> &backgroundEnts);
 
-    bool withinChunk(Chunk *chunk, ActiveEntity *ent);
+    bool withinChunk(Chunk *chunk, VoxelEntity *ent);
 
-    void xSweep(Chunk *chunk, ActiveEntity *ent, float seconds);
-    void zSweep(Chunk *chunk, ActiveEntity *ent, float seconds);
-    void ySweep(Chunk *chunk, ActiveEntity *ent, float seconds);
+    void xSweep(Chunk *chunk, VoxelEntity *ent, float seconds);
+    void zSweep(Chunk *chunk, VoxelEntity *ent, float seconds);
+    void ySweep(Chunk *chunk, VoxelEntity *ent, float seconds);
 
     void onTick(float seconds);
 
 protected:
-    int m_numChunks;
-    Chunk **m_chunks;
+    QList<Chunk *> &m_chunks;
 };
 
 #endif // VOXELCollisionMANAGER_H

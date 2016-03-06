@@ -17,7 +17,7 @@ MinecraftScreen::MinecraftScreen(Application *app, float opacity) :
     m_camera = new Camera();
 
     /* Setup world */
-    m_world = dynamic_cast<World *>(new MinecraftManager(m_camera));
+    m_world = new MinecraftManager(m_camera);
 }
 
 MinecraftScreen::~MinecraftScreen()

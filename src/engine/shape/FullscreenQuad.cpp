@@ -17,7 +17,7 @@ void FullscreenQuad::draw(Graphics::Controller *graphics)
     Shape::draw(graphics);
 
     graphics->sendUseTextureUniform(1, "default");
-    graphics->loadTexture(m_textureKey, GL_TEXTURE0);
+    graphics->loadTexture(m_textureKey, 0);
     graphics->drawShape("fullscreenQuad");
-    graphics->unloadTexture(GL_TEXTURE0);
+    graphics->unloadTexture(0);
 }

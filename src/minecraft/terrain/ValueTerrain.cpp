@@ -56,6 +56,7 @@ float ValueTerrain::terrainOctave(float x, float z, float amplitude, float frequ
 
 float ValueTerrain::getHeight(int x, int z)
 {
+    /*
     float amplitude = 14.f;
     float persistence = 0.2f;
     float frequency = 0.04f;
@@ -70,4 +71,6 @@ float ValueTerrain::getHeight(int x, int z)
     }
 
     return height;
+    */
+    return 5.0;
 }

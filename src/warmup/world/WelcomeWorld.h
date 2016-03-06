@@ -3,8 +3,6 @@
 
 #include "engine/world/World.h"
 
-class Camera;
-
 class WelcomeWorld : public World
 {
 public:

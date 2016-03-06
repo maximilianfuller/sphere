@@ -11,18 +11,15 @@
 
 MinecraftPlayer::MinecraftPlayer(MinecraftManager *manager, Camera *camera) :
     m_camera(camera),
-    // Movement
     m_moveForward(false),
     m_moveBackward(false),
     m_moveLeft(false),
     m_moveRight(false),
     m_jump(false),
-    // Attributes
     m_yaw(0),
     m_pitch(0),
-    // Constructors
-    VoxelEntity(manager, 2.0),
-    Entity(manager, glm::vec3(32, 40, 32), glm::vec3(0.8, 1, 0.8))
+    VoxelEntity(manager, 10.0),
+    Entity(manager, glm::vec3(32, 80, 32), glm::vec3(0.8, 1, 0.8))
 {
     /* Initialize camera */
     m_camera->setYaw(m_yaw);
@@ -30,7 +27,6 @@ MinecraftPlayer::MinecraftPlayer(MinecraftManager *manager, Camera *camera) :
 
     /* Create shape and bounding shape */
     m_shape = new Cylinder();
-    m_boundingShape = new BoundingCylinder(m_pos, m_dims);
 
     /* Update shape and bounding shape to correspond to player's dimentions */
     updateShape();

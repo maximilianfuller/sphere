@@ -1,8 +1,5 @@
 #include "engine/intersect/BoundingCylinder.h"
 
-#include "engine/intersect/BoundingPlane.h"
-#include "engine/intersect/BoundingBox.h"
-
 BoundingCylinder::BoundingCylinder(glm::vec3 pos, glm::vec3 dims) :
     BoundingShape(pos, dims)
 {
@@ -15,12 +12,6 @@ BoundingCylinder::~BoundingCylinder()
 bool BoundingCylinder::intersect(BoundingShape *shape, glm::vec3 &mtv)
 {
     return shape->intersect(this, mtv);
-}
-
-bool BoundingCylinder::intersect(BoundingPlane *plane, glm::vec3 &mtv)
-{
-    mtv = glm::vec3(0, plane->getLevel() - m_pos.y, 0);
-    return mtv.y > 0;
 }
 
 bool BoundingCylinder::intersect(BoundingCylinder *cyl, glm::vec3 &mtv)
@@ -52,9 +43,4 @@ bool BoundingCylinder::intersect(BoundingCylinder *cyl, glm::vec3 &mtv)
     }
 
     return intersectRadial && intersectHeight;
-}
-
-bool BoundingCylinder::intersect(BoundingBox *box, glm::vec3 &mtv)
-{
-    return false;
 }

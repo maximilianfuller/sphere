@@ -42,7 +42,6 @@ SOURCES += \
     src/engine/entity/ActiveEntity.cpp \
     src/engine/intersect/BoundingShape.cpp \
     src/engine/intersect/BoundingCylinder.cpp \
-    src/engine/intersect/BoundingPlane.cpp \
     src/warmup/entity/Bomb.cpp \
     src/warmup/entity/Zombie.cpp \
     src/warmup/entity/WarmupEntity.cpp \
@@ -52,7 +51,6 @@ SOURCES += \
     src/minecraft/manager/MinecraftManager.cpp \
     src/minecraft/noise/Noise.cpp \
     src/engine/voxel/entity/VoxelEntity.cpp \
-    src/engine/intersect/BoundingBox.cpp \
     src/engine/voxel/shape/BlockFace.cpp \
     src/engine/voxel/terrain/Terrain.cpp \
     src/minecraft/terrain/ValueTerrain.cpp \
@@ -60,7 +58,8 @@ SOURCES += \
     src/minecraft/MinecraftScreen.cpp \
     src/engine/voxel/shape/VoxelCube.cpp \
     src/engine/intersect/CollisionManager.cpp \
-    src/engine/voxel/intersect/VoxelCollisionManager.cpp
+    src/engine/voxel/intersect/VoxelCollisionManager.cpp \
+    src/engine/intersect/AABoundingBox.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -95,7 +94,6 @@ HEADERS += \
     src/engine/entity/ActiveEntity.h \
     src/engine/intersect/BoundingShape.h \
     src/engine/intersect/BoundingCylinder.h \
-    src/engine/intersect/BoundingPlane.h \
     src/warmup/entity/Bomb.h \
     src/warmup/entity/Zombie.h \
     src/warmup/entity/WarmupEntity.h \
@@ -106,7 +104,6 @@ HEADERS += \
     src/minecraft/manager/MinecraftManager.h \
     src/minecraft/noise/Noise.h \
     src/engine/voxel/entity/VoxelEntity.h \
-    src/engine/intersect/BoundingBox.h \
     src/engine/voxel/shape/BlockFace.h \
     src/engine/voxel/terrain/Terrain.h \
     src/minecraft/terrain/ValueTerrain.h \
@@ -116,7 +113,8 @@ HEADERS += \
     src/engine/voxel/shape/CubeData.h \
     src/engine/world/WorldConstants.h \
     src/engine/intersect/CollisionManager.h \
-    src/engine/voxel/intersect/VoxelCollisionManager.h
+    src/engine/voxel/intersect/VoxelCollisionManager.h \
+    src/engine/intersect/AABoundingBox.h
 
 
 FORMS += src/mainwindow.ui

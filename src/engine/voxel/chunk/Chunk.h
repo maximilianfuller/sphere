@@ -16,6 +16,7 @@ namespace Graphics
 {
 class Controller;
 }
+class AABoundingBox;
 
 class VoxelEntity;
 class Terrain;
@@ -23,19 +24,18 @@ class Terrain;
 class Chunk
 {
 public:
-    Chunk(Manager *m_manager, Terrain *terrain, glm::vec3 pos);
+    Chunk(Manager *m_manager, glm::vec3 pos);
     virtual ~Chunk();
-
-    void generateBlocks(Terrain *terrain);
 
     BlockPointer getBlockPointer(int x, int y, int z);
     void setBlockPointer(int x, int y, int z, BlockPointer p);
 
     glm::vec3 getPosition();
 
-    bool inFrustum(Graphics::Controller *graphics);
+    AABoundingBox *getAABB();
 
-    void updateBlockVertexBuffer();
+    void generateBlocks(Terrain *terrain);
+    bool updateBlockVertexBuffer();
 
     virtual void onTick(float seconds);
     virtual void onDraw(Graphics::Controller *graphics);
@@ -44,14 +44,17 @@ protected:
     Manager *m_manager;
 
     glm::vec3 m_pos;
-    int m_blockNumVertices;
-    bool m_vertexUpdate;
+    AABoundingBox *m_aabb;
 
     BlockPointer m_blocks[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
     bool m_visibleMap[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
 
+    bool m_vertexUpdate;
     Graphics::VertexData m_blockVertexBuffer;
     float *m_blockVertexData;
+
+    int m_lastY, m_numVertices;
+    bool m_generated;
 };
 
 #endif // CHUNK_H

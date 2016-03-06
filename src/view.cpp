@@ -64,15 +64,15 @@ void View::initializeGL()
 
     std::cout << "Using GLEW " <<  glewGetString( GLEW_VERSION ) << std::endl;
 
-    // Timer at 60fps
-    time.start();
-    timer.start(1000 / 60);
-
     // Center mouse
     QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
     // Setup application
     app = new MinecraftApplication(this);
+
+    // Timer at 60fps
+    time.start();
+    timer.start(1000 / 60);
 }
 
 void View::paintGL()

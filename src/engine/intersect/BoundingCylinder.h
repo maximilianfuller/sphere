@@ -12,9 +12,7 @@ public:
     ~BoundingCylinder();
 
     bool intersect(BoundingShape *shape, glm::vec3 &mtv);
-    bool intersect(BoundingPlane *plane, glm::vec3 &mtv);
     bool intersect(BoundingCylinder *cyl, glm::vec3 &mtv);
-    bool intersect(BoundingBox *box, glm::vec3 &mtv);
 };
 
 #endif // BOUNDINGCYLINDER_H

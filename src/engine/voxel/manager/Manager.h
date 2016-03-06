@@ -5,39 +5,43 @@
 
 #include "engine/voxel/chunk/Chunk.h"
 
-#include <QString>
-
-const int CHUNKS_WIDTH = 10;
-const int CHUNKS_HEIGHT = 2;
-const int NUM_CHUNKS = CHUNKS_WIDTH * CHUNKS_WIDTH * CHUNKS_HEIGHT;
+#include <QList>
+#include <QQueue>
 
 typedef unsigned char BlockPointer;
 
 class Block;
 class Terrain;
 class VoxelCollisionManager;
+class VoxelEntity;
 
 class Manager : public World
 {
 public:
-    Manager(Terrain *terrain, QString atlasKey = "atlas");
+    Manager(Terrain *terrain);
     virtual ~Manager();
 
     Block *getBlock(BlockPointer p);
+    VoxelEntity *getPlayer();
+
+    void purgeChunks();
+    void loadChunks();
 
     virtual void onTick(float seconds);
     virtual void onDraw(Graphics::Controller *graphics);
 
 protected:
-    QString m_atlasKey;
-
+    Terrain *m_terrain;
     Block *m_blockTypes[256];
 
-    Chunk *m_chunks[NUM_CHUNKS];
+    QList<Chunk *> m_chunks;
+    QQueue<Chunk *> m_chunkQueue;
+    int m_chunkRadius;
 
-    Terrain *m_terrain;
+    VoxelEntity *m_player;
 
-    VoxelCollisionManager *m_cmanager;
+    VoxelCollisionManager *m_collisionManager;
+
 };
 
 #endif // MANAGER_H

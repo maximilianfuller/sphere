@@ -3,9 +3,7 @@
 
 #include "util/CommonIncludes.h"
 
-class BoundingPlane;
 class BoundingCylinder;
-class BoundingBox;
 
 class BoundingShape
 {
@@ -21,9 +19,7 @@ public:
     void setDimensions(glm::vec3 dims);
 
     virtual bool intersect(BoundingShape *shape, glm::vec3 &mtv) = 0;
-    virtual bool intersect(BoundingPlane *plane, glm::vec3 &mtv) = 0;
     virtual bool intersect(BoundingCylinder *cyl, glm::vec3 &mtv) = 0;
-    virtual bool intersect(BoundingBox *box, glm::vec3 &mtv) = 0;
 
 protected:
     glm::vec3 m_pos;

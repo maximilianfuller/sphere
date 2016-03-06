@@ -124,18 +124,20 @@ void ActiveEntity::updateVelocity(float seconds)
 void ActiveEntity::updatePosition(float seconds)
 {
     m_pos.x += m_speed * m_vel.x * seconds;
-    m_pos.y += m_speed * m_vel.y * seconds;
+    m_pos.y += m_vel.y * seconds;
     m_pos.z += m_speed * m_vel.z * seconds;
 }
 
 void ActiveEntity::onTick(float seconds)
 {
+    seconds = glm::min(1.f / 30.f, seconds);
+
     /* Movement updates */
+    updatePosition(seconds);
     updateFriction();
     updateGoalVelocity();
     updateAcceleration();
     updateVelocity(seconds);
-    updatePosition(seconds);
 
     m_acc = glm::vec3(0, G, 0);
 

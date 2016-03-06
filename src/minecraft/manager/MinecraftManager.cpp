@@ -20,7 +20,6 @@ MinecraftManager::MinecraftManager(Camera *camera) :
     /* Set up blocks */
     float step = 1.0 / 16.0;
 
-    // texture coordinates
     glm::vec2 air;
     glm::vec2 grassTopStart = glm::vec2(0, 16.0 - step);
     glm::vec2 grassTopEnd = glm::vec2(step, 16.0);
@@ -32,7 +31,6 @@ MinecraftManager::MinecraftManager(Camera *camera) :
     glm::vec2 grassSideEnd = glm::vec2(4 * step, 16.0);
 
 
-    // block faces
     m_blockTypes[BLOCK_AIR] = new Block(0, new VoxelCube(air, air,
                                                          air, air,
                                                          air, air,
@@ -63,9 +61,9 @@ MinecraftManager::~MinecraftManager()
 {
 }
 
-MinecraftPlayer *MinecraftManager::getPlayer()
+MinecraftPlayer *MinecraftManager::getMinecraftPlayer()
 {
-    return m_player;
+    return dynamic_cast<MinecraftPlayer *>(m_player);
 }
 
 void MinecraftManager::mouseMoveEvent(QMouseEvent *event, int startX,
@@ -74,30 +72,30 @@ void MinecraftManager::mouseMoveEvent(QMouseEvent *event, int startX,
     int dx = event->x() - startX;
     int dy = event->y() - startY;
 
-    m_player->rotate(dx / 100.f, -dy / 100.f);
+    getMinecraftPlayer()->rotate(dx / 100.f, -dy / 100.f);
 }
 
 void MinecraftManager::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_W)
     {
-        m_player->setMoveFoward(true);
+        getMinecraftPlayer()->setMoveFoward(true);
     }
     else if(event->key() == Qt::Key_S)
     {
-        m_player->setMoveBackward(true);
+        getMinecraftPlayer()->setMoveBackward(true);
     }
     else if(event->key() == Qt::Key_A)
     {
-        m_player->setMoveLeft(true);
+        getMinecraftPlayer()->setMoveLeft(true);
     }
     else if(event->key() == Qt::Key_D)
     {
-        m_player->setMoveRight(true);
+        getMinecraftPlayer()->setMoveRight(true);
     }
     else if(event->key() == Qt::Key_Space)
     {
-        m_player->setJump(true);
+        getMinecraftPlayer()->setJump(true);
     }
     else if(event->key() == Qt::Key_Shift)
     {
@@ -108,24 +106,24 @@ void MinecraftManager::keyPressEvent(QKeyEvent *event)
 
 void MinecraftManager::keyReleaseEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_W && m_player->getMoveFoward())
+    if(event->key() == Qt::Key_W && getMinecraftPlayer()->getMoveFoward())
     {
-        m_player->setMoveFoward(false);
+        getMinecraftPlayer()->setMoveFoward(false);
     }
-    else if(event->key() == Qt::Key_S && m_player->getMoveBackward())
+    else if(event->key() == Qt::Key_S && getMinecraftPlayer()->getMoveBackward())
     {
-        m_player->setMoveBackward(false);
+        getMinecraftPlayer()->setMoveBackward(false);
     }
-    else if(event->key() == Qt::Key_A && m_player->getMoveLeft())
+    else if(event->key() == Qt::Key_A && getMinecraftPlayer()->getMoveLeft())
     {
-        m_player->setMoveLeft(false);
+        getMinecraftPlayer()->setMoveLeft(false);
     }
-    else if(event->key() == Qt::Key_D && m_player->getMoveRight())
+    else if(event->key() == Qt::Key_D && getMinecraftPlayer()->getMoveRight())
     {
-        m_player->setMoveRight(false);
+        getMinecraftPlayer()->setMoveRight(false);
     }
-    else if(event->key() == Qt::Key_Space && m_player->getJump())
+    else if(event->key() == Qt::Key_Space && getMinecraftPlayer()->getJump())
     {
-        m_player->setJump(false);
+        getMinecraftPlayer()->setJump(false);
     }
 }

@@ -7,6 +7,8 @@
 #include <QString>
 #include <QHash>
 
+class AABoundingBox;
+
 namespace Graphics
 {
 
@@ -20,8 +22,8 @@ public:
     GLuint *getTexture(QString key);
     GLuint *createTexture(QString file, QString key);
     void removeTexture(QString key);
-    void loadTexture(QString key, GLenum glTexture);
-    void unloadTexture(GLenum glTexture);
+    void loadTexture(QString key, int i);
+    void unloadTexture(int i);
 
     bool hasProgram(QString key);
     GLuint getProgram(QString key);
@@ -40,6 +42,7 @@ public:
     void setFrustumPlanes(glm::vec4 frustumNX, glm::vec4 frustumX,
                           glm::vec4 frustumNY, glm::vec4 frustumY,
                           glm::vec4 frustumNZ, glm::vec4 frustumZ);
+    bool inFrustum(AABoundingBox *aabb);
 
     void sendColorUniform(glm::vec3 color, QString key);
     void sendModelUniform(glm::mat4x4 model, QString key);
@@ -47,9 +50,6 @@ public:
     void sendProjectionUniform(glm::mat4x4 model, QString key);
     void sendOpacityUniform(float opacity, QString key);
     void sendUseTextureUniform(int useTexture, QString key);
-
-    // View frustum plane equations
-    glm::vec4 frustumPlanes[6];
 
 private:
     /* Textures */
@@ -68,6 +68,9 @@ private:
     QHash<QString, GLuint> m_programs;
 
     GLuint m_activeProgram;
+
+    // View frustum plane equations
+    glm::vec4 m_frustumPlanes[6];
 };
 
 }

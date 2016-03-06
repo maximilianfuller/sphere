@@ -131,7 +131,7 @@ void Camera::updateTransforms()
 
     if(m_thirdPerson)
     {
-        eye = m_eye - 3.f * m_look;
+        eye = m_eye - 20.f * m_look;
     }
     else
     {

@@ -4,7 +4,6 @@
 #include "engine/entity/Entity.h"
 
 #include "engine/graphics/Controller.h"
-#include "engine/intersect/BoundingBox.h"
 
 #include "engine/voxel/manager/Manager.h"
 #include "engine/voxel/chunk/Chunk.h"
@@ -20,15 +19,13 @@ struct Block
 public:
     Block(char p, VoxelCube *cube) :
         passable(p),
-        m_cube(cube),
-        m_boundingBox(new BoundingBox())
+        m_cube(cube)
     {
     }
 
     ~Block()
     {
         delete m_cube;
-        delete m_boundingBox;
     }
 
     void onDraw(float *vertexData, int &numVertices, glm::vec3 blockPos,
@@ -40,17 +37,10 @@ public:
                      drawBot, drawTop, drawBack, drawFront);
     }
 
-    BoundingBox *getBoundingBox(glm::vec3 blockPos)
-    {
-        m_boundingBox->setPosition(blockPos);
-        return m_boundingBox;
-    }
-
     char passable;
 
 private:
     VoxelCube *m_cube;
-    BoundingBox *m_boundingBox;
 
 } __attribute((packed));
 

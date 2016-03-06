@@ -4,6 +4,8 @@
 #include "util/QuadData.h"
 #include "util/CylinderData.h"
 
+#include "engine/intersect/AABoundingBox.h"
+
 #include <QImage>
 #include <QGLWidget>
 
@@ -89,20 +91,19 @@ void Controller::removeTexture(QString key)
     m_textures.remove(key);
 }
 
-// NOTE: setting the texture uniform causes problems
-void Controller::loadTexture(QString key, GLenum glTexture)
+void Controller::loadTexture(QString key, int i)
 {
     /* Get texture from map */
     GLuint *texture = m_textures.value(key, 0);
 
     /* Bind texture */
-    glActiveTexture(glTexture);
+    glActiveTexture(GL_TEXTURE0 + i);
     glBindTexture(GL_TEXTURE_2D, *texture);
 }
 
-void Controller::unloadTexture(GLenum glTexture)
+void Controller::unloadTexture(int i)
 {
-    glActiveTexture(glTexture);
+    glActiveTexture(GL_TEXTURE0 + i);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -207,14 +208,47 @@ void Controller::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
                                   glm::vec4 fny, glm::vec4 fy,
                                   glm::vec4 fnz, glm::vec4 fz)
 {
-    frustumPlanes[0] = fnx;
-    frustumPlanes[1] = fx;
+    m_frustumPlanes[0] = fnx;
+    m_frustumPlanes[1] = fx;
 
-    frustumPlanes[2] = fny;
-    frustumPlanes[3] = fy;
+    m_frustumPlanes[2] = fny;
+    m_frustumPlanes[3] = fy;
 
-    frustumPlanes[4] = fnz;
-    frustumPlanes[5] = fz;
+    m_frustumPlanes[4] = fnz;
+    m_frustumPlanes[5] = fz;
+}
+
+bool Controller::inFrustum(AABoundingBox *aabb)
+{
+    glm::vec3 boxPos = aabb->getPosition();
+    glm::vec3 boxDims = aabb->getDimensions();
+
+    for(int i = 0; i < 6; i++)
+    {
+        bool allBehind = true;
+
+        for(int x = 0; x <= 1; x++)
+        {
+            for(int y = 0; y <= 1; y++)
+            {
+                for(int z = 0; z <= 1; z++)
+                {
+                    glm::vec4 pos = glm::vec4(boxPos.x + x * boxDims.x,
+                                              boxPos.y + y * boxDims.y,
+                                              boxPos.z + z * boxDims.z, 1);
+
+                    allBehind &= glm::dot(m_frustumPlanes[i], pos) < 0;
+                }
+            }
+        }
+
+        if(allBehind)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 void Controller::sendColorUniform(glm::vec3 color, QString key)
