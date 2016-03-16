@@ -3,6 +3,12 @@
         <file>grass.png</file>
         <file>welcome.jpg</file>
         <file>terrain.png</file>
+        <file>level_easy.png</file>
+        <file>level_easy_channels.png</file>
+        <file>level_hard.png</file>
+        <file>level_hard_channels.png</file>
+        <file>level_island.png</file>
+        <file>level_island_channels.png</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

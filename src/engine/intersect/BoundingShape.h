@@ -18,9 +18,6 @@ public:
     glm::vec3 getDimensions();
     void setDimensions(glm::vec3 dims);
 
-    virtual bool intersect(BoundingShape *shape, glm::vec3 &mtv) = 0;
-    virtual bool intersect(BoundingCylinder *cyl, glm::vec3 &mtv) = 0;
-
 protected:
     glm::vec3 m_pos;
     glm::vec3 m_dims;

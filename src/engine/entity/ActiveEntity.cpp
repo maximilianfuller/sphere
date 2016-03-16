@@ -81,41 +81,6 @@ void ActiveEntity::setGrounded(bool grounded)
     m_grounded = grounded;
 }
 
-bool ActiveEntity::intersect(ActiveEntity *ent)
-{
-    glm::vec3 mtv;
-
-    if(m_boundingShape->intersect(ent->getBoundingShape(), mtv))
-    {
-        m_pos += 0.5f * mtv;
-        ent->setPosition(ent->getPosition() - 0.5f * mtv);
-
-        onIntersect(ent, mtv);
-        ent->onIntersect(this, -mtv);
-
-        return true;
-    }
-
-    return false;
-}
-
-bool ActiveEntity::intersect(BackgroundEntity *ent)
-{
-    glm::vec3 mtv;
-
-    if(m_boundingShape->intersect(ent->getBoundingShape(), mtv))
-    {
-        m_pos += mtv;
-
-        onIntersect(ent, mtv);
-        ent->onIntersect(this, -mtv);
-
-        return true;
-    }
-
-    return false;
-}
-
 void ActiveEntity::updateVelocity(float seconds)
 {
     m_vel += m_acc * seconds;

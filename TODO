@@ -1,22 +1,19 @@
 # Minecraft 3
-* Chunk streaming
-* Raycasting (common engine)
 * Mix aabb collision and cylinder collision
 
 # Later
 * Common folder for common engine stuff
-
 * Smart pointers
-* Add for each iteration to QList
+* Const references
+* Constructors
+* Add foreach iteration to QList
 
 * Player in common engine
     - Inherit from active entity
 * Player in world
-
-* Camera in world
-
 * Remove unecessary upcasts
 
 * Customize chunk load radius
 * Customize chunk size
-* Change chunk to have position at midpoint
+* Multithreaded chunk streaming
+* Collision bug fix (y direction)

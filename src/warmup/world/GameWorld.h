@@ -31,7 +31,6 @@ public:
     void onTick(float seconds);
 
 private:
-    Camera *m_camera;
     Player *m_player;
 
     int m_spawnCounter;

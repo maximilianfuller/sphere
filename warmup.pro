@@ -16,6 +16,7 @@ SOURCES += \
     src/mainwindow.cpp \
     src/view.cpp \
     src/util/ResourceLoader.cpp \
+    src/util/obj.cpp \
     libs/glew-1.10.0/src/glew.c \
     src/engine/Screen.cpp \
     src/engine/Application.cpp \
@@ -25,7 +26,6 @@ SOURCES += \
     src/engine/graphics/VertexData.cpp \
     src/engine/shape/Cylinder.cpp \
     src/engine/entity/Entity.cpp \
-    src/engine/shape/TexturedQuad.cpp \
     src/warmup/WarmupApplication.cpp \
     src/warmup/GameScreen.cpp \
     src/warmup/entity/Player.cpp \
@@ -45,7 +45,6 @@ SOURCES += \
     src/warmup/entity/Bomb.cpp \
     src/warmup/entity/Zombie.cpp \
     src/warmup/entity/WarmupEntity.cpp \
-    src/engine/voxel/manager/Manager.cpp \
     src/engine/voxel/chunk/Chunk.cpp \
     src/minecraft/MinecraftApplication.cpp \
     src/minecraft/manager/MinecraftManager.cpp \
@@ -57,9 +56,18 @@ SOURCES += \
     src/minecraft/entity/MinecraftPlayer.cpp \
     src/minecraft/MinecraftScreen.cpp \
     src/engine/voxel/shape/VoxelCube.cpp \
-    src/engine/intersect/CollisionManager.cpp \
-    src/engine/voxel/intersect/VoxelCollisionManager.cpp \
-    src/engine/intersect/AABoundingBox.cpp
+    src/engine/intersect/AABoundingBox.cpp \
+    src/engine/shape/Quad.cpp \
+    src/minecraft/entity/MinecraftEnemy.cpp \
+    src/minecraft/MinecraftWelcomeScreen.cpp \
+    src/minecraft/manager/MinecraftWelcomeWorld.cpp \
+    src/engine/voxel/manager/VoxelManager.cpp \
+    src/engine/manager/Manager.cpp \
+    src/engine/manager/ModuleManager.cpp \
+    src/engine/manager/CollisionManager.cpp \
+    src/engine/manager/CylinderCollisionManager.cpp \
+    src/engine/voxel/manager/VoxelCollisionManager.cpp \
+    src/engine/voxel/manager/ChunkManager.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -68,6 +76,7 @@ HEADERS += \
     src/util/CommonIncludes.h \
     src/util/ResourceLoader.h \
     src/util/CylinderData.h \
+    src/util/obj.h \
     src/engine/camera/Camera.h \
     src/engine/Application.h \
     src/engine/Screen.h \
@@ -76,7 +85,6 @@ HEADERS += \
     src/engine/graphics/VertexData.h \
     src/engine/shape/Cylinder.h \
     src/engine/entity/Entity.h \
-    src/engine/shape/TexturedQuad.h \
     src/warmup/WarmupApplication.h \
     src/warmup/GameScreen.h \
     src/warmup/entity/Player.h \
@@ -97,7 +105,6 @@ HEADERS += \
     src/warmup/entity/Bomb.h \
     src/warmup/entity/Zombie.h \
     src/warmup/entity/WarmupEntity.h \
-    src/engine/voxel/manager/Manager.h \
     src/engine/voxel/chunk/Chunk.h \
     src/engine/voxel/block/Block.h \
     src/minecraft/MinecraftApplication.h \
@@ -112,19 +119,35 @@ HEADERS += \
     src/engine/voxel/shape/VoxelCube.h \
     src/engine/voxel/shape/CubeData.h \
     src/engine/world/WorldConstants.h \
-    src/engine/intersect/CollisionManager.h \
-    src/engine/voxel/intersect/VoxelCollisionManager.h \
-    src/engine/intersect/AABoundingBox.h
+    src/engine/intersect/AABoundingBox.h \
+    src/engine/shape/Quad.h \
+    src/minecraft/entity/MinecraftEnemy.h \
+    src/minecraft/MinecraftWelcomeScreen.h \
+    src/minecraft/manager/MinecraftWelcomeWorld.h \
+    src/engine/voxel/manager/VoxelManager.h \
+    src/engine/manager/Manager.h \
+    src/engine/manager/ModuleManager.h \
+    src/engine/manager/CollisionManager.h \
+    src/engine/manager/CylinderCollisionManager.h \
+    src/engine/voxel/manager/VoxelCollisionManager.h \
+    src/engine/voxel/manager/ChunkManager.h
 
 
 FORMS += src/mainwindow.ui
 
 RESOURCES += \
     res/shaders/shaders.qrc \
-    res/images/images.qrc
+    res/images/images.qrc \
+    res/obj/obj.qrc \
 
 OTHER_FILES += \
     res/images/grass.png \
+    res/images/level_easy.png \
+    res/images/level_easy_channels.png \
+    res/images/level_hard.png \
+    res/images/level_hard_channels.png \
+    res/images/level_island.png \
+    res/images/level_island_channels.png
 
 DISTFILES += \
     res/shaders/shader.vert \

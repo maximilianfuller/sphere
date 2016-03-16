@@ -3,6 +3,10 @@
 
 #include <QList>
 
+namespace Graphics
+{
+class Controller;
+}
 class ActiveEntity;
 class BackgroundEntity;
 
@@ -13,7 +17,7 @@ public:
                      QList<BackgroundEntity *> &backgroundEnts);
 
     virtual void onTick(float seconds);
-    virtual void onDraw();
+    virtual void onDraw(Graphics::Controller *graphics);
 
 protected:
     QList<ActiveEntity *> &m_activeEntities;

@@ -1,7 +1,7 @@
 #ifndef VOXELCollisionMANAGER_H
 #define VOXELCollisionMANAGER_H
 
-#include "engine/intersect/CollisionManager.h"
+#include "engine/manager/CollisionManager.h"
 
 const float EPS = 0.001;
 

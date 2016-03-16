@@ -1,11 +1,9 @@
 #include "CollisionManager.h"
 
+#include "engine/graphics/Controller.h"
 #include "engine/entity/ActiveEntity.h"
 #include "engine/entity/BackgroundEntity.h"
 
-/* TODO: implement cylinder collision manager */
-/* TODO: remove collision test functionality from bounding shapes */
-/* TODO: make collision shapes with dimensions */
 CollisionManager::CollisionManager(QList<ActiveEntity *> &activeEnts,
                                    QList<BackgroundEntity *> &backgroundEnts) :
     m_activeEntities(activeEnts),
@@ -15,10 +13,8 @@ CollisionManager::CollisionManager(QList<ActiveEntity *> &activeEnts,
 
 void CollisionManager::onTick(float seconds)
 {
-
 }
 
-void CollisionManager::onDraw()
+void CollisionManager::onDraw(Graphics::Controller *graphics)
 {
-
 }

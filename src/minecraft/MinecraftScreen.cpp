@@ -26,9 +26,17 @@ MinecraftScreen::~MinecraftScreen()
 
 void MinecraftScreen::keyPressEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Escape)
+    if (event->key() == Qt::Key_Escape)
     {
-        QApplication::exit(0);
+        delete m_world;
+        m_world = new MinecraftManager(m_camera);
+
+        m_app->moveScreen(this, 0);
+    }
+    else if(event->key() == Qt::Key_F1)
+    {
+        MinecraftManager *manager = dynamic_cast<MinecraftManager *>(m_world);
+        manager->setPeacefulMode(true);
     }
 
     Screen::keyPressEvent(event);
@@ -36,5 +44,15 @@ void MinecraftScreen::keyPressEvent(QKeyEvent *event)
 
 void MinecraftScreen::onTick(float seconds)
 {
+    MinecraftManager *manager = dynamic_cast<MinecraftManager *>(m_world);
+
+    if(manager->getGameOver())
+    {
+        m_app->moveScreen(this, 0);
+
+        delete m_world;
+        m_world = new MinecraftManager(m_camera);
+    }
+
     Screen::onTick(seconds);
 }

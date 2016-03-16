@@ -8,13 +8,15 @@ namespace Graphics
 {
 class Controller;
 }
+class Manager;
 class ActiveEntity;
 class BackgroundEntity;
+class Camera;
 
 class World
 {
 public:
-    World();
+    World(Camera *camera);
     virtual ~World();
 
     /* Entity management */
@@ -44,8 +46,11 @@ public:
     virtual void keyReleaseEvent(QKeyEvent *event);
 
 protected:
+    QList<Manager *> m_managers;
     QList<ActiveEntity *> m_activeEntities;
     QList<BackgroundEntity *> m_backgroundEntities;
+
+    Camera *m_camera;
 };
 
 #endif // SCENE_H

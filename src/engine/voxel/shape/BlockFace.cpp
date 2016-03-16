@@ -1,6 +1,6 @@
 #include "engine/voxel/shape//BlockFace.h"
 
-BlockFace::BlockFace(QString shapeKey, glm::vec3 color,
+BlockFace::BlockFace(QString shapeKey, glm::vec4 color,
                      glm::mat4x4 model) :
     m_shapeKey(shapeKey),
     Shape(model, color)

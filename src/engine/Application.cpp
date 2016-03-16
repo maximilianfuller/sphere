@@ -27,6 +27,9 @@ Application::Application(QGLWidget *container, bool depthTest,
     {
         glFrontFace(GL_CCW);
     }
+
+    glEnable (GL_BLEND);
+    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Application::~Application()
@@ -39,6 +42,11 @@ Application::~Application()
     {
         delete (*s);
     }
+}
+
+Graphics::Controller *Application::getGraphics()
+{
+    return m_graphics;
 }
 
 Screen *Application::getScreen(int index)

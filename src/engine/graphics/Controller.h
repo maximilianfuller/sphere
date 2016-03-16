@@ -44,12 +44,13 @@ public:
                           glm::vec4 frustumNZ, glm::vec4 frustumZ);
     bool inFrustum(AABoundingBox *aabb);
 
-    void sendColorUniform(glm::vec3 color, QString key);
+    void sendColorUniform(glm::vec4 color, QString key);
     void sendModelUniform(glm::mat4x4 model, QString key);
     void sendViewUniform(glm::mat4x4 model, QString key);
     void sendProjectionUniform(glm::mat4x4 model, QString key);
     void sendOpacityUniform(float opacity, QString key);
     void sendUseTextureUniform(int useTexture, QString key);
+    void sendUseLightingUniform(int useLighting, QString key);
 
 private:
     /* Textures */

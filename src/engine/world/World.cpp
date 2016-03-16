@@ -3,10 +3,10 @@
 #include "engine/entity/ActiveEntity.h"
 #include "engine/entity/BackgroundEntity.h"
 #include "engine/graphics/Controller.h"
-#include "engine/intersect/Intersector.h"
-#include "engine/intersect/BoundingShape.h"
+#include "engine/camera/Camera.h"
 
-World::World()
+World::World(Camera *camera) :
+    m_camera(camera)
 {
 }
 
@@ -93,57 +93,27 @@ void World::removeBackgroundEntity(BackgroundEntity *ent)
 
 void World::onTick(float seconds)
 {
-    int numActiveEntities = m_activeEntities.size();
-    int numBackgroundEntities = m_backgroundEntities.size();
-
-    /* Tick active entities. Iterate backwards to avoid unexpected behavior */
-    for(int i = numActiveEntities - 1; i >= 0; i--)
+    foreach(ActiveEntity *ent, m_activeEntities)
     {
-        m_activeEntities[i]->onTick(seconds);
+        ent->onTick(seconds);
     }
 
-    /* Tick active entities. Iterate backwards to avoid unexpected behavior */
-    for(int i = numBackgroundEntities - 1; i >= 0; i--)
+    foreach(BackgroundEntity *ent, m_backgroundEntities)
     {
-        m_backgroundEntities[i]->onTick(seconds);
-    }
-
-    numActiveEntities = m_activeEntities.size();
-    numBackgroundEntities = m_backgroundEntities.size();
-
-    /* Intersect active entities with eachother */
-    for(int i = 0; i < numActiveEntities; i++)
-    {
-        for(int j = i + 1; j < numActiveEntities; j++)
-        {
-            m_activeEntities[i]->intersect(m_activeEntities[j]);
-        }
-    }
-
-    /* Intersect active entities with background entities */
-    for(int i = 0; i < numActiveEntities; i++)
-    {
-        for(int j = 0; j < numBackgroundEntities; j++)
-        {
-            m_activeEntities[i]->intersect(m_backgroundEntities[j]);
-        }
+        ent->onTick(seconds);
     }
 }
 
 void World::onDraw(Graphics::Controller *graphics)
 {
-    QList<ActiveEntity *>::iterator a;
-
-    for(a = m_activeEntities.begin(); a != m_activeEntities.end(); a++)
+    foreach(ActiveEntity *ent, m_activeEntities)
     {
-        (*a)->onDraw(graphics);
+        ent->onDraw(graphics);
     }
 
-    QList<BackgroundEntity *>::iterator b;
-
-    for(b = m_backgroundEntities.begin(); b != m_backgroundEntities.end(); b++)
+    foreach(BackgroundEntity *ent, m_backgroundEntities)
     {
-        (*b)->onDraw(graphics);
+        ent->onDraw(graphics);
     }
 }
 

@@ -37,9 +37,6 @@ void VoxelCollisionManager::xSweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
     float entSpeed = ent->getSpeed();
 
-    /* Get predicted position */
-    float px = pos.x + vel.x * entSpeed * seconds;
-
     /* Get start and end x, z values */
     int startY = int(glm::round(pos.y - dims.y / 2 - chunkPos.y));
     int endY = int(glm::round(pos.y + dims.y / 2 - chunkPos.y));
@@ -147,9 +144,6 @@ void VoxelCollisionManager::zSweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
     float entSpeed = ent->getSpeed();
 
-    /* Get predicted position */
-    float pz = pos.z + vel.z * entSpeed * seconds;
-
     /* Get start and end x, z values */
     int startY = int(glm::round(pos.y - dims.y / 2 - chunkPos.y));
     int endY = int(glm::round(pos.y + dims.y / 2 - chunkPos.y));
@@ -255,9 +249,6 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
     glm::vec3 chunkPos = chunk->getPosition();
 
-    /* Get predicted position */
-    float py = pos.y + vel.y * seconds;
-
     /* Get start and end x, z values */
     int startX = int(glm::round(pos.x - dims.x / 2 - chunkPos.x));
     int endX = int(glm::round(pos.x + dims.x / 2 - chunkPos.x));
@@ -310,6 +301,10 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
             ent->setPosition(pos);
             ent->setVelocity(vel);
         }
+        else
+        {
+            ent->setGrounded(false);
+        }
     }
     else
     {
@@ -357,19 +352,17 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
 void VoxelCollisionManager::onTick(float seconds)
 {
-    int numActiveEntities = m_activeEntities.size();
-
-    for(int i = 0; i < numActiveEntities; i++)
+    foreach(ActiveEntity *aEnt, m_activeEntities)
     {
-        VoxelEntity *ent = dynamic_cast<VoxelEntity* >(m_activeEntities[i]);
+        VoxelEntity *ent = dynamic_cast<VoxelEntity* >(aEnt);
 
-        for(int j = 0; j < m_chunks.size(); j++)
+        foreach(Chunk *chunk, m_chunks)
         {
-            if(withinChunk(m_chunks[j], ent))
+            if(withinChunk(chunk, ent))
             {
-                xSweep(m_chunks[j], ent, seconds);
-                ySweep(m_chunks[j], ent, seconds);
-                zSweep(m_chunks[j], ent, seconds);
+                xSweep(chunk, ent, seconds);
+                ySweep(chunk, ent, seconds);
+                zSweep(chunk, ent, seconds);
             }
         }
     }

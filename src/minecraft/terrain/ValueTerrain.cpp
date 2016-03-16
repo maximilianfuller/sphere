@@ -56,13 +56,12 @@ float ValueTerrain::terrainOctave(float x, float z, float amplitude, float frequ
 
 float ValueTerrain::getHeight(int x, int z)
 {
-    /*
     float amplitude = 14.f;
     float persistence = 0.2f;
     float frequency = 0.04f;
     float height = 0.f;
 
-    for(int i = 0; i < 5; i++)
+    for(int i = 0; i < 1; i++)
     {
         height += terrainOctave(x, z, amplitude, frequency);
 
@@ -71,6 +70,4 @@ float ValueTerrain::getHeight(int x, int z)
     }
 
     return height;
-    */
-    return 5.0;
 }

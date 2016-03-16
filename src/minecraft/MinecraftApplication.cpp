@@ -3,6 +3,7 @@
 #include "engine/graphics/Controller.h"
 
 #include "minecraft/MinecraftScreen.h"
+#include "minecraft/MinecraftWelcomeScreen.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -17,10 +18,12 @@ MinecraftApplication::MinecraftApplication(QGLWidget *container) :
     m_graphics->setActiveProgram("default");
 
     m_graphics->createTexture(":/images/terrain.png", "atlas");
-    m_graphics->loadTexture("atlas", 0);
+    m_graphics->createTexture(":/images/welcome.jpg", "welcome");
+    m_graphics->loadTexture("welcome", 0);
 
     /* Create screen */
     addScreen(dynamic_cast<Screen *>(new MinecraftScreen(this)));
+    addScreen(dynamic_cast<Screen *>(new MinecraftWelcomeScreen(this)));
 }
 
 void MinecraftApplication::mouseMoveEvent(QMouseEvent *event)

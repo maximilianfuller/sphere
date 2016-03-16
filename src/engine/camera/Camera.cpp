@@ -87,6 +87,11 @@ void Camera::setLook(glm::vec3 look)
     m_look = look;
 }
 
+bool Camera::getThirdPerson()
+{
+    return m_thirdPerson;
+}
+
 void Camera::toggleThirdPerson()
 {
     m_update = true;
@@ -131,7 +136,7 @@ void Camera::updateTransforms()
 
     if(m_thirdPerson)
     {
-        eye = m_eye - 20.f * m_look;
+        eye = m_eye - 3.f * m_look;
     }
     else
     {

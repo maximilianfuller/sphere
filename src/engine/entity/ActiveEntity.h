@@ -36,9 +36,6 @@ public:
     bool getGrounded();
     void setGrounded(bool grounded);
 
-    virtual bool intersect(ActiveEntity *ent);
-    virtual bool intersect(BackgroundEntity *ent);
-
     virtual void updateFriction() = 0;
     virtual void updateGoalVelocity() = 0;
     virtual void updateAcceleration() = 0;

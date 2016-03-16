@@ -15,7 +15,7 @@ WelcomeScreen::WelcomeScreen(Application *app, float opacity) :
     m_camera = dynamic_cast<Camera *>(new SimpleCamera());
 
     /* Setup world */
-    m_world = new WelcomeWorld();
+    m_world = new WelcomeWorld(m_camera);
 }
 
 WelcomeScreen::~WelcomeScreen()

@@ -3,6 +3,11 @@
 
 #include "engine/voxel/entity/VoxelEntity.h"
 
+namespace Graphics
+{
+class Controller;
+}
+
 class Camera;
 class MinecraftManager;
 
@@ -52,8 +57,10 @@ public:
 
     /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
+    void onIntersect(MinecraftEnemy *ent, glm::vec3 mtv);
 
     void onTick(float seconds);
+    void onDraw(Graphics::Controller *graphics);
 
 private:
     Camera *m_camera;

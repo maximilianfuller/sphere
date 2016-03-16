@@ -2,7 +2,7 @@
 
 #include "engine/graphics/Controller.h"
 #include "engine/shape/Shape.h"
-#include "engine/shape/TexturedQuad.h"
+#include "engine/shape/Quad.h"
 
 TiledQuad::TiledQuad()
 {
@@ -13,23 +13,18 @@ TiledQuad::TiledQuad()
     {
         for(int j = -12; j < 12; j++)
         {
-            model = glm::mat4x4();
-            pos = glm::vec3(i, 0, j);
-            model = glm::translate(model, pos);
-
-            TexturedQuad *new_tile = new TexturedQuad("grass", model);
-            m_tiles.append(new_tile);
+            Quad *newTile = new Quad(1, 1, "grass", glm::vec4(1, 1, 1, 1),
+                                     glm::vec3(i, 0, j));
+            m_tiles.append(newTile);
         }
     }
 }
 
 TiledQuad::~TiledQuad()
 {
-    QList<TexturedQuad *>::iterator t;
-
-    for(t = m_tiles.begin(); t != m_tiles.end(); t++)
+    foreach(Quad *t, m_tiles)
     {
-        delete (*t);
+        delete(t);
     }
 }
 
@@ -37,12 +32,8 @@ void TiledQuad::draw(Graphics::Controller *graphics)
 {
     Shape::draw(graphics);
 
-    graphics->sendUseTextureUniform(1, "default");
-
-    QList<TexturedQuad *>::iterator t;
-
-    for(t = m_tiles.begin(); t != m_tiles.end(); t++)
+    foreach(Quad *t, m_tiles)
     {
-        (*t)->draw(graphics);
+        t->draw(graphics);
     }
 }

@@ -2,7 +2,7 @@
 
 #include "engine/graphics/Controller.h"
 
-Cylinder::Cylinder(glm::vec3 pos, glm::vec3 dims, glm::vec3 color) :
+Cylinder::Cylinder(glm::vec3 pos, glm::vec3 dims, glm::vec4 color) :
     Shape(pos, dims, color)
 {
 }

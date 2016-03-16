@@ -251,9 +251,9 @@ bool Controller::inFrustum(AABoundingBox *aabb)
     return true;
 }
 
-void Controller::sendColorUniform(glm::vec3 color, QString key)
+void Controller::sendColorUniform(glm::vec4 color, QString key)
 {
-    glUniform3fv(glGetUniformLocation(getProgram(key), "color"), 1,
+    glUniform4fv(glGetUniformLocation(getProgram(key), "color"), 1,
                  glm::value_ptr(color));
 }
 
@@ -284,4 +284,10 @@ void Controller::sendUseTextureUniform(int useTexture, QString key)
 {
     glUniform1i(glGetUniformLocation(getProgram(key), "useTexture"),
                 useTexture);
+}
+
+void Controller::sendUseLightingUniform(int useLighting, QString key)
+{
+    glUniform1i(glGetUniformLocation(getProgram(key), "useLighting"),
+                useLighting);
 }

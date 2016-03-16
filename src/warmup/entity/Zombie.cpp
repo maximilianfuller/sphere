@@ -18,7 +18,7 @@ Zombie::Zombie(World *world, glm::vec3 pos, float height) :
     ActiveEntity(world, 3),
     Entity(world, pos)
 {
-    m_shape = new Cylinder(m_pos, m_dims, glm::vec3(0.5, 0, 0));
+    m_shape = new Cylinder(m_pos, m_dims, glm::vec4(0.5, 0, 0, 1.0));
     m_boundingShape = new BoundingCylinder(m_pos, m_dims);
 }
 
@@ -43,7 +43,9 @@ void Zombie::updateGoalVelocity()
                                player->getPosition().z - m_pos.z);
 
     if(glm::length(diff) > 0)
+    {
         m_goal = glm::normalize(diff);
+    }
 }
 
 void Zombie::updateAcceleration()

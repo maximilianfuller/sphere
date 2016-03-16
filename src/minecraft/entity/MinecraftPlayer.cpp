@@ -1,6 +1,6 @@
 #include "minecraft/entity/MinecraftPlayer.h"
 
-#include "engine/voxel/manager/Manager.h"
+#include "engine/graphics/Controller.h"
 #include "engine/camera/Camera.h"
 #include "engine/shape/Cylinder.h"
 #include "engine/intersect/BoundingCylinder.h"
@@ -8,6 +8,7 @@
 #include "engine/voxel/block/Block.h"
 
 #include "minecraft/manager/MinecraftManager.h"
+#include "minecraft/entity/MinecraftEnemy.h"
 
 MinecraftPlayer::MinecraftPlayer(MinecraftManager *manager, Camera *camera) :
     m_camera(camera),
@@ -27,6 +28,7 @@ MinecraftPlayer::MinecraftPlayer(MinecraftManager *manager, Camera *camera) :
 
     /* Create shape and bounding shape */
     m_shape = new Cylinder();
+    m_boundingShape = new BoundingCylinder(m_pos, m_dims);
 
     /* Update shape and bounding shape to correspond to player's dimentions */
     updateShape();
@@ -187,13 +189,20 @@ void MinecraftPlayer::updateAcceleration()
 void MinecraftPlayer::updateCamera()
 {
     glm::vec3 pos = m_pos;
-    pos.y += 0.5f * m_dims.y;
+    pos.y += m_dims.y;
+
     m_camera->setEye(pos);
 }
 
 void MinecraftPlayer::onIntersect(Entity *ent, glm::vec3 mtv)
 {
-    ent->onIntersect(this, mtv);
+    dynamic_cast<VoxelEntity *>(ent)->onIntersect(this, mtv);
+}
+
+void MinecraftPlayer::onIntersect(MinecraftEnemy *ent, glm::vec3 mtv)
+{
+    MinecraftManager *manager = dynamic_cast<MinecraftManager *>(m_world);
+    manager->setGameOver(true);
 }
 
 void MinecraftPlayer::onTick(float seconds)
@@ -209,4 +218,12 @@ void MinecraftPlayer::onTick(float seconds)
 
     /* Update camera */
     updateCamera();
+}
+
+void MinecraftPlayer::onDraw(Graphics::Controller *graphics)
+{
+    if(m_camera->getThirdPerson())
+    {
+        m_shape->draw(graphics);
+    }
 }

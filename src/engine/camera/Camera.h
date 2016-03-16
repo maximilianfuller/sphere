@@ -36,6 +36,8 @@ public:
     glm::vec3 getLook();
     void setLook(glm::vec3 look);
 
+    bool getThirdPerson();
+
     void toggleThirdPerson();
     void translate(glm::vec3 vec);
     void rotate(float yaw, float pitch);

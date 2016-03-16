@@ -10,12 +10,12 @@
 #include <QKeyEvent>
 
 GameWorld::GameWorld(Camera *camera) :
-    m_camera(camera),
     m_spawnCounter(30),
     m_numLeft(40),
     m_numSpawned(0),
     m_numTotal(40),
-    m_over(false)
+    m_over(false),
+    World(camera)
 {
     m_player = new Player(this, camera, 1.0);
     addActiveEntity(m_player);

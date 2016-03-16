@@ -19,6 +19,9 @@ public:
                 glm::vec4 clearColor = glm::vec4(0, 0, 0, 0));
     virtual ~Application();
 
+    /* Graphics Controller */
+    Graphics::Controller *getGraphics();
+
     /* Screen Management */
     Screen *getScreen(int index);
     void addScreen(Screen *screen);

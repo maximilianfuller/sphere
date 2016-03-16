@@ -8,7 +8,7 @@
 namespace Graphics {
 class Controller;
 }
-class TexturedQuad;
+class Quad;
 
 class TiledQuad : public Shape
 {
@@ -19,7 +19,7 @@ public:
     void draw(Graphics::Controller *graphics);
 
 private:
-    QList<TexturedQuad *> m_tiles;
+    QList<Quad *> m_tiles;
 };
 
 #endif // TILEDQUAD_H

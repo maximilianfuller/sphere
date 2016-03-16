@@ -1,13 +1,9 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
-#include "engine/entity/Entity.h"
-
-#include "engine/graphics/Controller.h"
-
-#include "engine/voxel/manager/Manager.h"
-#include "engine/voxel/chunk/Chunk.h"
 #include "engine/voxel/shape/VoxelCube.h"
+
+typedef unsigned char BlockPointer;
 
 const BlockPointer BLOCK_AIR = 0;
 const BlockPointer BLOCK_GRASS = 1;
