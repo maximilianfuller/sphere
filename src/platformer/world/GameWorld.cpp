@@ -124,6 +124,7 @@ void GameWorld::onDraw(Graphics::Controller *graphics)
 {
     graphics->sendUseTextureUniform(1, "default");
     graphics->sendModelUniform(glm::mat4x4(), "default");
+    graphics->sendColorUniform(glm::vec4(1), "default");
     graphics->drawShape(m_levelKey);
 
     World::onDraw(graphics);

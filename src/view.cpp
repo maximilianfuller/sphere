@@ -23,7 +23,11 @@ QGLFormat View::getFormat()
 /** Instance methods **/
 
 View::View(QWidget *parent) :
+#ifdef Q_OS_DARWIN
+    QGLWidget(getFormat(), parent)
+#else
     QGLWidget(parent)
+#endif
 {
     // Enable all mouse events
     setMouseTracking(true);
@@ -79,7 +83,9 @@ void View::paintGL()
 {
     // Send paint event to application
     app->onDraw();
+#ifndef Q_OS_DARWIN
     renderText(10, 20, "FPS: " + QString::number((int) (fps)), this->font());
+#endif
 }
 
 void View::resizeGL(int w, int h)
