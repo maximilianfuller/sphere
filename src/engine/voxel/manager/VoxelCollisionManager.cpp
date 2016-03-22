@@ -1,7 +1,6 @@
 #include "VoxelCollisionManager.h"
 
-#include "engine/entity/ActiveEntity.h"
-#include "engine/entity/BackgroundEntity.h"
+#include "engine/entity/Entity.h"
 #include "engine/intersect/AABoundingBox.h"
 
 #include "engine/voxel/entity/VoxelEntity.h"
@@ -9,10 +8,9 @@
 #include "engine/voxel/block/Block.h"
 
 VoxelCollisionManager::VoxelCollisionManager(QList<Chunk *> &chunks,
-                                             QList<ActiveEntity *> &activeEnts,
-                                             QList<BackgroundEntity *> &backgroundEnts) :
+                                             QList<Entity *> &entities) :
     m_chunks(chunks),
-    CollisionManager(activeEnts, backgroundEnts)
+    Manager(entities)
 {
 }
 
@@ -141,8 +139,7 @@ void VoxelCollisionManager::zSweep(Chunk *chunk, VoxelEntity *ent, float seconds
     glm::vec3 vel = ent->getVelocity();
 
     glm::vec3 chunkPos = chunk->getPosition();
-
-    float entSpeed = ent->getSpeed();
+ float entSpeed = ent->getSpeed();
 
     /* Get start and end x, z values */
     int startY = int(glm::round(pos.y - dims.y / 2 - chunkPos.y));
@@ -247,6 +244,8 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
     glm::vec3 dims = aabb->getDimensions();
     glm::vec3 vel = ent->getVelocity();
 
+    //std::cout << glm::to_string(pos) << std::endl;
+
     glm::vec3 chunkPos = chunk->getPosition();
 
     /* Get start and end x, z values */
@@ -259,11 +258,14 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
     bool intersected = false;
     int x, y, z;
 
+    std::cout << "start"<< std::endl;
+
     if(vel.y < 0)
     {
         /* Get target y value */
         int startY = int(glm::floor(pos.y - dims.y - chunkPos.y));
         int endY = int(glm::round(pos.y - dims.y / 2 + vel.y * seconds - chunkPos.y));
+        //std::cout << "start: " << startY << std::endl;
 
         /* Loop over x, z, y values until target value, checking intersections */
         for(y = startY; y >= endY; y--)
@@ -300,6 +302,7 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
             ent->setPosition(pos);
             ent->setVelocity(vel);
+            ent->setAcceleration(glm::vec3(0, 0, 0));
         }
         else
         {
@@ -352,7 +355,9 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
 void VoxelCollisionManager::onTick(float seconds)
 {
-    foreach(ActiveEntity *aEnt, m_activeEntities)
+    std::cout << "manager tick" << std::endl;
+
+    foreach(Entity *aEnt, m_entities)
     {
         VoxelEntity *ent = dynamic_cast<VoxelEntity* >(aEnt);
 
@@ -366,4 +371,6 @@ void VoxelCollisionManager::onTick(float seconds)
             }
         }
     }
+
+    Manager::onTick(seconds);
 }

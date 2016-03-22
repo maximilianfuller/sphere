@@ -3,6 +3,7 @@
 #include "util/ResourceLoader.h"
 #include "util/QuadData.h"
 #include "util/CylinderData.h"
+#include "util/SphereData.h"
 
 #include "engine/intersect/AABoundingBox.h"
 
@@ -18,6 +19,8 @@ Controller::Controller()
                 "fullscreenQuad");
     createShape(cylinderVertexBufferData, cylinderDataSize, cylinderVertexCount,
                 "cylinder");
+    createShape(sphereVertexBufferData, sphereDataSize, sphereVertexCount,
+                "sphere");
 }
 
 Controller::~Controller()
@@ -70,8 +73,8 @@ GLuint *Controller::createTexture(QString file, QString key)
     glGenTextures(1, texture);
     glBindTexture(GL_TEXTURE_2D, *texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
 
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -109,7 +112,7 @@ void Controller::unloadTexture(int i)
 
 bool Controller::hasProgram(QString key)
 {
-    return m_textures.contains(key);
+    return m_programs.contains(key);
 }
 
 GLuint Controller::getProgram(QString key)
@@ -151,6 +154,11 @@ void Controller::loadActiveProgram()
 void Controller::unloadProgram()
 {
     glUseProgram(0);
+}
+
+bool Controller::hasShape(QString key)
+{
+    return m_shapes.contains(key);
 }
 
 void Controller::createShape(GLfloat *shapeVertexBufferData,

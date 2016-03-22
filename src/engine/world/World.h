@@ -1,17 +1,17 @@
-#ifndef SCENE_H
-#define SCENE_H
+#ifndef WORLD_H
+#define WORLD_H
 
 #include "util/CommonIncludes.h"
+
 #include <QList>
 
 namespace Graphics
 {
 class Controller;
 }
-class Manager;
-class ActiveEntity;
-class BackgroundEntity;
+class Entity;
 class Camera;
+class Manager;
 
 class World
 {
@@ -20,15 +20,13 @@ public:
     virtual ~World();
 
     /* Entity management */
-    int getNumActiveEntities();
-    ActiveEntity *getActiveEntity(int index);
-    void addActiveEntity(ActiveEntity *ent);
-    void removeActiveEntity(ActiveEntity *ent);
+    int getNumEntities();
+    Entity *getEntity(int index);
+    void addEntity(Entity *ent);
+    void removeEntity(Entity *ent);
 
-    int getNumBackgroundEntities();
-    BackgroundEntity *getBackgroundEntity(int index);
-    void addBackgroundEntity(BackgroundEntity *ent);
-    void removeBackgroundEntity(BackgroundEntity *ent);
+    /* Manager management */
+    void addManager(Manager *manager);
 
     /* Game Loop */
     virtual void onTick(float seconds);
@@ -47,8 +45,7 @@ public:
 
 protected:
     QList<Manager *> m_managers;
-    QList<ActiveEntity *> m_activeEntities;
-    QList<BackgroundEntity *> m_backgroundEntities;
+    QList<Entity *> m_entities;
 
     Camera *m_camera;
 };

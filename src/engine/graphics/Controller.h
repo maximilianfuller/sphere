@@ -34,6 +34,7 @@ public:
     void loadActiveProgram();
     void unloadProgram();
 
+    bool hasShape(QString key);
     void createShape(GLfloat *shapeVertexBufferData, int shapeDataSize,
                      int shapeVertexCount, QString key);
     void createQuad(float startU, float startV, float endU, float endV, QString key);

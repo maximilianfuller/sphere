@@ -22,6 +22,8 @@
  *  easy->triangles;                    // a QList containing a number of Triangle structs, to use in your collisions
  */
 
+class Triangle;
+
 class OBJ
 {
 public:
@@ -37,13 +39,13 @@ public:
     };
 
     // A basic struct that holds all the basic information about a single triangle in an OBJ model.
-    struct Triangle
+    struct TriangleData
     {
         Index a, b, c;
         glm::vec3 vertices[3];
         glm::vec3 normal;
 
-        Triangle(const Index &inda, const Index &indb, const Index &indc,
+        TriangleData(const Index &inda, const Index &indb, const Index &indc,
                  const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3) {
             vertices[0] = v1;
             vertices[1] = v2;
@@ -55,7 +57,7 @@ public:
             c = indc;
         }
 
-        Triangle(const Index &inda, const Index &indb, const Index &indc,
+        TriangleData(const Index &inda, const Index &indb, const Index &indc,
                  const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &currNormal) {
             vertices[0] = v1;
             vertices[1] = v2;
@@ -84,14 +86,15 @@ public:
     int vertexCount;
 
     // The triangles that make up the VBO.
-    QList<Triangle*> triangles;
+    QList<TriangleData*> triangleData;
+    QList<Triangle *> triangles;
 
     bool read(const QString &path);
     bool write(const QString &path) const;
 
 private:
     Index getIndex(const QString &str) const;
-    void addTriangleFloats(Triangle *tri);
+    void addTriangleFloats(TriangleData *tri);
 };
 
 #endif // OBJ_H

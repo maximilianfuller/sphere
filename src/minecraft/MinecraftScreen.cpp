@@ -28,6 +28,10 @@ void MinecraftScreen::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape)
     {
+        QApplication::exit(0);
+    }
+    else if(event->key() == Qt::Key_Return)
+    {
         delete m_world;
         m_world = new MinecraftManager(m_camera);
 

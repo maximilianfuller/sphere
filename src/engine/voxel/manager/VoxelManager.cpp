@@ -16,8 +16,8 @@ VoxelManager::VoxelManager(Camera *camera, Terrain *terrain) :
     m_terrain(terrain),
     World(camera)
 {
-    m_voxelManager = new VoxelCollisionManager(m_chunks, m_activeEntities, m_backgroundEntities);
-    m_cylinderManager = new CylinderCollisionManager(m_activeEntities, m_backgroundEntities);
+    addManager(new VoxelCollisionManager(m_chunks, m_entities));
+    addManager(new CylinderCollisionManager(m_entities));
     m_face = new Quad(0, 0, "", glm::vec4(1, 0, 0, 0.5));
 }
 
@@ -36,8 +36,6 @@ VoxelManager::~VoxelManager()
     }
 
     delete m_terrain;
-    delete m_voxelManager;
-    delete m_cylinderManager;
     delete m_face;
 }
 
@@ -387,14 +385,14 @@ void VoxelManager::renderSelectedBlock(Graphics::Controller *graphics)
 
 void VoxelManager::onTick(float seconds)
 {
-    /* Intersect entities */
-    m_voxelManager->onTick(seconds);
-    m_cylinderManager->onTick(seconds);
-
     /* Tick world */
     World::onTick(seconds);
 
-    /* Draw chunks from queue */
+    /* Purge and load chunks */
+    purgeChunks();
+    loadChunks();
+
+    /* Generate chunks from queue */
     if(!m_chunkQueue.isEmpty())
     {
         Chunk *chunk = m_chunkQueue.head();
@@ -417,10 +415,6 @@ void VoxelManager::onDraw(Graphics::Controller *graphics)
     graphics->sendColorUniform(glm::vec4(0.5, 0.5, 0.5, 1.0), "default");
     graphics->sendUseTextureUniform(1, "default");
     graphics->sendModelUniform(glm::mat4x4(), "default");
-
-    /* Draw and load chunks */
-    purgeChunks();
-    loadChunks();
 
     foreach(Chunk *chunk, m_chunks)
     {

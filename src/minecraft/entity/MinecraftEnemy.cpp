@@ -14,8 +14,7 @@
 /* TODO: fix groundedness */
 MinecraftEnemy::MinecraftEnemy(MinecraftManager *manager, glm::vec3 pos) :
     m_jump(false),
-    VoxelEntity(manager, 5.0),
-    Entity(manager, pos, glm::vec3(0.8, 1, 0.8))
+    VoxelEntity(manager, 5.0, pos, glm::vec3(0.8, 1, 0.8))
 {
     /* Create shape and bounding shape */
     m_shape = new Cylinder();
@@ -101,6 +100,6 @@ void MinecraftEnemy::onTick(float seconds)
 
     if(!manager->getChunk(m_pos.x, m_pos.y, m_pos.z))
     {
-        manager->removeActiveEntity(this);
+        manager->removeEntity(this);
     }
 }

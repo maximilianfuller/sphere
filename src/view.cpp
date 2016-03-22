@@ -2,8 +2,8 @@
 #include "util/CommonIncludes.h"
 #include "util/ResourceLoader.h"
 #include "engine/Application.h"
-#include "warmup/WarmupApplication.h"
 #include "minecraft/MinecraftApplication.h"
+#include "platformer/PlatformerApplication.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -68,7 +68,7 @@ void View::initializeGL()
     QCursor::setPos(mapToGlobal(QPoint(width() / 2, height() / 2)));
 
     // Setup application
-    app = new MinecraftApplication(this);
+    app = new PlatformerApplication(this);
 
     // Timer at 60fps
     time.start();

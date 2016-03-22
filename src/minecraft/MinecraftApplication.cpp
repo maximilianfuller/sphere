@@ -23,7 +23,6 @@ MinecraftApplication::MinecraftApplication(QGLWidget *container) :
 
     /* Create screen */
     addScreen(dynamic_cast<Screen *>(new MinecraftScreen(this)));
-    addScreen(dynamic_cast<Screen *>(new MinecraftWelcomeScreen(this)));
 }
 
 void MinecraftApplication::mouseMoveEvent(QMouseEvent *event)

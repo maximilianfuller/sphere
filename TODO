@@ -1,19 +1,23 @@
-# Minecraft 3
-* Mix aabb collision and cylinder collision
+# Platformer 3
+* 
 
 # Later
-* Common folder for common engine stuff
-* Smart pointers
-* Const references
-* Constructors
-* Add foreach iteration to QList
-
+* Fix minecraft collision
+* Convert VoxelManager to manager
+* Remove collision managers
 * Player in common engine
     - Inherit from active entity
 * Player in world
-* Remove unecessary upcasts
 
 * Customize chunk load radius
 * Customize chunk size
 * Multithreaded chunk streaming
 * Collision bug fix (y direction)
+
+* Smart pointers
+* Const references
+* Constructors
+* Foreach iteration to QList
+* Rename managers to world
+* Common folder for common engine stuff
+* Remove unecessary upcasts

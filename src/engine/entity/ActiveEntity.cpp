@@ -6,10 +6,10 @@
 
 ActiveEntity::ActiveEntity(World *world, float speed, glm::vec3 vel, glm::vec3 acc,
                            glm::vec3 goal, float friction) :
+    m_speed(speed),
     m_vel(vel),
     m_acc(acc),
     m_goal(goal),
-    m_speed(speed),
     m_friction(friction),
     m_grounded(true),
     Entity(world)

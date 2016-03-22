@@ -1,9 +1,9 @@
 #include "engine/world/World.h"
 
-#include "engine/entity/ActiveEntity.h"
-#include "engine/entity/BackgroundEntity.h"
 #include "engine/graphics/Controller.h"
 #include "engine/camera/Camera.h"
+#include "engine/entity/Entity.h"
+#include "engine/manager/Manager.h"
 
 World::World(Camera *camera) :
     m_camera(camera)
@@ -12,108 +12,68 @@ World::World(Camera *camera) :
 
 World::~World()
 {
-    QList<ActiveEntity *>::iterator a;
-
-    for(a = m_activeEntities.begin(); a != m_activeEntities.end(); a++)
+    foreach(Entity *ent, m_entities)
     {
-        delete (*a);
+        delete(ent);
     }
 
-    QList<BackgroundEntity *>::iterator b;
-
-    for(b = m_backgroundEntities.begin(); b != m_backgroundEntities.end(); b++)
+    foreach(Manager *manager, m_managers)
     {
-        delete (*b);
+        delete(manager);
     }
 }
 
-int World::getNumActiveEntities()
+int World::getNumEntities()
 {
-    return m_activeEntities.size();
+    return m_entities.size();
 }
 
-ActiveEntity *World::getActiveEntity(int index)
+Entity *World::getEntity(int index)
 {
-    return m_activeEntities[index];
+    return m_entities[index];
 }
 
-void World::addActiveEntity(ActiveEntity *ent)
+void World::addEntity(Entity *ent)
 {
-    m_activeEntities.append(ent);
+    m_entities.append(ent);
 }
 
-void World::removeActiveEntity(ActiveEntity *ent)
+void World::removeEntity(Entity *ent)
 {
-    QList<ActiveEntity *>::iterator a;
     int i = 0;
 
-    for(a = m_activeEntities.begin(); a != m_activeEntities.end(); a++)
+    foreach(Entity *e, m_entities)
     {
-        if(*a == ent)
+        if(ent == e)
+        {
             break;
+        }
 
         i++;
     }
 
-    delete m_activeEntities[i];
-    m_activeEntities.removeAt(i);
+    delete m_entities[i];
+    m_entities.removeAt(i);
 }
 
-int World::getNumBackgroundEntities()
+void World::addManager(Manager *manager)
 {
-    return m_backgroundEntities.size();
-}
-
-BackgroundEntity *World::getBackgroundEntity(int index)
-{
-    return m_backgroundEntities[index];
-}
-
-void World::addBackgroundEntity(BackgroundEntity *ent)
-{
-    m_backgroundEntities.append(ent);
-}
-
-void World::removeBackgroundEntity(BackgroundEntity *ent)
-{
-    QList<BackgroundEntity *>::iterator b;
-    int i = 0;
-
-    for(b = m_backgroundEntities.begin(); b != m_backgroundEntities.end(); b++)
-    {
-        if(*b == ent)
-            break;
-
-        i++;
-    }
-
-    delete m_backgroundEntities[i];
-    m_backgroundEntities.removeAt(i);
+    m_managers.append(manager);
 }
 
 void World::onTick(float seconds)
 {
-    foreach(ActiveEntity *ent, m_activeEntities)
+    foreach(Manager *manager, m_managers)
     {
-        ent->onTick(seconds);
-    }
-
-    foreach(BackgroundEntity *ent, m_backgroundEntities)
-    {
-        ent->onTick(seconds);
+        manager->onTick(seconds);
     }
 }
 
 void World::onDraw(Graphics::Controller *graphics)
 {
-    foreach(ActiveEntity *ent, m_activeEntities)
+    foreach(Manager *manager, m_managers)
     {
-        ent->onDraw(graphics);
-    }
-
-    foreach(BackgroundEntity *ent, m_backgroundEntities)
-    {
-        ent->onDraw(graphics);
+        manager->onDraw(graphics);
     }
 }
 

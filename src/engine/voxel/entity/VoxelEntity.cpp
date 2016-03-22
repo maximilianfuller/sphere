@@ -11,8 +11,7 @@
 VoxelEntity::VoxelEntity(VoxelManager *manager, float speed, glm::vec3 pos,
                          glm::vec3 dims) :
     m_aabb(new AABoundingBox(pos, dims)),
-    ActiveEntity(manager, speed),
-    Entity(manager, pos)
+    Entity(manager, pos, dims, speed)
 {
 }
 

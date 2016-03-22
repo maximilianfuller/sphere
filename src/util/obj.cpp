@@ -1,5 +1,7 @@
 #include "obj.h"
 
+#include "engine/intersect/Triangle.h"
+
 #include <QFile>
 #include <QTextStream>
 #include <iostream>
@@ -11,8 +13,14 @@ OBJ::OBJ(QString path) : vertexCount(0)
 
 OBJ::~OBJ()
 {
-    for (int i = 0; i < triangles.size(); i++) {
-        delete triangles.at(i);
+    foreach(TriangleData *t, triangleData)
+    {
+        delete t;
+    }
+
+    foreach(Triangle *t, triangles)
+    {
+        delete(t);
     }
 }
 
@@ -48,14 +56,24 @@ bool OBJ::read(const QString &path)
             for (int i = 3; i < parts.count(); i++) {
                 Index c = getIndex(parts[i]);
 
-                Triangle* curr;
-                if (normals.size() > 0)
-                    curr = new Triangle(a, b, c, vertices.at(a.vertexIndex), vertices.at(b.vertexIndex), vertices.at(c.vertexIndex), normals.at(a.normalIndex));
-                else
-                    curr = new Triangle(a, b, c, vertices.at(a.vertexIndex), vertices.at(b.vertexIndex), vertices.at(c.vertexIndex));
+                Triangle* currTriangle;
+                TriangleData* currData;
 
-                triangles.append(curr);
-                addTriangleFloats(curr);
+                currTriangle = new Triangle(vertices.at(a.vertexIndex), vertices.at(b.vertexIndex), vertices.at(c.vertexIndex));
+
+                if (normals.size() > 0)
+                {
+                    currData = new TriangleData(a, b, c, vertices.at(a.vertexIndex), vertices.at(b.vertexIndex), vertices.at(c.vertexIndex), normals.at(a.normalIndex));
+                }
+                else
+                {
+                    currData = new TriangleData(a, b, c, vertices.at(a.vertexIndex), vertices.at(b.vertexIndex), vertices.at(c.vertexIndex));
+                }
+
+                triangles.append(currTriangle);
+                triangleData.append(currData);
+
+                addTriangleFloats(currData);
 
                 b = c;
             }
@@ -65,7 +83,7 @@ bool OBJ::read(const QString &path)
     return true;
 }
 
-void OBJ::addTriangleFloats(Triangle *tri)
+void OBJ::addTriangleFloats(TriangleData *tri)
 {
     for (int i = 0; i < 3; i++) {
         vboData.append(tri->vertices[i].x);
@@ -133,7 +151,7 @@ bool OBJ::write(const QString &path) const
     foreach (const glm::vec2 &coord, coords) f << "vt " << str(coord) << '\n';
     foreach (const glm::vec3 &normal, normals) f << "vn " << str(normal) << '\n';
 
-    foreach (const Triangle *tri, triangles) f << "f " << str(tri->a) << ' ' << str(tri->b) << ' ' << str(tri->c) << '\n';
+    foreach (const TriangleData *tri, triangleData) f << "f " << str(tri->a) << ' ' << str(tri->b) << ' ' << str(tri->c) << '\n';
 
     return true;
 }

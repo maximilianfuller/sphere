@@ -1,114 +1,129 @@
-#include "minecraft/entity/MinecraftPlayer.h"
+#include "platformer/entity/Player.h"
 
 #include "engine/graphics/Controller.h"
 #include "engine/camera/Camera.h"
 #include "engine/shape/Ellipsoid.h"
 #include "engine/intersect/BoundingCylinder.h"
 
-#include "engine/voxel/block/Block.h"
-
-#include "minecraft/manager/MinecraftManager.h"
-#include "minecraft/entity/MinecraftEnemy.h"
-
-MinecraftPlayer::MinecraftPlayer(MinecraftManager *manager, Camera *camera) :
+Player::Player(World *world, Camera *camera) :
     m_camera(camera),
     m_moveForward(false),
     m_moveBackward(false),
     m_moveLeft(false),
     m_moveRight(false),
     m_jump(false),
+    m_nitro(false),
     m_yaw(0),
     m_pitch(0),
-    VoxelEntity(manager, 10.0, glm::vec3(32, 80, 32), glm::vec3(0.8, 1, 0.8))
+    Entity(world, glm::vec3(0, 2.0, 0), glm::vec3(0.5, 1, 0.5), 7)
 {
     /* Initialize camera */
     m_camera->setYaw(m_yaw);
     m_camera->setPitch(m_pitch);
 
     /* Create shape and bounding shape */
-    m_shape = new Ellipsoid();
-    m_boundingShape = new BoundingCylinder(m_pos, m_dims);
+    m_shape = new Ellipsoid(m_pos, m_dims);
 
     /* Update shape and bounding shape to correspond to player's dimentions */
     updateShape();
     updateBoundingShape();
 }
 
-MinecraftPlayer::~MinecraftPlayer()
+Player::~Player()
 {
 }
 
-bool MinecraftPlayer::getMoveFoward()
+float Player::getSpeed()
+{
+    if(m_nitro)
+    {
+        return m_speed * 2.0;
+    }
+
+    return m_speed;
+}
+
+bool Player::getMoveFoward()
 {
     return m_moveForward;
 }
 
-void MinecraftPlayer::setMoveFoward(bool val)
+void Player::setMoveFoward(bool val)
 {
     m_moveForward = val;
 }
 
-bool MinecraftPlayer::getMoveBackward()
+bool Player::getMoveBackward()
 {
     return m_moveBackward;
 }
 
-void MinecraftPlayer::setMoveBackward(bool val)
+void Player::setMoveBackward(bool val)
 {
     m_moveBackward = val;
 }
 
-bool MinecraftPlayer::getMoveLeft()
+bool Player::getMoveLeft()
 {
     return m_moveLeft;
 }
 
-void MinecraftPlayer::setMoveLeft(bool val)
+void Player::setMoveLeft(bool val)
 {
     m_moveLeft = val;
 }
 
-bool MinecraftPlayer::getMoveRight()
+bool Player::getMoveRight()
 {
     return m_moveRight;
 }
 
-void MinecraftPlayer::setMoveRight(bool val)
+void Player::setMoveRight(bool val)
 {
     m_moveRight = val;
 }
 
-bool MinecraftPlayer::getJump()
+bool Player::getJump()
 {
     return m_jump;
 }
 
-void MinecraftPlayer::setJump(bool val)
+void Player::setJump(bool val)
 {
     m_jump = val;
 }
 
-float MinecraftPlayer::getYaw()
+bool Player::getNitro()
+{
+    return m_nitro;
+}
+
+void Player::setNitro(bool val)
+{
+    m_nitro = val;
+}
+
+float Player::getYaw()
 {
     return m_yaw;
 }
 
-void MinecraftPlayer::setYaw(float yaw)
+void Player::setYaw(float yaw)
 {
     m_yaw = yaw;
 }
 
-float MinecraftPlayer::getPitch()
+float Player::getPitch()
 {
     return m_pitch;
 }
 
-void MinecraftPlayer::setPitch(float pitch)
+void Player::setPitch(float pitch)
 {
     m_pitch = pitch;
 }
 
-glm::vec3 MinecraftPlayer::getDirection()
+glm::vec3 Player::getDirection()
 {
     glm::vec3 dir = glm::vec3(glm::cos(m_yaw) * glm::cos(m_pitch), glm::sin(m_pitch),
                               glm::sin(m_yaw) * glm::cos(m_pitch));
@@ -116,7 +131,7 @@ glm::vec3 MinecraftPlayer::getDirection()
     return glm::normalize(glm::vec3(dir.x, 0, dir.z));
 }
 
-void MinecraftPlayer::rotate(float yaw, float pitch)
+void Player::rotate(float yaw, float pitch)
 {
     m_yaw += yaw;
     m_pitch += pitch;
@@ -124,20 +139,25 @@ void MinecraftPlayer::rotate(float yaw, float pitch)
     m_camera->rotate(yaw, pitch);
 }
 
-void MinecraftPlayer::jump()
+void Player::jump()
 {
     m_grounded = false;
     m_vel.y = JUMP_SPEED;
+
+    if(m_nitro)
+    {
+        m_vel.y *= 2.2;
+    }
 }
 
-void MinecraftPlayer::updateFriction()
+void Player::updateFriction()
 {
     m_friction = m_grounded ? MU_GROUND : MU_AIR;
 }
 
-void MinecraftPlayer::updateGoalVelocity()
+void Player::updateGoalVelocity()
 {
-    /* MinecraftPlayer direction */
+    /* Player direction */
     glm::vec3 dir = getDirection();
     glm::vec3 perp = glm::vec3(dir.z, 0, -dir.x);
 
@@ -175,7 +195,7 @@ void MinecraftPlayer::updateGoalVelocity()
     }
 }
 
-void MinecraftPlayer::updateAcceleration()
+void Player::updateAcceleration()
 {
     glm::vec3 diff = m_goal - m_vel;
     diff.x = m_friction * diff.x;
@@ -185,7 +205,7 @@ void MinecraftPlayer::updateAcceleration()
     m_acc.z = diff.z;
 }
 
-void MinecraftPlayer::updateCamera()
+void Player::updateCamera()
 {
     glm::vec3 pos = m_pos;
     pos.y += m_dims.y;
@@ -193,18 +213,12 @@ void MinecraftPlayer::updateCamera()
     m_camera->setEye(pos);
 }
 
-void MinecraftPlayer::onIntersect(Entity *ent, glm::vec3 mtv)
+void Player::onIntersect(Entity *ent, glm::vec3 mtv)
 {
-    dynamic_cast<VoxelEntity *>(ent)->onIntersect(this, mtv);
+    return;
 }
 
-void MinecraftPlayer::onIntersect(MinecraftEnemy *ent, glm::vec3 mtv)
-{
-    MinecraftManager *manager = dynamic_cast<MinecraftManager *>(m_world);
-    manager->setGameOver(true);
-}
-
-void MinecraftPlayer::onTick(float seconds)
+void Player::onTick(float seconds)
 {
     /* Jump */
     if(m_jump && m_grounded)
@@ -213,13 +227,13 @@ void MinecraftPlayer::onTick(float seconds)
     }
 
     /* Call superclass method to update player */
-    VoxelEntity::onTick(seconds);
+    Entity::onTick(seconds);
 
     /* Update camera */
     updateCamera();
 }
 
-void MinecraftPlayer::onDraw(Graphics::Controller *graphics)
+void Player::onDraw(Graphics::Controller *graphics)
 {
     if(m_camera->getThirdPerson())
     {

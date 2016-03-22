@@ -1,13 +1,10 @@
 #include "CollisionManager.h"
 
 #include "engine/graphics/Controller.h"
-#include "engine/entity/ActiveEntity.h"
-#include "engine/entity/BackgroundEntity.h"
+#include "engine/entity/Entity.h"
 
-CollisionManager::CollisionManager(QList<ActiveEntity *> &activeEnts,
-                                   QList<BackgroundEntity *> &backgroundEnts) :
-    m_activeEntities(activeEnts),
-    m_backgroundEntities(backgroundEnts)
+CollisionManager::CollisionManager(QList<Entity *> &entities) :
+    m_entities(entities)
 {
 }
 

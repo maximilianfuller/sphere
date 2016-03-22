@@ -1,7 +1,7 @@
 #ifndef VOXELENTITY_H
 #define VOXELENTITY_H
 
-#include "engine/entity/ActiveEntity.h"
+#include "engine/entity/Entity.h"
 
 class VoxelManager;
 class AABoundingBox;
@@ -9,7 +9,7 @@ class AABoundingBox;
 class MinecraftPlayer;
 class MinecraftEnemy;
 
-class VoxelEntity : public ActiveEntity
+class VoxelEntity : public Entity
 {
 public:
     VoxelEntity(VoxelManager *manager, float speed = 1.f,

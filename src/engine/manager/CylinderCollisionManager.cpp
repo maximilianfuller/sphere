@@ -1,12 +1,10 @@
 #include "CylinderCollisionManager.h"
 
 #include "engine/intersect/BoundingCylinder.h"
-#include "engine/entity/ActiveEntity.h"
-#include "engine/entity/BackgroundEntity.h"
+#include "engine/entity/Entity.h"
 
-CylinderCollisionManager::CylinderCollisionManager(QList<ActiveEntity *> &activeEnts,
-                                                   QList<BackgroundEntity *> &backgroundEnts) :
-    CollisionManager(activeEnts, backgroundEnts)
+CylinderCollisionManager::CylinderCollisionManager(QList<Entity *> &entities) :
+    Manager(entities)
 {
 }
 
@@ -54,25 +52,16 @@ void CylinderCollisionManager::intersect(Entity *e1, Entity *e2)
 
 void CylinderCollisionManager::onTick(float seconds)
 {
-    int numActiveEntities = m_activeEntities.size();
+    int numEnts = m_entities.size();
 
-    /* Intersect active entities with one another */
-    for(int i = 0; i < numActiveEntities; i++)
+    /* Intersect entities with one another */
+    for(int i = 0; i < numEnts; i++)
     {
-        for(int j = i + 1; j < numActiveEntities; j++)
+        for(int j = i + 1; j < numEnts; j++)
         {
-            intersect(m_activeEntities[i], m_activeEntities[j]);
+            intersect(m_entities[i], m_entities[j]);
         }
     }
 
-    int numBackgroundEntities = m_backgroundEntities.size();
-
-    /* Intersect active entities with background entities */
-    for(int i = 0; i < numActiveEntities; i++)
-    {
-        for(int j = 0; j < numBackgroundEntities; j++)
-        {
-            intersect(m_activeEntities[i], m_backgroundEntities[j]);
-        }
-    }
+    Manager::onTick(seconds);
 }

@@ -1,19 +1,18 @@
-#ifndef VOXELCollisionMANAGER_H
-#define VOXELCollisionMANAGER_H
+#ifndef VOXELCOLLISIONMANAGER_H
+#define VOXELCOLLISIONMANAGER_H
 
-#include "engine/manager/CollisionManager.h"
+#include "engine/manager/Manager.h"
 
 const float EPS = 0.001;
 
 class Chunk;
 class VoxelEntity;
 
-class VoxelCollisionManager : public CollisionManager
+class VoxelCollisionManager : public Manager
 {
 public:
     VoxelCollisionManager(QList<Chunk *> &chunks,
-                          QList<ActiveEntity *> &activeEnts,
-                          QList<BackgroundEntity *> &backgroundEnts);
+                          QList<Entity *> &entities);
 
     bool withinChunk(Chunk *chunk, VoxelEntity *ent);
 

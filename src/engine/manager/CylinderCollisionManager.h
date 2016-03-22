@@ -1,15 +1,14 @@
 #ifndef CYLINDERCOLLISIONMANAGER_H
 #define CYLINDERCOLLISIONMANAGER_H
 
-#include "engine/manager/CollisionManager.h"
+#include "engine/manager/Manager.h"
 
 class Entity;
 
-class CylinderCollisionManager : public CollisionManager
+class CylinderCollisionManager : public Manager
 {
 public:
-    CylinderCollisionManager(QList<ActiveEntity *> &activeEnts,
-                             QList<BackgroundEntity *> &backgroundEnts);
+    CylinderCollisionManager(QList<Entity *> &entities);
 
     void intersect(Entity *e1, Entity *e2);
 

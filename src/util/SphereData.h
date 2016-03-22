@@ -6,12 +6,12 @@
 // YOU DO NOT NEED TO CHANGE ANYTHING IN HERE
 
 // The number of distinct vertices in the buffer
-int vertexCount = 5220;
+int sphereVertexCount = 5220;
 
 // The actual size of the array, based on the size of GLfloat and the number of values
-int arraySize = sizeof(GLfloat)*41760;
+int sphereDataSize = sizeof(GLfloat)*41760;
 
-GLfloat vertexBufferData[] = {
+GLfloat sphereVertexBufferData[] = {
     0, 0.5, 0, 0, 1, 0, 0.5, 0,
     0.0511221, 0.497261, 0.0108663, 0.102244, 0.994522, 0.0217327, 0.966667, 0.0333333,
     0.0522642, 0.497261, 0, 0.104528, 0.994522, 0, 1, 0.0333333,

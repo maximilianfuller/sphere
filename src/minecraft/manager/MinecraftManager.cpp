@@ -1,7 +1,7 @@
 #include "minecraft/manager/MinecraftManager.h"
 
 #include "engine/camera/Camera.h"
-#include "engine/entity/ActiveEntity.h"
+#include "engine/entity/Entity.h"
 
 #include "engine/voxel/chunk/Chunk.h"
 #include "engine/voxel/block/Block.h"
@@ -20,7 +20,7 @@ MinecraftManager::MinecraftManager(Camera *camera) :
     VoxelManager(camera, new ValueTerrain())
 {
     m_player = new MinecraftPlayer(this, camera);
-    addActiveEntity(m_player);
+    addEntity(m_player);
 
     /* Set up blocks */
     float step = 1.0 / 16.0;
@@ -85,15 +85,15 @@ void MinecraftManager::setPeacefulMode(bool val)
 {
     m_peacefulMode = val;
 
-    QMutableListIterator<ActiveEntity *> a(m_activeEntities);
+    QMutableListIterator<Entity *> e(m_entities);
 
-    while(a.hasNext())
+    while(e.hasNext())
     {
-        ActiveEntity *ent = a.next();
+        Entity *ent = e.next();
 
         if(ent != m_player)
         {
-            a.remove();
+            e.remove();
             delete ent;
         }
     }
@@ -262,7 +262,7 @@ void MinecraftManager::spawnEnemy()
             + glm::vec3(glm::cos(angle) * 20.f, 10, glm::sin(angle) * 20.f);
     enemyPos.y = glm::min(enemyPos.y, 50.f);
 
-    addActiveEntity(new MinecraftEnemy(this, enemyPos));
+    addEntity(new MinecraftEnemy(this, enemyPos));
 }
 
 void MinecraftManager::onTick(float seconds)

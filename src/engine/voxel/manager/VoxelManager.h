@@ -1,8 +1,7 @@
-#ifndef MANAGER_H
-#define MANAGER_H
+#ifndef VOXELMANAGER_H
+#define VOXELMANAGER_H
 
 #include "engine/world/World.h"
-
 #include "engine/voxel/chunk/Chunk.h"
 
 #include <QList>
@@ -12,8 +11,6 @@ typedef unsigned char BlockPointer;
 
 class Block;
 class Terrain;
-class VoxelCollisionManager;
-class CylinderCollisionManager;
 class VoxelEntity;
 class Camera;
 class Quad;
@@ -32,6 +29,7 @@ class VoxelManager : public World
 {
 public:
     VoxelManager(Camera *camera, Terrain *terrain);
+
     virtual ~VoxelManager();
 
     Block *getBlock(BlockPointer p);
@@ -70,8 +68,6 @@ protected:
     Quad *m_face;
 
     /* Entities */
-    VoxelCollisionManager *m_voxelManager;
-    CylinderCollisionManager *m_cylinderManager;
     VoxelEntity *m_player;
 };
 

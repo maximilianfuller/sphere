@@ -7,21 +7,18 @@ namespace Graphics
 {
 class Controller;
 }
-class ActiveEntity;
-class BackgroundEntity;
+class Entity;
 
 class CollisionManager
 {
 public:
-    CollisionManager(QList<ActiveEntity *> &activeEnts,
-                     QList<BackgroundEntity *> &backgroundEnts);
+    CollisionManager(QList<Entity *> &entities);
 
     virtual void onTick(float seconds);
     virtual void onDraw(Graphics::Controller *graphics);
 
 protected:
-    QList<ActiveEntity *> &m_activeEntities;
-    QList<BackgroundEntity *> &m_backgroundEntities;
+    QList<Entity *> &m_entities;
 };
 
 #endif // COLLISIONMANAGER_H
