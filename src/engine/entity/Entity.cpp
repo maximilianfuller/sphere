@@ -2,7 +2,7 @@
 
 #include "engine/world/World.h"
 #include "engine/intersect/BoundingShape.h"
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 #include "engine/shape/Shape.h"
 
 Entity::Entity(World *world, glm::vec3 pos, glm::vec3 dims,
@@ -183,7 +183,7 @@ void Entity::onTick(float seconds)
     updateBoundingShape();
 }
 
-void Entity::onDraw(Graphics::Controller *graphics)
+void Entity::onDraw(Graphics *graphics)
 {
     m_shape->draw(graphics);
 }

@@ -1,7 +1,7 @@
 #include "engine/Application.h"
 
 #include "engine/Screen.h"
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 #include <QApplication>
 #include <QKeyEvent>
@@ -44,7 +44,7 @@ Application::~Application()
     }
 }
 
-Graphics::Controller *Application::getGraphics()
+Graphics *Application::getGraphics()
 {
     return m_graphics;
 }

@@ -6,10 +6,7 @@
 
 #include <QString>
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 
 class Quad : public Shape
 {
@@ -20,7 +17,7 @@ public:
          glm::vec3 dims = glm::vec3(1, 1, 1));
     virtual ~Quad();
 
-    void draw(Graphics::Controller *graphics);
+    void draw(Graphics *graphics);
 
 private:
     bool m_useTexture;

@@ -4,9 +4,7 @@
 #include "util/CommonIncludes.h"
 #include "engine/world/WorldConstants.h"
 
-namespace Graphics {
-class Controller;
-}
+class Graphics;
 class World;
 class BoundingShape;
 class Shape;
@@ -63,7 +61,7 @@ public:
     virtual bool intersect(Entity *ent);
     virtual void onIntersect(Entity *ent, glm::vec3 mtv);
     virtual void onTick(float seconds);
-    virtual void onDraw(Graphics::Controller *graphics);
+    virtual void onDraw(Graphics *graphics);
 
 protected:
     World *m_world;

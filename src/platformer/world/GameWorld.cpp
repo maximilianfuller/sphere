@@ -3,16 +3,22 @@
 #include "util/obj.h"
 
 #include "engine/camera/Camera.h"
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
+#include "engine/light/Light.h"
+#include "engine/shape/Ellipsoid.h"
+#include "engine/intersect/Ray.h"
+
 #include "engine/geom/manager/GeometricManager.h"
+#include "engine/geom/nav/NavMesh.h"
 
 #include "platformer/entity/Player.h"
 
 #include <QKeyEvent>
 
-GameWorld::GameWorld(Camera *camera, Graphics::Controller *graphics,
+GameWorld::GameWorld(Camera *camera, Graphics *graphics,
                      QString levelFile, QString levelKey) :
     m_levelKey(levelKey),
+    m_target(new Ellipsoid(glm::vec3(0, 3, 0), glm::vec3(0.5, 1, 0.5), glm::vec4(1, 0, 0, 1))),
     World(camera)
 {
     m_player = new Player(this, camera);
@@ -28,21 +34,51 @@ GameWorld::GameWorld(Camera *camera, Graphics::Controller *graphics,
                               m_level->vertexCount, levelKey);
     }
 
-    graphics->loadTexture(levelKey, 0);
-
     /* Add manager */
-    addManager(new GeometricManager(m_level->triangles, m_entities));
+    addManager(new GeometricManager(m_level->triangles, m_level->triangleData,
+                                    m_entities, graphics));
 
+    addLight(new Light());
 }
 
 GameWorld::~GameWorld()
 {
     delete m_level;
+    delete m_target;
 }
 
 Player *GameWorld::getPlayer()
 {
     return m_player;
+}
+
+Ray GameWorld::getRay(int mouseX, int mouseY)
+{
+    glm::vec2 size = m_camera->getRatio();
+
+    /* Get film plane coordinates */
+    float filmX = ((2.f * mouseX) / size.x) - 1.f;
+    float filmY = 1.f - ((2.f * mouseY) / size.y);
+    float filmZ = -1.f;
+
+    /* Player position */
+    glm::vec3 pos = m_player->getPosition();
+
+    /* Get inverse matrix */
+    glm::mat4x4 inverse = glm::inverse(m_camera->getPerspective());
+
+    /* Get ray */
+    glm::vec4 dir = inverse * glm::vec4(filmX, filmY, filmZ, 1);
+
+    /*
+    worldRay = glm::normalize(
+                glm::vec3(m_scene->m_filmToWorld * glm::vec4(filmX, filmY, filmZ, 1.f)) - worldEye);
+                */
+}
+
+void GameWorld::setTarget()
+{
+
 }
 
 void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
@@ -84,6 +120,12 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
     {
         m_camera->toggleThirdPerson();
     }
+    else if(event->key() == Qt::Key_F2)
+    {
+        GeometricManager *manager = dynamic_cast<GeometricManager *>(m_managers.at(0));
+
+        manager->navMesh->toggleVisible();
+    }
 
 }
 
@@ -120,12 +162,17 @@ void GameWorld::onTick(float seconds)
     World::onTick(seconds);
 }
 
-void GameWorld::onDraw(Graphics::Controller *graphics)
+void GameWorld::drawGeometry(Graphics *graphics)
 {
-    graphics->sendUseTextureUniform(1, "default");
-    graphics->sendModelUniform(glm::mat4x4(), "default");
-    graphics->sendColorUniform(glm::vec4(1), "default");
+    /* Draw mesh */
+    graphics->sendUseLightingUniform(1);
+    graphics->sendUseTextureUniform(0);
+    graphics->sendModelUniform(glm::mat4x4());
+    graphics->sendColorUniform(glm::vec4(1));
     graphics->drawShape(m_levelKey);
 
-    World::onDraw(graphics);
+    /* Draw target */
+    m_target->draw(graphics);
+
+    World::drawGeometry(graphics);
 }

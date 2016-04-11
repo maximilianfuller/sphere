@@ -2,16 +2,15 @@
 
 #include "engine/Application.h"
 #include "engine/camera/Camera.h"
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 #include "platformer/world/GameWorld.h"
-#include "platformer/entity/Player.h"
 
 #include <QApplication>
 #include <QKeyEvent>
 
 PlatformerScreen::PlatformerScreen(Application *app, float opacity,
-                                   Graphics::Controller *graphics) :
+                                   Graphics *graphics) :
     m_graphics(graphics),
     Screen(app, opacity)
 {

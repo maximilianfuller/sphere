@@ -2,20 +2,14 @@
 #define SHAPE_H
 
 #include "util/CommonIncludes.h"
-#include "engine/graphics/Controller.h"
 
-namespace Graphics {
-class Controller;
-}
-
+class Graphics;
 
 class Shape
 {
 public:
     Shape(glm::vec3 pos = glm::vec3(0, 0, 0),
           glm::vec3 dims = glm::vec3(1, 1, 1),
-          glm::vec4 color = glm::vec4(0.5, 0.5, 0.5, 1.0));
-    Shape(glm::mat4x4 model,
           glm::vec4 color = glm::vec4(0.5, 0.5, 0.5, 1.0));
     virtual ~Shape();
 
@@ -34,7 +28,7 @@ public:
     glm::mat4x4 getModelMatrix();
     void setModelMatrix(glm::mat4x4 model);
 
-    virtual void draw(Graphics::Controller *graphics);
+    virtual void draw(Graphics *graphics);
 
 protected:
     glm::mat4x4 m_model;

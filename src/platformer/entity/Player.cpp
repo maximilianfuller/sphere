@@ -1,6 +1,6 @@
 #include "platformer/entity/Player.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/shape/Ellipsoid.h"
 #include "engine/intersect/BoundingCylinder.h"
@@ -233,8 +233,10 @@ void Player::onTick(float seconds)
     updateCamera();
 }
 
-void Player::onDraw(Graphics::Controller *graphics)
+void Player::onDraw(Graphics *graphics)
 {
+    graphics->sendUseLightingUniform(1);
+
     if(m_camera->getThirdPerson())
     {
         m_shape->draw(graphics);

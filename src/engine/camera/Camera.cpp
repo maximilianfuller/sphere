@@ -1,6 +1,6 @@
 #include "engine/camera/Camera.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 Camera::Camera(glm::vec2 size, glm::vec3 eye, float yaw, float pitch, float fov) :
     m_ratio(size),
@@ -82,6 +82,11 @@ glm::vec3 Camera::getLook()
                      glm::sin(m_yaw) * glm::cos(m_pitch));
 }
 
+glm::mat4x4 Camera::getPerspective()
+{
+    return m_persp;
+}
+
 void Camera::setLook(glm::vec3 look)
 {
     m_look = look;
@@ -153,7 +158,7 @@ void Camera::updateTransforms()
     m_update = false;
 }
 
-void Camera::updateFrustumPlanes(Graphics::Controller *controller)
+void Camera::updateFrustumPlanes(Graphics *controller)
 {
     glm::vec4 nx = glm::vec4(m_persp[0][3] - m_persp[0][0],
             m_persp[1][3] - m_persp[1][0],
@@ -188,7 +193,7 @@ void Camera::updateFrustumPlanes(Graphics::Controller *controller)
     controller->setFrustumPlanes(nx, x, ny, y, nz, z);
 }
 
-void Camera::setTransforms(Graphics::Controller *graphics)
+void Camera::setTransforms(Graphics *graphics)
 {
     /* Update transforms if necessary */
     if(m_update)
@@ -198,6 +203,6 @@ void Camera::setTransforms(Graphics::Controller *graphics)
     }
 
     /* Send matrices to the shader */
-    graphics->sendViewUniform(m_view, "default");
-    graphics->sendProjectionUniform(m_proj, "default");
+    graphics->sendViewUniform(m_view);
+    graphics->sendProjectionUniform(m_proj);
 }

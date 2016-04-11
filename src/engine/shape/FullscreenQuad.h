@@ -6,18 +6,15 @@
 
 #include <QString>
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 
 class FullscreenQuad : public Shape
 {
 public:
-    FullscreenQuad(QString key, glm::mat4x4 model = glm::mat4x4());
+    FullscreenQuad(QString key);
     virtual ~FullscreenQuad();
 
-    void draw(Graphics::Controller *graphics);
+    void draw(Graphics *graphics);
 
 private:
     QString m_textureKey;

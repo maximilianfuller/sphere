@@ -12,7 +12,7 @@ public:
               glm::mat4x4 model = glm::mat4x4());
     ~BlockFace();
 
-    void draw(Graphics::Controller *graphics, glm::vec3 blockPos);
+    void draw(Graphics *graphics, glm::vec3 blockPos);
 
 private:
     QString m_shapeKey;

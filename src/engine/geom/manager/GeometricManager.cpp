@@ -1,23 +1,34 @@
 #include "GeometricManager.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 #include "engine/intersect/Ray.h"
 #include "engine/intersect/Triangle.h"
 #include "engine/shape/Ellipsoid.h"
 #include "engine/entity/Entity.h"
 
-/* TODO:
- * 1) Navigation mesh class
- * 2) Add indices to Triangle class
- * 2.5) Filter vertices
- * 3) Create graph in nav mes class, using triangles with indices (filter)
- * 4) Create vbo in nav mesh class, using triangles with indices (filter)
- */
-GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities) :
+#include "util/obj.h"
+#include "engine/geom/nav/NavMesh.h"
+
+/*
+ * 2) Transform mouse position to environment ray (game world / player)
+ * 3) Raycast nav mesh with ray
+ * 4) Draw raycasted location in world (ellipsoid for drawing)
+ * 5) Once raycasted target, create path
+ * 6) Create list of ellipses for drawing on the fly (save path?)
+ * 7) Draw them
+ * 8) SSF
+*/
+GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<TriangleData *> &triangleData,
+                                   QList<Entity *> &entities, Graphics *graphics) :
     m_env(triangles),
+    navMesh(new NavMesh(triangleData, graphics)),
     Manager(entities)
 {
+}
+GeometricManager::~GeometricManager()
+{
+    delete navMesh;
 }
 
 /* Intersection methods */
@@ -226,8 +237,10 @@ void GeometricManager::onTick(float seconds)
     }
 }
 
-void GeometricManager::onDraw(Graphics::Controller *graphics)
+void GeometricManager::onDraw(Graphics *graphics)
 {
+    navMesh->draw(graphics);
+
     foreach(Entity *ent, m_entities)
     {
         ent->onDraw(graphics);

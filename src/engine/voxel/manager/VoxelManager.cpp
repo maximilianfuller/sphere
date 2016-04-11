@@ -1,5 +1,6 @@
 #include "engine/voxel/manager/VoxelManager.h"
 
+#include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/shape/Quad.h"
 #include "engine/manager/CylinderCollisionManager.h"
@@ -345,7 +346,7 @@ void VoxelManager::selectBlock(int x, int y, int z, glm::vec3 p, glm::vec3 d, fl
     }
 }
 
-void VoxelManager::renderSelectedBlock(Graphics::Controller *graphics)
+void VoxelManager::renderSelectedBlock(Graphics *graphics)
 {
     if(m_selectedFace == LeftFace)
     {
@@ -408,13 +409,13 @@ void VoxelManager::onTick(float seconds)
     castRay(m_camera->getEye(), m_camera->getLook());
 }
 
-void VoxelManager::onDraw(Graphics::Controller *graphics)
+void VoxelManager::onDraw(Graphics *graphics)
 {
-    World::onDraw(graphics);
+    World::drawGeometry(graphics);
 
-    graphics->sendColorUniform(glm::vec4(0.5, 0.5, 0.5, 1.0), "default");
-    graphics->sendUseTextureUniform(1, "default");
-    graphics->sendModelUniform(glm::mat4x4(), "default");
+    graphics->sendColorUniform(glm::vec4(0.5, 0.5, 0.5, 1.0));
+    graphics->sendUseTextureUniform(1);
+    graphics->sendModelUniform(glm::mat4x4());
 
     foreach(Chunk *chunk, m_chunks)
     {

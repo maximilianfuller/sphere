@@ -11,10 +11,7 @@ const int DIRT_START = 30;
 typedef unsigned char BlockPointer;
 
 class VoxelManager;
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 class AABoundingBox;
 
 class VoxelEntity;
@@ -43,7 +40,7 @@ public:
 
     /* Game loop */
     virtual void onTick(float seconds);
-    virtual void onDraw(Graphics::Controller *graphics);
+    virtual void onDraw(Graphics *graphics);
 
 protected:
     VoxelManager *m_manager;
@@ -54,7 +51,7 @@ protected:
     BlockPointer m_blocks[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
     bool m_passableMap[CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE];
 
-    Graphics::VertexData m_vertexBuffer;
+    VertexData m_vertexBuffer;
     float *m_vertexData;
 };
 

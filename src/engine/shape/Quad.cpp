@@ -1,6 +1,6 @@
 #include "engine/shape/Quad.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 Quad::Quad(bool useTexture, bool useLighting, QString key, glm::vec4 color,
            glm::vec3 pos, glm::vec3 dims) :
@@ -15,12 +15,12 @@ Quad::~Quad()
 {
 }
 
-void Quad::draw(Graphics::Controller *graphics)
+void Quad::draw(Graphics *graphics)
 {
     Shape::draw(graphics);
 
-    graphics->sendUseTextureUniform(m_useTexture, "default");
-    graphics->sendUseLightingUniform(m_useLighting, "default");
+    graphics->sendUseTextureUniform(m_useTexture);
+    graphics->sendUseLightingUniform(m_useLighting);
 
     if(m_useTexture)
     {
@@ -36,6 +36,6 @@ void Quad::draw(Graphics::Controller *graphics)
 
     if(!m_useLighting)
     {
-        graphics->sendUseLightingUniform(1, "default");
+        graphics->sendUseLightingUniform(1);
     }
 }

@@ -24,53 +24,56 @@
 
 class Triangle;
 
+// Used for reading/writing OBJ files. Don't worry too much about using or understanding this struct.
+struct Index
+{
+    int vertexIndex;
+    int coordIndex;
+    int normalIndex;
+
+    Index() : vertexIndex(-1), coordIndex(-1), normalIndex(-1) {}
+    Index(int vertexIndex, int coordIndex, int normalIndex) : vertexIndex(vertexIndex), coordIndex(coordIndex), normalIndex(normalIndex) {}
+};
+
+// A basic struct that holds all the basic information about a single triangle in an OBJ model.
+struct TriangleData
+{
+    Index a, b, c;
+    glm::vec3 vertices[3];
+    glm::vec3 normal;
+    bool visited;
+
+    TriangleData(const Index &inda, const Index &indb, const Index &indc,
+             const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3) {
+        vertices[0] = v1;
+        vertices[1] = v2;
+        vertices[2] = v3;
+        normal = glm::normalize(glm::cross(vertices[1] - vertices[0], vertices[2] - vertices[0]));
+
+        a = inda;
+        b = indb;
+        c = indc;
+
+        visited = false;
+    }
+
+    TriangleData(const Index &inda, const Index &indb, const Index &indc,
+             const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &currNormal) {
+        vertices[0] = v1;
+        vertices[1] = v2;
+        vertices[2] = v3;
+
+        normal = glm::normalize(currNormal);
+
+        a = inda;
+        b = indb;
+        c = indc;
+    }
+};
+
 class OBJ
 {
 public:
-    // Used for reading/writing OBJ files. Don't worry too much about using or understanding this struct.
-    struct Index
-    {
-        int vertexIndex;
-        int coordIndex;
-        int normalIndex;
-
-        Index() : vertexIndex(-1), coordIndex(-1), normalIndex(-1) {}
-        Index(int vertexIndex, int coordIndex, int normalIndex) : vertexIndex(vertexIndex), coordIndex(coordIndex), normalIndex(normalIndex) {}
-    };
-
-    // A basic struct that holds all the basic information about a single triangle in an OBJ model.
-    struct TriangleData
-    {
-        Index a, b, c;
-        glm::vec3 vertices[3];
-        glm::vec3 normal;
-
-        TriangleData(const Index &inda, const Index &indb, const Index &indc,
-                 const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3) {
-            vertices[0] = v1;
-            vertices[1] = v2;
-            vertices[2] = v3;
-            normal = glm::normalize(glm::cross(vertices[1] - vertices[0], vertices[2] - vertices[0]));
-
-            a = inda;
-            b = indb;
-            c = indc;
-        }
-
-        TriangleData(const Index &inda, const Index &indb, const Index &indc,
-                 const glm::vec3 &v1, const glm::vec3 &v2, const glm::vec3 &v3, const glm::vec3 &currNormal) {
-            vertices[0] = v1;
-            vertices[1] = v2;
-            vertices[2] = v3;
-
-            normal = glm::normalize(currNormal);
-
-            a = inda;
-            b = indb;
-            c = indc;
-        }
-    };
-
     // The constructor automatically reads the given file.
     OBJ(QString path);
     ~OBJ();
@@ -86,7 +89,7 @@ public:
     int vertexCount;
 
     // The triangles that make up the VBO.
-    QList<TriangleData*> triangleData;
+    QList<TriangleData *> triangleData;
     QList<Triangle *> triangles;
 
     bool read(const QString &path);

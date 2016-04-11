@@ -4,13 +4,12 @@
 #include "engine/manager/Manager.h"
 #include "util/CommonIncludes.h"
 
+class Graphics;
 class Entity;
 class Triangle;
+class TriangleData;
 class Ellipsoid;
-namespace Graphics
-{
-class Controller;
-}
+class NavMesh;
 struct CollisionData;
 
 const float EPS = 0.001;
@@ -19,7 +18,9 @@ const float SLIDE_BOUND = glm::cos(M_PI / 4.0);
 class GeometricManager : public Manager
 {
 public:
-    GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities);
+    GeometricManager(QList<Triangle *> &triangles, QList<TriangleData *> &triangleData,
+                     QList<Entity *> &entities, Graphics *graphics);
+    ~GeometricManager();
 
     /* Intersection calculation */
     bool intersectTriangles(QList<Triangle *> &ts, glm::vec3 startPos, glm::vec3 endPos,
@@ -36,7 +37,9 @@ public:
     void moveEntity(Entity *ent, float seconds);
 
     void onTick(float seconds);
-    void onDraw(Graphics::Controller *graphics);
+    void onDraw(Graphics *graphics);
+
+    NavMesh *navMesh;
 
 private:
     QList<Triangle *> &m_env;

@@ -1,6 +1,6 @@
 #include "engine/voxel/shape/VoxelCube.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 #include "engine/voxel/shape/CubeData.h"
 

@@ -1,6 +1,6 @@
 #include "platformer/world/WelcomeWorld.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/shape/FullscreenQuad.h"
 
@@ -19,7 +19,7 @@ void WelcomeWorld::onTick(float seconds)
     return;
 }
 
-void WelcomeWorld::onDraw(Graphics::Controller *graphics)
+void WelcomeWorld::drawGeometry(Graphics *graphics)
 {
     m_message->draw(graphics);
 }

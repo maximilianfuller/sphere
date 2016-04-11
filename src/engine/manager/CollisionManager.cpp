@@ -1,6 +1,6 @@
 #include "CollisionManager.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 #include "engine/entity/Entity.h"
 
 CollisionManager::CollisionManager(QList<Entity *> &entities) :
@@ -12,6 +12,6 @@ void CollisionManager::onTick(float seconds)
 {
 }
 
-void CollisionManager::onDraw(Graphics::Controller *graphics)
+void CollisionManager::onDraw(Graphics *graphics)
 {
 }

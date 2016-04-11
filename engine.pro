@@ -22,7 +22,6 @@ SOURCES += \
     src/engine/Application.cpp \
     src/engine/camera/Camera.cpp \
     src/engine/shape/Shape.cpp \
-    src/engine/graphics/Controller.cpp \
     src/engine/graphics/VertexData.cpp \
     src/engine/shape/Cylinder.cpp \
     src/engine/entity/Entity.cpp \
@@ -35,7 +34,6 @@ SOURCES += \
     src/engine/intersect/BoundingCylinder.cpp \
     src/engine/voxel/chunk/Chunk.cpp \
     src/engine/voxel/entity/VoxelEntity.cpp \
-    src/engine/voxel/shape/BlockFace.cpp \
     src/engine/voxel/terrain/Terrain.cpp \
     src/engine/voxel/shape/VoxelCube.cpp \
     src/engine/intersect/AABoundingBox.cpp \
@@ -49,20 +47,17 @@ SOURCES += \
     src/engine/geom/manager/GeometricManager.cpp \
     src/engine/shape/Ellipsoid.cpp \
     src/engine/intersect/Triangle.cpp \
-    src/minecraft/MinecraftApplication.cpp \
-    src/minecraft/MinecraftScreen.cpp \
-    src/minecraft/manager/MinecraftManager.cpp \
-    src/minecraft/noise/Noise.cpp \
-    src/minecraft/terrain/ValueTerrain.cpp \
-    src/minecraft/entity/MinecraftPlayer.cpp \
-    src/minecraft/entity/MinecraftEnemy.cpp \
+    src/engine/intersect/Ray.cpp \
+    src/engine/geom/nav/NavMesh.cpp \
+    src/engine/graphics/Graphics.cpp \
+    src/engine/graphics/FrameBuffer.cpp \
+    src/engine/light/Light.cpp \
     src/platformer/PlatformerApplication.cpp \
     src/platformer/PlatformerScreen.cpp \
     src/platformer/WelcomeScreen.cpp \
     src/platformer/entity/Player.cpp \
-    src/platformer/world/GameWorld.cpp \
     src/platformer/world/WelcomeWorld.cpp \
-    src/engine/intersect/Ray.cpp
+    src/platformer/world/GameWorld.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -77,7 +72,6 @@ HEADERS += \
     src/engine/Application.h \
     src/engine/Screen.h \
     src/engine/shape/Shape.h \
-    src/engine/graphics/Controller.h \
     src/engine/graphics/VertexData.h \
     src/engine/shape/Cylinder.h \
     src/engine/entity/Entity.h \
@@ -91,21 +85,13 @@ HEADERS += \
     src/engine/intersect/BoundingCylinder.h \
     src/engine/voxel/chunk/Chunk.h \
     src/engine/voxel/block/Block.h \
-    src/minecraft/MinecraftApplication.h \
-    src/minecraft/manager/MinecraftManager.h \
-    src/minecraft/noise/Noise.h \
     src/engine/voxel/entity/VoxelEntity.h \
-    src/engine/voxel/shape/BlockFace.h \
     src/engine/voxel/terrain/Terrain.h \
-    src/minecraft/terrain/ValueTerrain.h \
-    src/minecraft/entity/MinecraftPlayer.h \
-    src/minecraft/MinecraftScreen.h \
     src/engine/voxel/shape/VoxelCube.h \
     src/engine/voxel/shape/CubeData.h \
     src/engine/world/WorldConstants.h \
     src/engine/intersect/AABoundingBox.h \
     src/engine/shape/Quad.h \
-    src/minecraft/entity/MinecraftEnemy.h \
     src/engine/voxel/manager/VoxelManager.h \
     src/engine/manager/Manager.h \
     src/engine/manager/ModuleManager.h \
@@ -115,13 +101,17 @@ HEADERS += \
     src/engine/geom/manager/GeometricManager.h \
     src/engine/shape/Ellipsoid.h \
     src/engine/intersect/Triangle.h \
+    src/engine/intersect/Ray.h \
+    src/engine/geom/nav/NavMesh.h \
+    src/engine/graphics/Graphics.h \
+    src/engine/graphics/FrameBuffer.h \
+    src/engine/light/Light.h \
     src/platformer/PlatformerApplication.h \
     src/platformer/PlatformerScreen.h \
     src/platformer/WelcomeScreen.h \
     src/platformer/entity/Player.h \
-    src/platformer/world/GameWorld.h \
     src/platformer/world/WelcomeWorld.h \
-    src/engine/intersect/Ray.h
+    src/platformer/world/GameWorld.h
 
 
 FORMS += src/mainwindow.ui

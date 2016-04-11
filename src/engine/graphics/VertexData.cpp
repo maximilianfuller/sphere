@@ -1,7 +1,5 @@
 #include "engine/graphics/VertexData.h"
 
-using namespace Graphics;
-
 VertexData::VertexData()
 {
     /* Generate vao and vbo */

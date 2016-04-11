@@ -2,8 +2,9 @@
 
 #include "engine/Application.h"
 #include "engine/camera/Camera.h"
-#include "engine/graphics/Controller.h"
 #include "engine/world/World.h"
+#include "engine/graphics/Graphics.h"
+#include "engine/graphics/FrameBuffer.h"
 
 #include <QKeyEvent>
 
@@ -15,6 +16,19 @@ Screen::Screen(Application *app, float opacity, int width, int height) :
     m_camera(NULL),
     m_world(NULL)
 {
+    GLint ifObject[3] = {GL_RGB16F, GL_RGB16F, GL_RGBA};
+    GLenum fObject[3] = {GL_RGB, GL_RGB, GL_RGBA};
+    GLenum tObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
+
+    GLint ifLight[1] = {GL_RGBA};
+    GLenum fLight[1] = {GL_RGBA};
+    GLenum tLight[1] = {GL_UNSIGNED_BYTE};
+
+    m_objectDataFBO = new Framebuffer(width, height, 3,
+                                      ifObject, fObject, tObject);
+
+    m_lightDataFBO = new Framebuffer(width, height, 1,
+                                     ifLight, fLight, tLight);
 }
 
 Screen::~Screen()
@@ -49,7 +63,7 @@ void Screen::onTick(float seconds)
     m_world->onTick(seconds);
 }
 
-bool Screen::onDraw(float &currentOpacity, Graphics::Controller *graphics)
+bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
 {
     /* Opacity calculation */
     float maxOpacity = 1.f - currentOpacity;
@@ -58,20 +72,41 @@ bool Screen::onDraw(float &currentOpacity, Graphics::Controller *graphics)
 
     currentOpacity += opacity;
 
-    /* Load shader program */
-    graphics->loadActiveProgram();
-
-    /* Send opacity and camera uniforms */
-    //graphics->sendOpacityUniform(opacity, "default");
-    m_camera->setTransforms(graphics);
-
     /* Render world */
-    m_world->onDraw(graphics);
-
-    /* Unload shader program */
-    graphics->unloadProgram();
+    drawDeferred(graphics);
 
     return morePaint;
+}
+
+//TODO: make shaders
+//TODO: load shaders
+//TODO: re-factor uniform sending
+//TODO: ensure textures used
+void Screen::drawDeferred(Graphics *graphics)
+{
+    graphics->setActiveProgram("pre");
+    m_camera->setTransforms(graphics);
+
+    m_objectDataFBO->bind();
+    m_world->drawGeometry(graphics);
+
+    graphics->setActiveProgram("lights");
+    m_camera->setTransforms(graphics);
+
+    m_objectDataFBO->unbind();
+    m_objectDataFBO->useTextures();
+    //m_lightDataFBO->bind();
+    //m_world->drawLights(graphics);
+    m_world->drawGeometry(graphics);
+
+    /*
+    graphics->setActiveProgram("post");
+    m_camera->setTransforms(graphics);
+
+    m_lightDataFBO->unbind();
+    m_lightDataFBO->useTextures();
+    m_world->drawGeometry(graphics);
+    */
 }
 
 void Screen::mousePressEvent(QMouseEvent *event)

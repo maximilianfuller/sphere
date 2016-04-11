@@ -3,9 +3,7 @@
 
 #include "util/CommonIncludes.h"
 
-namespace Graphics {
-class Controller;
-}
+class Graphics;
 
 const static float nearPlane = 0.1;
 const static float farPlane = 200.0;
@@ -36,6 +34,8 @@ public:
     glm::vec3 getLook();
     void setLook(glm::vec3 look);
 
+    glm::mat4x4 getPerspective();
+
     bool getThirdPerson();
 
     void toggleThirdPerson();
@@ -43,9 +43,9 @@ public:
     void rotate(float yaw, float pitch);
 
     void updateTransforms();
-    void updateFrustumPlanes(Graphics::Controller *graphics);
+    void updateFrustumPlanes(Graphics *graphics);
 
-    virtual void setTransforms(Graphics::Controller *graphics);
+    virtual void setTransforms(Graphics *graphics);
 
 protected:
     float m_yaw, m_pitch;

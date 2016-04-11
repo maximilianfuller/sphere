@@ -3,28 +3,31 @@
 
 #include "util/CommonIncludes.h"
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 
 class Light
 {
 public:
-    Light();
-    virtual ~Light();
+    Light(glm::vec3 pos = glm::vec3(0, 0, 0),
+          glm::vec3 att = glm::vec3(1, 0, 0),
+          glm::vec3 intensity = glm::vec3(1, 1, 1));
 
     glm::vec3 getPosition();
-    void setPosition(glm::vec3 &pos);
+    void setPosition(glm::vec3 pos);
 
-    glm::vec3 getColor();
-    void setColor(glm::vec3 &color);
+    glm::vec3 getAttenuation();
+    void setAttenuation(glm::vec3 att);
 
-    virtual void draw(Graphics::Controller *graphics) = 0;
+    glm::vec3 getIntensity();
+    void setIntensity(glm::vec3 intensity);
 
-protected:
-    glm::vec3 m_position;
-    glm::vec3 m_color;
+    virtual void draw(Graphics *graphics);
+
+private:
+    glm::mat4x4 m_model;
+    glm::vec3 m_pos;
+    glm::vec3 m_att;
+    glm::vec3 m_int;
 };
 
 #endif // LIGHT_H

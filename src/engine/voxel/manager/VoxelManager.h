@@ -43,11 +43,11 @@ public:
     Chunk *getChunk(float x, float y, float z);
     void castRay(glm::vec3 p, glm::vec3 d);
     void selectBlock(int x, int y, int z, glm::vec3 p, glm::vec3 d, float t);
-    void renderSelectedBlock(Graphics::Controller *graphics);
+    void renderSelectedBlock(Graphics *graphics);
 
     /* Game loop */
     virtual void onTick(float seconds);
-    virtual void onDraw(Graphics::Controller *graphics);
+    virtual void onDraw(Graphics *graphics);
 
 protected:
     /* Blocks and chunks */

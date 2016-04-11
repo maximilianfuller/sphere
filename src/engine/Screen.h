@@ -4,12 +4,10 @@
 #include "util/CommonIncludes.h"
 
 class Application;
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 class Camera;
 class World;
+class Framebuffer;
 
 class Screen
 {
@@ -25,7 +23,10 @@ public:
     /* Game Loop */
     virtual void onResize(int w, int h);
     virtual void onTick(float seconds);
-    virtual bool onDraw(float &currentOpacity, Graphics::Controller *graphics);
+    virtual bool onDraw(float &currentOpacity, Graphics *graphics);
+
+    /* Deferred lighting */
+    virtual void drawDeferred(Graphics *graphics);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -47,6 +48,10 @@ protected:
     int m_height;
 
     float m_opacity;
+
+    /* Deferred lighting pipeline */
+    Framebuffer *m_objectDataFBO;
+    Framebuffer *m_lightDataFBO;
 };
 
 #endif // SCREEN_H

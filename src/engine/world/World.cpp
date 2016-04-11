@@ -1,8 +1,9 @@
 #include "engine/world/World.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/entity/Entity.h"
+#include "engine/light/Light.h"
 #include "engine/manager/Manager.h"
 
 World::World(Camera *camera) :
@@ -20,6 +21,11 @@ World::~World()
     foreach(Manager *manager, m_managers)
     {
         delete(manager);
+    }
+
+    foreach(Light *light, m_lights)
+    {
+        delete(light);
     }
 }
 
@@ -61,6 +67,34 @@ void World::addManager(Manager *manager)
     m_managers.append(manager);
 }
 
+Light *World::getLight(int index)
+{
+    return m_lights[index];
+}
+
+void World::addLight(Light *light)
+{
+    m_lights.append(light);
+}
+
+void World::removeLight(Light *light)
+{
+    int i = 0;
+
+    foreach(Light *l, m_lights)
+    {
+        if(light == l)
+        {
+            break;
+        }
+
+        i++;
+    }
+
+    delete m_lights[i];
+    m_lights.removeAt(i);
+}
+
 void World::onTick(float seconds)
 {
     foreach(Manager *manager, m_managers)
@@ -69,11 +103,19 @@ void World::onTick(float seconds)
     }
 }
 
-void World::onDraw(Graphics::Controller *graphics)
+void World::drawGeometry(Graphics *graphics)
 {
     foreach(Manager *manager, m_managers)
     {
         manager->onDraw(graphics);
+    }
+}
+
+void World::drawLights(Graphics *graphics)
+{
+    foreach(Light *light, m_lights)
+    {
+        light->draw(graphics);
     }
 }
 

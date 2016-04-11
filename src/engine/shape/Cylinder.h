@@ -3,10 +3,7 @@
 
 #include "engine/shape/Shape.h"
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 
 class Cylinder : public Shape
 {
@@ -16,7 +13,7 @@ public:
              glm::vec4 color = glm::vec4(0.5, 0.5, 0.5, 1.0));
     ~Cylinder();
 
-    void draw(Graphics::Controller *graphics);
+    void draw(Graphics *graphics);
 };
 
 #endif // CYLINDER_H

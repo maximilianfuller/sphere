@@ -3,8 +3,6 @@
 
 #include "util/CommonIncludes.h"
 
-namespace Graphics
-{
 const GLint POSITION_ATTR = 0;
 const GLint NORMAL_ATTR = 1;
 const GLint TEXTURE_ATTR = 2;
@@ -27,7 +25,5 @@ private:
     GLuint m_vbo;
     int m_numVertices;
 };
-
-}
 
 #endif // VERTEXDATA_H

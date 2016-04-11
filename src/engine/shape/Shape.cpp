@@ -1,6 +1,6 @@
 #include "engine/shape/Shape.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 Shape::Shape(glm::vec3 pos, glm::vec3 dims, glm::vec4 color) :
     m_model(glm::mat4x4()),
@@ -8,12 +8,6 @@ Shape::Shape(glm::vec3 pos, glm::vec3 dims, glm::vec4 color) :
 {
     setPosition(pos);
     setDimensions(dims);
-}
-
-Shape::Shape(glm::mat4x4 model, glm::vec4 color) :
-    m_model(model),
-    m_color(color)
-{
 }
 
 Shape::~Shape()
@@ -82,8 +76,8 @@ void Shape::setModelMatrix(glm::mat4x4 model)
     m_model = model;
 }
 
-void Shape::draw(Graphics::Controller *graphics)
+void Shape::draw(Graphics *graphics)
 {
-    graphics->sendModelUniform(m_model, "default");
-    graphics->sendColorUniform(m_color, "default");
+    graphics->sendModelUniform(m_model);
+    graphics->sendColorUniform(m_color);
 }

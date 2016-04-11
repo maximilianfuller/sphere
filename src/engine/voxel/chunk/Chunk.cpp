@@ -1,6 +1,6 @@
 #include "engine/voxel/chunk/Chunk.h"
 
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 #include "engine/intersect/AABoundingBox.h"
 
 #include "engine/voxel/manager/VoxelManager.h"
@@ -146,11 +146,11 @@ void Chunk::updateBlockVertexBuffer()
     m_vertexBuffer.setVertexData(m_vertexData,
                                  numVertices * sizeof(GLfloat) * 8,
                                  numVertices);
-    m_vertexBuffer.setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
+    m_vertexBuffer.setAttribute(POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
                                      sizeof(GLfloat) * 8, (void *) 0);
-    m_vertexBuffer.setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
+    m_vertexBuffer.setAttribute(NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
                                      sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 3));
-    m_vertexBuffer.setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
+    m_vertexBuffer.setAttribute(TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
 
     /* Delete data array */
@@ -161,7 +161,7 @@ void Chunk::onTick(float seconds)
 {
 }
 
-void Chunk::onDraw(Graphics::Controller *graphics)
+void Chunk::onDraw(Graphics *graphics)
 {
     if(graphics->inFrustum(m_aabb))
     {

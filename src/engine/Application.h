@@ -6,10 +6,7 @@
 #include <QStack>
 
 class Screen;
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 
 class Application
 {
@@ -20,7 +17,7 @@ public:
     virtual ~Application();
 
     /* Graphics Controller */
-    Graphics::Controller *getGraphics();
+    Graphics *getGraphics();
 
     /* Screen Management */
     Screen *getScreen(int index);
@@ -53,7 +50,7 @@ protected:
     /* Stack for screen management */
     QStack<Screen *> m_screenStack;
 
-    Graphics::Controller *m_graphics;
+    Graphics *m_graphics;
 
 private:
     glm::vec4 m_clearColor;

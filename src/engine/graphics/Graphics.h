@@ -1,5 +1,5 @@
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
+#ifndef GRAPHICS_H
+#define GRAPHICS_H
 
 #include "util/CommonIncludes.h"
 #include "engine/graphics/VertexData.h"
@@ -9,14 +9,11 @@
 
 class AABoundingBox;
 
-namespace Graphics
-{
-
-class Controller
+class Graphics
 {
 public:
-    Controller();
-    virtual ~Controller();
+    Graphics();
+    virtual ~Graphics();
 
     bool hasTexture(QString key);
     GLuint *getTexture(QString key);
@@ -31,7 +28,6 @@ public:
                          QString key);
     void removeProgram(QString key);
     void setActiveProgram(QString key);
-    void loadActiveProgram();
     void unloadProgram();
 
     bool hasShape(QString key);
@@ -45,13 +41,16 @@ public:
                           glm::vec4 frustumNZ, glm::vec4 frustumZ);
     bool inFrustum(AABoundingBox *aabb);
 
-    void sendColorUniform(glm::vec4 color, QString key);
-    void sendModelUniform(glm::mat4x4 model, QString key);
-    void sendViewUniform(glm::mat4x4 model, QString key);
-    void sendProjectionUniform(glm::mat4x4 model, QString key);
-    void sendOpacityUniform(float opacity, QString key);
-    void sendUseTextureUniform(int useTexture, QString key);
-    void sendUseLightingUniform(int useLighting, QString key);
+    void sendColorUniform(glm::vec4 color);
+    void sendIntensityUniform(glm::vec3 intensity);
+    void sendAttenuationUniform(glm::vec3 att);
+    void sendLightPositionUniform(glm::vec3 pos);
+    void sendModelUniform(glm::mat4x4 model);
+    void sendViewUniform(glm::mat4x4 model);
+    void sendProjectionUniform(glm::mat4x4 model);
+    void sendOpacityUniform(float opacity);
+    void sendUseTextureUniform(int useTexture);
+    void sendUseLightingUniform(int useLighting);
 
 private:
     /* Textures */
@@ -74,7 +73,5 @@ private:
     // View frustum plane equations
     glm::vec4 m_frustumPlanes[6];
 };
-
-}
 
 #endif // CONTROLLER_H

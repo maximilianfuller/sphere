@@ -5,11 +5,9 @@
 
 #include <QList>
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 class Entity;
+class Light;
 class Camera;
 class Manager;
 
@@ -28,9 +26,15 @@ public:
     /* Manager management */
     void addManager(Manager *manager);
 
+    /* Light management */
+    Light *getLight(int index);
+    void addLight(Light *light);
+    void removeLight(Light *light);
+
     /* Game Loop */
     virtual void onTick(float seconds);
-    virtual void onDraw(Graphics::Controller *graphics);
+    virtual void drawGeometry(Graphics *graphics);
+    virtual void drawLights(Graphics *graphics);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -46,6 +50,7 @@ public:
 protected:
     QList<Manager *> m_managers;
     QList<Entity *> m_entities;
+    QList<Light *> m_lights;
 
     Camera *m_camera;
 };

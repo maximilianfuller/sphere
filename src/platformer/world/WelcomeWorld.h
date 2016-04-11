@@ -3,10 +3,7 @@
 
 #include "engine/world/World.h"
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 class Camera;
 class FullscreenQuad;
 
@@ -17,7 +14,7 @@ public:
     ~WelcomeWorld();
 
     void onTick(float seconds);
-    void onDraw(Graphics::Controller *graphics);
+    void drawGeometry(Graphics *graphics);
 
 private:
     FullscreenQuad *m_message;

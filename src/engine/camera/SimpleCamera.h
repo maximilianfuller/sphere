@@ -3,9 +3,7 @@
 
 #include "engine/camera/Camera.h"
 
-namespace Graphics {
-class Controller;
-}
+class Graphics;
 
 class SimpleCamera : public Camera
 {
@@ -13,7 +11,7 @@ public:
     SimpleCamera();
     ~SimpleCamera();
 
-    void setTransforms(Graphics::Controller *graphics);
+    void setTransforms(Graphics *graphics);
 };
 
 #endif // SIMPLECAMERA_H

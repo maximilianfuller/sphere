@@ -1,4 +1,4 @@
-#include "engine/graphics/Controller.h"
+#include "engine/graphics/Graphics.h"
 
 #include "util/ResourceLoader.h"
 #include "util/QuadData.h"
@@ -10,10 +10,9 @@
 #include <QImage>
 #include <QGLWidget>
 
-using namespace Graphics;
-
-Controller::Controller()
+Graphics::Graphics()
 {
+    /* Default Shapes */
     createShape(quadVertexBufferData, quadDataSize, quadVertexCount, "quad");
     createShape(fullscreenQuadVertexBufferData, quadDataSize, quadVertexCount,
                 "fullscreenQuad");
@@ -21,9 +20,14 @@ Controller::Controller()
                 "cylinder");
     createShape(sphereVertexBufferData, sphereDataSize, sphereVertexCount,
                 "sphere");
+
+    /* Default Shaders */
+    createProgram(":/shaders/shader.vert", ":/shaders/pre.frag", "pre");
+    createProgram(":/shaders/shader.vert", ":/shaders/lights.frag", "lights");
+    createProgram(":/shaders/shader.vert", ":/shaders/post.frag", "post");
 }
 
-Controller::~Controller()
+Graphics::~Graphics()
 {
     /* Delete textures */
     QHash<QString, GLuint *>::iterator t;
@@ -51,17 +55,17 @@ Controller::~Controller()
     }
 }
 
-bool Controller::hasTexture(QString key)
+bool Graphics::hasTexture(QString key)
 {
     return m_textures.contains(key);
 }
 
-GLuint *Controller::getTexture(QString key)
+GLuint *Graphics::getTexture(QString key)
 {
     return m_textures.value(key);
 }
 
-GLuint *Controller::createTexture(QString file, QString key)
+GLuint *Graphics::createTexture(QString file, QString key)
 {
     /* Open image file */
     QImage image(file);
@@ -85,7 +89,7 @@ GLuint *Controller::createTexture(QString file, QString key)
     return texture;
 }
 
-void Controller::removeTexture(QString key)
+void Graphics::removeTexture(QString key)
 {
     GLuint *texture = m_textures.value(key);
     glDeleteTextures(1, texture);
@@ -94,7 +98,7 @@ void Controller::removeTexture(QString key)
     m_textures.remove(key);
 }
 
-void Controller::loadTexture(QString key, int i)
+void Graphics::loadTexture(QString key, int i)
 {
     /* Get texture from map */
     GLuint *texture = m_textures.value(key, 0);
@@ -104,23 +108,23 @@ void Controller::loadTexture(QString key, int i)
     glBindTexture(GL_TEXTURE_2D, *texture);
 }
 
-void Controller::unloadTexture(int i)
+void Graphics::unloadTexture(int i)
 {
     glActiveTexture(GL_TEXTURE0 + i);
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-bool Controller::hasProgram(QString key)
+bool Graphics::hasProgram(QString key)
 {
     return m_programs.contains(key);
 }
 
-GLuint Controller::getProgram(QString key)
+GLuint Graphics::getProgram(QString key)
 {
     return m_programs.value(key);
 }
 
-GLuint Controller::createProgram(const char *vertexShaderFile, const char *fragmentShaderFile, QString key)
+GLuint Graphics::createProgram(const char *vertexShaderFile, const char *fragmentShaderFile, QString key)
 {
     /* Load program from shaders */
     GLuint program;
@@ -132,7 +136,7 @@ GLuint Controller::createProgram(const char *vertexShaderFile, const char *fragm
     return program;
 }
 
-void Controller::removeProgram(QString key)
+void Graphics::removeProgram(QString key)
 {
     GLuint program = m_programs.value(key, -1);
     glDeleteProgram(program);
@@ -140,45 +144,41 @@ void Controller::removeProgram(QString key)
     m_programs.remove(key);
 }
 
-void Controller::setActiveProgram(QString key)
+void Graphics::setActiveProgram(QString key)
 {
     GLuint program = m_programs.value(key, -1);
     m_activeProgram = program;
-}
-
-void Controller::loadActiveProgram()
-{
     glUseProgram(m_activeProgram);
 }
 
-void Controller::unloadProgram()
+void Graphics::unloadProgram()
 {
     glUseProgram(0);
 }
 
-bool Controller::hasShape(QString key)
+bool Graphics::hasShape(QString key)
 {
     return m_shapes.contains(key);
 }
 
-void Controller::createShape(GLfloat *shapeVertexBufferData,
+void Graphics::createShape(GLfloat *shapeVertexBufferData,
                              int shapeDataSize, int shapeVertexCount,
                              QString key)
 {
     VertexData *data = new VertexData();
 
     data->setVertexData(shapeVertexBufferData, shapeDataSize, shapeVertexCount);
-    data->setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
+    data->setAttribute(POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) 0);
-    data->setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
+    data->setAttribute(NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
                        sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 3));
-    data->setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
+    data->setAttribute(TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
 
     m_shapes.insert(key, data);
 }
 
-void Controller::createQuad(float startU, float startV, float endU, float endV,
+void Graphics::createQuad(float startU, float startV, float endU, float endV,
                             QString key)
 {
     int quadVertexCount = 6;
@@ -197,22 +197,22 @@ void Controller::createQuad(float startU, float startV, float endU, float endV,
     VertexData *data = new VertexData();
 
     data->setVertexData(quadVertexBufferData, quadDataSize, quadVertexCount);
-    data->setAttribute(Graphics::POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
+    data->setAttribute(POSITION_ATTR, 3, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) 0);
-    data->setAttribute(Graphics::NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
+    data->setAttribute(NORMAL_ATTR, 3, GL_FLOAT, GL_TRUE,
                        sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 3));
-    data->setAttribute(Graphics::TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
+    data->setAttribute(TEXTURE_ATTR, 2, GL_FLOAT, GL_FALSE,
                        sizeof(GLfloat) * 8, (void *) (sizeof(GLfloat) * 6));
 
     m_shapes.insert(key, data);
 }
 
-void Controller::drawShape(QString key)
+void Graphics::drawShape(QString key)
 {
     m_shapes.value(key)->draw();
 }
 
-void Controller::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
+void Graphics::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
                                   glm::vec4 fny, glm::vec4 fy,
                                   glm::vec4 fnz, glm::vec4 fz)
 {
@@ -226,7 +226,7 @@ void Controller::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
     m_frustumPlanes[5] = fz;
 }
 
-bool Controller::inFrustum(AABoundingBox *aabb)
+bool Graphics::inFrustum(AABoundingBox *aabb)
 {
     glm::vec3 boxPos = aabb->getPosition();
     glm::vec3 boxDims = aabb->getDimensions();
@@ -259,43 +259,61 @@ bool Controller::inFrustum(AABoundingBox *aabb)
     return true;
 }
 
-void Controller::sendColorUniform(glm::vec4 color, QString key)
+void Graphics::sendColorUniform(glm::vec4 color)
 {
-    glUniform4fv(glGetUniformLocation(getProgram(key), "color"), 1,
+    glUniform4fv(glGetUniformLocation(m_activeProgram, "color"), 1,
                  glm::value_ptr(color));
 }
 
-void Controller::sendModelUniform(glm::mat4x4 model, QString key)
+void Graphics::sendIntensityUniform(glm::vec3 intensity)
 {
-    glUniformMatrix4fv(glGetUniformLocation(getProgram(key), "m"), 1, GL_FALSE,
+    glUniform3fv(glGetUniformLocation(m_activeProgram, "intensity"), 1,
+                 glm::value_ptr(intensity));
+}
+
+void Graphics::sendAttenuationUniform(glm::vec3 att)
+{
+    glUniform3fv(glGetUniformLocation(m_activeProgram, "att"), 1,
+                 glm::value_ptr(att));
+}
+
+void Graphics::sendLightPositionUniform(glm::vec3 pos)
+{
+    glUniform3fv(glGetUniformLocation(m_activeProgram, "lightPos"), 1,
+                 glm::value_ptr(pos));
+}
+
+void Graphics::sendModelUniform(glm::mat4x4 model)
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "m"), 1, GL_FALSE,
                        glm::value_ptr(model));
 }
 
-void Controller::sendViewUniform(glm::mat4x4 view, QString key)
+void Graphics::sendViewUniform(glm::mat4x4 view)
 {
-    glUniformMatrix4fv(glGetUniformLocation(getProgram(key), "v"), 1, GL_FALSE,
+    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "v"), 1, GL_FALSE,
                        glm::value_ptr(view));
 }
 
-void Controller::sendProjectionUniform(glm::mat4x4 proj, QString key)
+void Graphics::sendProjectionUniform(glm::mat4x4 proj)
 {
-    glUniformMatrix4fv(glGetUniformLocation(getProgram(key), "p"), 1, GL_FALSE,
+    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "p"), 1, GL_FALSE,
                        glm::value_ptr(proj));
 }
 
-void Controller::sendOpacityUniform(float opacity, QString key)
+void Graphics::sendOpacityUniform(float opacity)
 {
-    glUniform1f(glGetUniformLocation(getProgram(key), "opacity"), opacity);
+    glUniform1f(glGetUniformLocation(m_activeProgram, "opacity"), opacity);
 }
 
-void Controller::sendUseTextureUniform(int useTexture, QString key)
+void Graphics::sendUseTextureUniform(int useTexture)
 {
-    glUniform1i(glGetUniformLocation(getProgram(key), "useTexture"),
+    glUniform1i(glGetUniformLocation(m_activeProgram, "useTexture"),
                 useTexture);
 }
 
-void Controller::sendUseLightingUniform(int useLighting, QString key)
+void Graphics::sendUseLightingUniform(int useLighting)
 {
-    glUniform1i(glGetUniformLocation(getProgram(key), "useLighting"),
+    glUniform1i(glGetUniformLocation(m_activeProgram, "useLighting"),
                 useLighting);
 }

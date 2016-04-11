@@ -3,11 +3,7 @@
 
 #include "engine/voxel/entity/VoxelEntity.h"
 
-namespace Graphics
-{
-class Controller;
-}
-
+class Graphics;
 class Camera;
 class MinecraftManager;
 
@@ -60,7 +56,7 @@ public:
     void onIntersect(MinecraftEnemy *ent, glm::vec3 mtv);
 
     void onTick(float seconds);
-    void onDraw(Graphics::Controller *graphics);
+    void onDraw(Graphics *graphics);
 
 private:
     Camera *m_camera;

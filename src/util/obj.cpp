@@ -116,7 +116,7 @@ inline int relativeIndex(int index, int count)
     return index >= 0 ? index - 1 : count + index;
 }
 
-OBJ::Index OBJ::getIndex(const QString &str) const
+Index OBJ::getIndex(const QString &str) const
 {
     QStringList parts = str.split('/');
     int vertex = parts.count() > 0 ? relativeIndex(parts[0].toInt(), vertices.count()) : -1;
@@ -128,7 +128,7 @@ OBJ::Index OBJ::getIndex(const QString &str) const
 static QString str(const glm::vec2 &v) { return QString("%1 %2").arg(v.x).arg(v.y); }
 static QString str(const glm::vec3 &v) { return QString("%1 %2 %3").arg(v.x).arg(v.y).arg(v.z); }
 
-static QString str(const OBJ::Index &i)
+static QString str(const Index &i)
 {
     if (i.normalIndex >= 0) {
         if (i.coordIndex >= 0) return QString("%1/%2/%3").arg(i.vertexIndex + 1).arg(i.coordIndex + 1).arg(i.normalIndex + 1);

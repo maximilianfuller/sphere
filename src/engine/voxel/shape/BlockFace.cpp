@@ -3,7 +3,7 @@
 BlockFace::BlockFace(QString shapeKey, glm::vec4 color,
                      glm::mat4x4 model) :
     m_shapeKey(shapeKey),
-    Shape(model, color)
+    Shape()
 {
 }
 
@@ -11,7 +11,7 @@ BlockFace::~BlockFace()
 {
 }
 
-void BlockFace::draw(Graphics::Controller *graphics, glm::vec3 blockPos)
+void BlockFace::draw(Graphics *graphics, glm::vec3 blockPos)
 {
     glm::mat4x4 model;
     model = glm::translate(model, blockPos);

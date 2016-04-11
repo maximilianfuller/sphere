@@ -3,16 +3,13 @@
 
 #include "engine/Screen.h"
 
-namespace Graphics
-{
-class Controller;
-}
+class Graphics;
 
 class PlatformerScreen : public Screen
 {
 public:
     PlatformerScreen(Application *app, float opacity,
-                     Graphics::Controller *graphics);
+                     Graphics *graphics);
     ~PlatformerScreen();
 
     void setLevel(QString levelFile, QString levelKey);
@@ -22,7 +19,7 @@ public:
     void onTick(float seconds);
 
 private:
-    Graphics::Controller *m_graphics;
+    Graphics *m_graphics;
 };
 
 #endif

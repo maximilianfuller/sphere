@@ -3,11 +3,7 @@
 
 #include "engine/entity/Entity.h"
 
-namespace Graphics
-{
-class Controller;
-}
-
+class Graphics;
 class Camera;
 class World;
 
@@ -64,7 +60,7 @@ public:
     void onIntersect(Entity *ent, glm::vec3 mtv);
 
     void onTick(float seconds);
-    void onDraw(Graphics::Controller *graphics);
+    void onDraw(Graphics *graphics);
 
 private:
     Camera *m_camera;
