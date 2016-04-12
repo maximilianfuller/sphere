@@ -8,14 +8,14 @@
 
 #include <QMutableListIterator>
 
-NavMesh::NavMesh(QList<TriangleData *> triangleData, Graphics *graphics) :
+NavMesh::NavMesh(QList<Triangle *> triangleData, Graphics *graphics) :
     m_vertexCount(0),
     m_visible(false),
-    m_triangles(triangleData)
+    triangles(triangleData)
 {
     filterTriangles();
-    createGraph();
     createVBO(graphics);
+    createGraph();
 }
 
 void NavMesh::toggleVisible()
@@ -23,13 +23,25 @@ void NavMesh::toggleVisible()
     m_visible = !m_visible;
 }
 
+bool NavMesh::vertexEquals(glm::vec3 v1, glm::vec3 v2)
+{
+    glm::vec3 diff = v1 - v2;
+    return glm::length2(diff) <= VEQUAL_EPS;
+}
+
+bool NavMesh::hasVertex(Triangle *t, glm::vec3 v)
+{
+    return vertexEquals(v, t->vertices[0]) || vertexEquals(v, t->vertices[1])
+            || vertexEquals(v, t->vertices[2]);
+}
+
 void NavMesh::filterTriangles()
 {
-    QMutableListIterator<TriangleData *> iter(m_triangles);
+    QMutableListIterator<Triangle *> iter(triangles);
 
     while(iter.hasNext())
     {
-        TriangleData *cur = iter.next();
+        Triangle *cur = iter.next();
 
         if(cur->normal.y <= 0)
         {
@@ -40,26 +52,53 @@ void NavMesh::filterTriangles()
 
 void NavMesh::createGraph()
 {
-    foreach(TriangleData *triangle, m_triangles)
+    for(int i = 0; i < triangles.size(); i++)
     {
-        int minAB = triangle->a.vertexIndex < triangle->b.vertexIndex
-                ? triangle->a.vertexIndex : triangle->b.vertexIndex;
-        int maxAB = triangle->a.vertexIndex >= triangle->b.vertexIndex
-                ? triangle->a.vertexIndex : triangle->b.vertexIndex;
+        Triangle *t1 = triangles[i];
 
-        int minBC = triangle->b.vertexIndex < triangle->c.vertexIndex
-                ? triangle->b.vertexIndex : triangle->c.vertexIndex;
-        int maxBC = triangle->b.vertexIndex >= triangle->c.vertexIndex
-                ? triangle->b.vertexIndex : triangle->c.vertexIndex;
+        for(int j = i + 1; j < triangles.size(); j++)
+        {
+            Triangle *t2 = triangles[j];
+            Node n1, n2;
 
-        int minAC = triangle->a.vertexIndex < triangle->c.vertexIndex
-                ? triangle->a.vertexIndex : triangle->c.vertexIndex;
-        int maxAC = triangle->a.vertexIndex >= triangle->c.vertexIndex
-                ? triangle->a.vertexIndex : triangle->c.vertexIndex;
+            n1.value = t1;
+            n2.value = t2;
 
-        m_graph.insert(QPair<int, int>(minAB, maxAB), triangle);
-        m_graph.insert(QPair<int, int>(minBC, maxBC), triangle);
-        m_graph.insert(QPair<int, int>(minAC, maxAC), triangle);
+            if(m_graph.contains(t1))
+            {
+                n1 = m_graph[t1];
+            }
+
+            if(m_graph.contains(t2))
+            {
+                n2 = m_graph[t2];
+            }
+
+            if(hasVertex(t2, t1->vertices[0]) && hasVertex(t2, t1->vertices[1]))
+            {
+                n1.edges.append(Portal(t1->vertices[0], t1->vertices[1]));
+                n1.neighbors.append(t2);
+                n2.edges.append(Portal(t1->vertices[0], t1->vertices[1]));
+                n2.neighbors.append(t1);
+            }
+            else if(hasVertex(t2, t1->vertices[1]) && hasVertex(t2, t1->vertices[2]))
+            {
+                n1.edges.append(Portal(t1->vertices[1], t1->vertices[2]));
+                n1.neighbors.append(t2);
+                n2.edges.append(Portal(t1->vertices[1], t1->vertices[2]));
+                n2.neighbors.append(t1);
+            }
+            else if(hasVertex(t2, t1->vertices[2]) && hasVertex(t2, t1->vertices[0]))
+            {
+                n1.edges.append(Portal(t1->vertices[2], t1->vertices[0]));
+                n1.neighbors.append(t2);
+                n2.edges.append(Portal(t1->vertices[2], t1->vertices[0]));
+                n2.neighbors.append(t1);
+            }
+
+            m_graph.insert(t1, n1);
+            m_graph.insert(t2, n2);
+        }
     }
 }
 
@@ -68,13 +107,13 @@ void NavMesh::createVBO(Graphics *graphics)
     /* Create VBO data */
     glm::vec3 delta = glm::vec3(0, 0.1, 0);
 
-    foreach(TriangleData * triangle, m_triangles)
+    foreach(Triangle *triangle, triangles)
     {
-        triangle->vertices[0] += delta;
-        triangle->vertices[1] += delta;
-        triangle->vertices[2] += delta;
+        Triangle nTriangle(triangle->vertices[0] + delta,
+                triangle->vertices[1] + delta,
+                triangle->vertices[2] + delta);
 
-        addTriangleFloats(triangle);
+        addTriangleFloats(&nTriangle);
     }
 
     /* Add shape */
@@ -84,7 +123,7 @@ void NavMesh::createVBO(Graphics *graphics)
 
 }
 
-void NavMesh::addTriangleFloats(TriangleData *tri)
+void NavMesh::addTriangleFloats(Triangle *tri)
 {
     for (int i = 0; i < 3; i++) {
         m_vboData.append(tri->vertices[i].x);
@@ -100,45 +139,7 @@ void NavMesh::addTriangleFloats(TriangleData *tri)
     }
 }
 
-TriangleData *NavMesh::getTriangle(QPair<int, int> key)
-{
-    QHash<QPair<int, int>, TriangleData *>::iterator iter = m_graph.find(key);
-
-    while(iter != m_graph.end() && iter.key() == key)
-    {
-        if(!(*iter)->visited)
-        {
-            return *iter;
-        }
-    }
-
-    return NULL;
-}
-
-TriangleData *NavMesh::getTriangleRay(Ray &ray, CollisionData &data)
-{
-    foreach(TriangleData *tData, m_triangles)
-    {
-        Triangle triangle = Triangle(tData->vertices[0],
-                tData->vertices[1], tData->vertices[2]);
-
-        if(ray.intersectTriangle(triangle, data))
-        {
-            return tData;
-        }
-    }
-
-    return NULL;
-}
-
-TriangleData *NavMesh::getTriangleBelow(glm::vec3 pos, CollisionData &data)
-{
-    Ray ray = Ray(pos, glm::vec3(0, -1, 0));
-
-    return getTriangleRay(ray, data);
-}
-
-bool NavMesh::getPath(glm::vec3 start, glm::vec3 end, QList<glm::vec3> &path)
+bool NavMesh::getPath(Triangle *start, Triangle *end, QList<glm::vec3> &path)
 {
     PortalPath portals;
 
@@ -153,97 +154,53 @@ bool NavMesh::getPath(glm::vec3 start, glm::vec3 end, QList<glm::vec3> &path)
     /* TODO: SSF */
 }
 
-bool NavMesh::getPortals(glm::vec3 start, glm::vec3 end, PortalPath &portals)
+bool NavMesh::getPortals(Triangle *start, Triangle *end, PortalPath &portals)
 {
     /* Create start node and path */
-    CollisionData dataStart, dataEnd;
-    TriangleData *startT = getTriangleBelow(start, dataStart);
-    TriangleData *endT = getTriangleBelow(end, dataEnd);
-
-    start.y = start.y - dataStart.t;
-    end.y = end.y - dataEnd.t;
+    Node startNode = m_graph[start];
 
     PortalPath startPortalPath;
-    startPortalPath.append(Portal(start, start));
-    QPair<TriangleData *, PortalPath> startPair = QPair<TriangleData *, PortalPath>(startT, startPortalPath);
+    QPair<Node, PortalPath> startPair = QPair<Node, PortalPath>(startNode, startPortalPath);
 
     /* Call helper */
-    QQueue<QPair<TriangleData *, PortalPath> > toVisit;
-    bool ret = getPortalsHelper(startPair, endT, portals, toVisit);
-
-    /* Add destination portal */
-    portals.append(Portal(end, end));
+    QQueue<QPair<Node, PortalPath> > toVisit;
+    bool ret = getPortalsHelper(startPair, end, portals, toVisit);
 
     return ret;
 }
 
-bool NavMesh::getPortalsHelper(QPair<TriangleData *, PortalPath> curPair, TriangleData *goal,
+bool NavMesh::getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
                                PortalPath &portals,
-                               QQueue<QPair<TriangleData *, PortalPath> > &toVisit)
+                               QQueue<QPair<Node, PortalPath> > &toVisit)
 {
-    TriangleData *cur = curPair.first;
+    Node cur = curPair.first;
 
-    if(cur == goal)
+    if(cur.value == goal)
     {
         portals = curPair.second;
+
         return true;
     }
-    else if(cur->visited && toVisit.isEmpty())
+    else if(cur.value->visited && toVisit.isEmpty())
     {
         return false;
     }
-    else if(!cur->visited)
+    else if(!cur.value->visited)
     {
-        cur->visited = true;
+        cur.value->visited = true;
 
         /* Add possibilities to Queue */
-        int minAB = cur->a.vertexIndex < cur->b.vertexIndex
-                ? cur->a.vertexIndex : cur->b.vertexIndex;
-        int maxAB = cur->a.vertexIndex >= cur->b.vertexIndex
-                ? cur->a.vertexIndex : cur->b.vertexIndex;
-
-        int minBC = cur->b.vertexIndex < cur->c.vertexIndex
-                ? cur->b.vertexIndex : cur->c.vertexIndex;
-        int maxBC = cur->b.vertexIndex >= cur->c.vertexIndex
-                ? cur->b.vertexIndex : cur->c.vertexIndex;
-
-        int minAC = cur->a.vertexIndex < cur->c.vertexIndex
-                ? cur->a.vertexIndex : cur->c.vertexIndex;
-        int maxAC = cur->a.vertexIndex >= cur->c.vertexIndex
-                ? cur->a.vertexIndex : cur->c.vertexIndex;
-
-        TriangleData *ta = getTriangle(QPair<int, int>(minAB, maxAB));
-        TriangleData *tb = getTriangle(QPair<int, int>(minBC, maxBC));
-        TriangleData *tc = getTriangle(QPair<int, int>(minAC, maxAC));
-
-        /* Make sure that nodes exist */
-        if(ta)
+        for(int i = 0; i < cur.neighbors.size(); i++)
         {
             PortalPath nextPortalPath = curPair.second;
-            nextPortalPath.append(Portal(cur->vertices[0], cur->vertices[1]));
-            QPair<TriangleData *, PortalPath> nextPair(ta, nextPortalPath);
-            toVisit.enqueue(nextPair);
-        }
-
-        if(tb)
-        {
-            PortalPath nextPortalPath = curPair.second;
-            nextPortalPath.append(Portal(cur->vertices[1], cur->vertices[2]));
-            QPair<TriangleData *, PortalPath> nextPair(tb, nextPortalPath);
-            toVisit.enqueue(nextPair);
-        }
-
-        if(tc)
-        {
-            PortalPath nextPortalPath = curPair.second;
-            nextPortalPath.append(Portal(cur->vertices[0], cur->vertices[2]));
-            QPair<TriangleData *, PortalPath> nextPair(tc, nextPortalPath);
+            nextPortalPath.append(cur.edges[i]);
+            QPair<Node, PortalPath> nextPair(m_graph[cur.neighbors[i]], nextPortalPath);
             toVisit.enqueue(nextPair);
         }
     }
 
     /* Visit next */
-    QPair<TriangleData *, PortalPath> next = toVisit.dequeue();
+    QPair<Node, PortalPath> next = toVisit.dequeue();
     return getPortalsHelper(next, goal, portals, toVisit);
 }
 

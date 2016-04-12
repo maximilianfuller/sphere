@@ -10,6 +10,7 @@ public:
 
     Triangle scale(glm::vec3 basis);
 
+    bool visited;
     glm::vec3 vertices[3];
     glm::vec3 normal;
 };

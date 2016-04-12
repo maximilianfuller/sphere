@@ -84,9 +84,10 @@ bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
 //TODO: ensure textures used
 void Screen::drawDeferred(Graphics *graphics)
 {
-    graphics->setActiveProgram("pre");
+    graphics->setActiveProgram("post");
     m_camera->setTransforms(graphics);
 
+    /*
     m_objectDataFBO->bind();
     m_world->drawGeometry(graphics);
 
@@ -99,14 +100,13 @@ void Screen::drawDeferred(Graphics *graphics)
     //m_world->drawLights(graphics);
     m_world->drawGeometry(graphics);
 
-    /*
     graphics->setActiveProgram("post");
     m_camera->setTransforms(graphics);
 
     m_lightDataFBO->unbind();
     m_lightDataFBO->useTextures();
-    m_world->drawGeometry(graphics);
     */
+    m_world->drawGeometry(graphics);
 }
 
 void Screen::mousePressEvent(QMouseEvent *event)

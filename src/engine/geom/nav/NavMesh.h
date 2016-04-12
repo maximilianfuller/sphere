@@ -8,42 +8,51 @@
 #include <QList>
 #include <QQueue>
 
-class Graphics;
-class Ray;
-struct TriangleData;
-struct CollisionData;
-
 typedef QPair<glm::vec3, glm::vec3> Portal;
 typedef QList<Portal> PortalPath;
+
+class Graphics;
+class Ray;
+struct Triangle;
+struct CollisionData;
+
+struct Node
+{
+    Triangle *value;
+    QList<Triangle *> neighbors;
+    QList<Portal> edges;
+};
+
+const float VEQUAL_EPS = 0.01;
 
 class NavMesh
 {
 public:
-    NavMesh(QList<TriangleData *> triangleData, Graphics *graphics);
+    NavMesh(QList<Triangle *> triangleData, Graphics *graphics);
 
     void toggleVisible();
 
-    bool getPath(glm::vec3 start, glm::vec3 end, QList<glm::vec3> &path);
-    bool getPortals(glm::vec3 start, glm::vec3 end, PortalPath &path);
+    bool getPath(Triangle *start, Triangle *end, QList<glm::vec3> &path);
+    bool getPortals(Triangle *start, Triangle *end, PortalPath &path);
 
     void draw(Graphics *graphics);
 
+    QList<Triangle *> triangles;
+
 private:
+    bool vertexEquals(glm::vec3 v1, glm::vec3 v2);
+    bool hasVertex(Triangle *t, glm::vec3 v);
+
     void filterTriangles();
     void createGraph();
     void createVBO(Graphics *graphics);
-    void addTriangleFloats(TriangleData *tri);
+    void addTriangleFloats(Triangle *tri);
 
-    TriangleData *getTriangle(QPair<int, int> key);
-    TriangleData *getTriangleRay(Ray &ray, CollisionData &data);
-    TriangleData *getTriangleBelow(glm::vec3 pos, CollisionData &data);
-
-    bool getPortalsHelper(QPair<TriangleData *, PortalPath> curPair, TriangleData *goal,
+    bool getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
                        PortalPath &portals,
-                       QQueue<QPair<TriangleData *, PortalPath> > &toVisit);
+                       QQueue<QPair<Node, PortalPath> > &toVisit);
 
-    QList<TriangleData *> m_triangles;
-    QMultiHash<QPair<int, int>, TriangleData *> m_graph;
+    QHash<Triangle *, Node> m_graph;
 
     QVector<float> m_vboData;
     int m_vertexCount;

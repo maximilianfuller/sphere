@@ -19,13 +19,25 @@
  * 7) Draw them
  * 8) SSF
 */
-GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<TriangleData *> &triangleData,
-                                   QList<Entity *> &entities, Graphics *graphics) :
+GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities,
+                                   Graphics *graphics) :
     m_env(triangles),
-    navMesh(new NavMesh(triangleData, graphics)),
+    navMesh(new NavMesh(triangles, graphics)),
     Manager(entities)
 {
+    CollisionData data;
+    Triangle *start = getTriangleBelow(navMesh->triangles, glm::vec3(0, 2, 0), data);
+    Triangle *end = getTriangleBelow(navMesh->triangles, glm::vec3(0, 10, 10), data);
+
+    QList<glm::vec3> path;
+    navMesh->getPath(start, end, path);
+
+    foreach(glm::vec3 p, path)
+    {
+        std::cout << glm::to_string(p) << std::endl;
+    }
 }
+
 GeometricManager::~GeometricManager()
 {
     delete navMesh;
@@ -34,7 +46,7 @@ GeometricManager::~GeometricManager()
 /* Intersection methods */
 bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 startPos,
                                  glm::vec3 endPos, glm::vec3 dims,
-                                 CollisionData &data)
+                                 CollisionData &data, Triangle *&tri)
 {
     glm::vec3 invDims = glm::vec3(2 / dims.x, 2 / dims.y, 2 / dims.z);
 
@@ -53,8 +65,9 @@ bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 start
     foreach(Triangle *triangle, ts)
     {
         Triangle scaledTriangle = triangle->scale(invDims);
+        Ray ray = Ray(scaledStart, startDir);
 
-        if(intersectTriangle(scaledTriangle, scaledStart, startDir, data))
+        if(intersectTriangle(scaledTriangle, ray, data))
         {
             if(data.t < min_data.t || min_data.t < 0)
             {
@@ -62,6 +75,7 @@ bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 start
 
                 min_data.t = data.t;
                 min_data.n = data.n;
+                tri = triangle;
             }
         }
     }
@@ -81,11 +95,9 @@ bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 start
     return intersected;
 }
 
-bool GeometricManager::intersectTriangle(const Triangle &triangle, glm::vec3 p,
-                                         glm::vec3 d, CollisionData &data)
+bool GeometricManager::intersectTriangle(const Triangle &triangle, Ray &ray,
+                                         CollisionData &data)
 {
-    Ray ray = Ray(p, d);
-
     CollisionData min_data;
     min_data.t = -1;
 
@@ -123,13 +135,13 @@ bool GeometricManager::intersectTriangle(const Triangle &triangle, glm::vec3 p,
     }
 
     /* Intersect with vertices */
-    ray.setDir(-d);
+    ray.setDir(-ray.getDir());
 
     for(int i = 0; i < 3; i++)
     {
         ray.setPos(triangle.vertices[i]);
 
-        if(ray.intersectSphere(p, data))
+        if(ray.intersectSphere(ray.getPos(), data))
         {
             if((data.t < min_data.t || min_data.t < 0) && (data.t <= 1))
             {
@@ -150,7 +162,9 @@ bool GeometricManager::intersectEnvironment(Entity *ent, glm::vec3 startPos,
                                             glm::vec3 endPos, glm::vec3 &move,
                                             CollisionData &data)
 {
-    if(intersectTriangles(m_env, startPos, endPos, ent->getDimensions(), data))
+    Triangle *tri;
+
+    if(intersectTriangles(m_env, startPos, endPos, ent->getDimensions(), data, tri))
     {
         glm::vec3 intPoint = startPos + data.t * move;
         glm::vec3 rem = endPos - intPoint;
@@ -174,11 +188,34 @@ bool GeometricManager::intersectEnvironment(Entity *ent, glm::vec3 startPos,
     return false;
 }
 
+Triangle *GeometricManager::getTriangleRay(QList<Triangle *> &triangles, Ray &ray,
+                                           CollisionData &data)
+{
+    glm::vec3 endPos = ray.getPos();
+    endPos += 100.f * ray.getDir();
+
+    Triangle *tri;
+    intersectTriangles(triangles, ray.getPos(), endPos, glm::vec3(0.5, 1, 0.5), data, tri);
+    return tri;
+}
+
+Triangle *GeometricManager::getTriangleBelow(QList<Triangle *> &triangles, glm::vec3 pos,
+                                             CollisionData &data)
+{
+    Ray ray = Ray(pos, glm::vec3(0, -1, 0));
+
+    return getTriangleRay(triangles, ray, data);
+}
+
 void GeometricManager::moveEntity(Entity *ent, float seconds)
 {
     CollisionData data;
 
     glm::vec3 startPos = ent->getPosition();
+    std::cout << "start pos" << std::endl;
+    std::cout << getTriangleBelow(navMesh->triangles, startPos, data) << std::endl;
+    std::cout << "end pos" << std::endl;
+    std::cout << getTriangleBelow(navMesh->triangles, glm::vec3(0, 2.5, 4), data) << std::endl;
     glm::vec3 endPos = startPos + seconds * ent->getVelocity() * ent->getSpeed();
     endPos.y = startPos.y + seconds * ent->getVelocity().y;
 

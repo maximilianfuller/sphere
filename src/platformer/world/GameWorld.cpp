@@ -18,7 +18,7 @@
 GameWorld::GameWorld(Camera *camera, Graphics *graphics,
                      QString levelFile, QString levelKey) :
     m_levelKey(levelKey),
-    m_target(new Ellipsoid(glm::vec3(0, 3, 0), glm::vec3(0.5, 1, 0.5), glm::vec4(1, 0, 0, 1))),
+    m_target(new Ellipsoid(glm::vec3(0, 3, 4), glm::vec3(0.5, 1, 0.5), glm::vec4(1, 0, 0, 1))),
     World(camera)
 {
     m_player = new Player(this, camera);
@@ -35,8 +35,7 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     }
 
     /* Add manager */
-    addManager(new GeometricManager(m_level->triangles, m_level->triangleData,
-                                    m_entities, graphics));
+    addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
 
     addLight(new Light());
 }
@@ -165,10 +164,11 @@ void GameWorld::onTick(float seconds)
 void GameWorld::drawGeometry(Graphics *graphics)
 {
     /* Draw mesh */
-    graphics->sendUseLightingUniform(1);
-    graphics->sendUseTextureUniform(0);
+    graphics->sendUseLightingUniform(0);
+    graphics->sendUseTextureUniform(1);
     graphics->sendModelUniform(glm::mat4x4());
     graphics->sendColorUniform(glm::vec4(1));
+    graphics->loadTexture(m_levelKey, 0);
     graphics->drawShape(m_levelKey);
 
     /* Draw target */
