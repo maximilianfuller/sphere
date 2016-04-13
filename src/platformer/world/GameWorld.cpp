@@ -221,10 +221,10 @@ void GameWorld::drawGeometry(Graphics *graphics)
 {
     /* Draw mesh */
     graphics->sendUseLightingUniform(0);
-    graphics->sendUseTextureUniform(1);
+    graphics->sendUseTextureUniform(0);
     graphics->sendModelUniform(glm::mat4x4());
     graphics->sendColorUniform(glm::vec4(1));
-    graphics->loadTexture(m_levelKey, 0);
+    //graphics->loadTexture(m_levelKey, 0);
     graphics->drawShape(m_levelKey);
 
     /* Draw target */

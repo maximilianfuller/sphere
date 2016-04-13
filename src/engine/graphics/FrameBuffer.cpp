@@ -13,6 +13,8 @@ Framebuffer::Framebuffer(int width, int height, int numTextures,
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
     glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
 
+    GLenum attachments[3];
+
     /* Allocate textures */
     for(int i = 0; i < numTextures; i++)
     {
@@ -25,7 +27,11 @@ Framebuffer::Framebuffer(int width, int height, int numTextures,
 
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D,
                              m_textures[i], 0);
+
+        attachments[i] = GL_COLOR_ATTACHMENT0 + i;
     }
+
+    glDrawBuffers(numTextures, attachments);
 
     /* Allocate depth buffer */
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
@@ -48,6 +54,8 @@ Framebuffer::~Framebuffer()
 void Framebuffer::bind()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.f, 0.f, 0.f, 1.f);
 }
 
 void Framebuffer::unbind()
@@ -58,14 +66,9 @@ void Framebuffer::unbind()
 // NOTE: may have to find a way to bind more specifically
 void Framebuffer::useTextures()
 {
-    /*
     for(int i = 0; i < m_numTextures; i++)
     {
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]);
     }
-    */
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_textures[0]);
 }

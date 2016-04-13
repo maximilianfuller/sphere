@@ -16,25 +16,22 @@ Screen::Screen(Application *app, float opacity, int width, int height) :
     m_camera(NULL),
     m_world(NULL)
 {
-    GLint ifObject[3] = {GL_RGB16F, GL_RGB16F, GL_RGBA};
-    GLenum fObject[3] = {GL_RGB, GL_RGB, GL_RGBA};
-    GLenum tObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
+    GLint ifObject[3] = {GL_RGB16F, GL_RGB16F};
+    GLenum fObject[3] = {GL_RGB, GL_RGB};
+    GLenum tObject[3] = {GL_FLOAT, GL_FLOAT};
 
-    GLint ifLight[1] = {GL_RGBA};
-    GLenum fLight[1] = {GL_RGBA};
-    GLenum tLight[1] = {GL_UNSIGNED_BYTE};
-
-    m_objectDataFBO = new Framebuffer(width, height, 3,
+    m_objectDataFBO = new Framebuffer(800, 600, 2,
                                       ifObject, fObject, tObject);
 
-    m_lightDataFBO = new Framebuffer(width, height, 1,
-                                     ifLight, fLight, tLight);
+    m_lightDataFBO = NULL;
 }
 
 Screen::~Screen()
 {
     delete m_camera;
     delete m_world;
+    delete m_objectDataFBO;
+    delete m_lightDataFBO;
 }
 
 float Screen::getOpacity()
@@ -78,16 +75,11 @@ bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
     return morePaint;
 }
 
-//TODO: make shaders
-//TODO: load shaders
-//TODO: re-factor uniform sending
-//TODO: ensure textures used
 void Screen::drawDeferred(Graphics *graphics)
 {
-    graphics->setActiveProgram("post");
+    graphics->setActiveProgram("pre");
     m_camera->setTransforms(graphics);
 
-    /*
     m_objectDataFBO->bind();
     m_world->drawGeometry(graphics);
 
@@ -96,16 +88,6 @@ void Screen::drawDeferred(Graphics *graphics)
 
     m_objectDataFBO->unbind();
     m_objectDataFBO->useTextures();
-    //m_lightDataFBO->bind();
-    //m_world->drawLights(graphics);
-    m_world->drawGeometry(graphics);
-
-    graphics->setActiveProgram("post");
-    m_camera->setTransforms(graphics);
-
-    m_lightDataFBO->unbind();
-    m_lightDataFBO->useTextures();
-    */
     m_world->drawGeometry(graphics);
 }
 

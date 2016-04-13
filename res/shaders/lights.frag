@@ -5,9 +5,8 @@ out vec4 fragColor;
 
 uniform sampler2D position;
 uniform sampler2D normal;
-uniform sampler2D color;
 
 void main(){
     vec2 res = vec2(800, 600);
-    fragColor = clamp(texture(position, gl_FragCoord.xy / res), 0, 1);
+    fragColor = vec4(vec3(texture(normal, gl_FragCoord.xy / res)), 1);
 }
