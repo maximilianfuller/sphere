@@ -1,11 +1,13 @@
-# Game controls
-* Use wasd to move
-* Use space to jump
-* Left click to remove blocks
-* Right click to add blocks
-* Press F1 to enter "peaceful mode" without any enemies
+Press 1 - Easy
+Press 2 - Hard
+Press 3 - Island
 
-# Navigation
-* Press enter to start the game
-* Press escape while in the game to exit the game
-* Press escape while in the start screen to exit the application
+# Game controls
+Use WASD to move
+Press SPACE to jump
+Press SHIFT to sprint and jump higher
+Press F1 to toggle 3rd person camera
+Press F2 to toggle the navigation and pathfinding features
+
+# Navigation feature controls
+Left click to raycast the target position onto the environment

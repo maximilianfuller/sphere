@@ -17,7 +17,7 @@ PlatformerApplication::PlatformerApplication(QGLWidget *container) :
     m_graphics->createTexture(":/images/level_easy.png", "level_easy");
     m_graphics->createTexture(":/images/level_hard.png", "level_hard");
     m_graphics->createTexture(":/images/level_island.png", "level_island");
-    m_graphics->createTexture(":/images/welcome.jpg", "welcome");
+    m_graphics->createTexture(":/images/plat_instructions.png", "welcome");
 
     /* Create screen */
     addScreen(dynamic_cast<Screen *>(new PlatformerScreen(this, 1, m_graphics)));

@@ -10,17 +10,11 @@
 
 NavMesh::NavMesh(QList<Triangle *> triangleData, Graphics *graphics) :
     m_vertexCount(0),
-    m_visible(false),
     triangles(triangleData)
 {
     filterTriangles();
     createVBO(graphics);
     createGraph();
-}
-
-void NavMesh::toggleVisible()
-{
-    m_visible = !m_visible;
 }
 
 bool NavMesh::vertexEquals(glm::vec3 v1, glm::vec3 v2)
@@ -29,10 +23,48 @@ bool NavMesh::vertexEquals(glm::vec3 v1, glm::vec3 v2)
     return glm::length2(diff) <= VEQUAL_EPS;
 }
 
+float NavMesh::triangleArea(glm::vec3 apex, glm::vec3 p1, glm::vec3 p2)
+{
+    glm::vec3 v1 = apex - p1;
+    glm::vec3 v2 = p2 - p1;
+
+    return glm::cross(v1, v2).y;
+}
+
 bool NavMesh::hasVertex(Triangle *t, glm::vec3 v)
 {
     return vertexEquals(v, t->vertices[0]) || vertexEquals(v, t->vertices[1])
             || vertexEquals(v, t->vertices[2]);
+}
+
+glm::vec3 NavMesh::getRightEndpoint(Portal portal, glm::vec3 apex)
+{
+    glm::vec3 v1 = portal.first - apex;
+    glm::vec3 v2 = portal.second - portal.first;
+
+    if(glm::cross(v1, v2).y >= 0)
+    {
+        return portal.first;
+    }
+    else
+    {
+        return portal.second;
+    }
+}
+
+glm::vec3 NavMesh::getLeftEndpoint(Portal portal, glm::vec3 apex)
+{
+    glm::vec3 v1 = portal.first - apex;
+    glm::vec3 v2 = portal.second - portal.first;
+
+    if(glm::cross(v1, v2).y > 0)
+    {
+        return portal.second;
+    }
+    else
+    {
+        return portal.first;
+    }
 }
 
 void NavMesh::filterTriangles()
@@ -139,19 +171,99 @@ void NavMesh::addTriangleFloats(Triangle *tri)
     }
 }
 
-bool NavMesh::getPath(Triangle *start, Triangle *end, QList<glm::vec3> &path)
+bool NavMesh::getPath(glm::vec3 startPos, glm::vec3 endPos, Triangle *start, Triangle *end, QList<glm::vec3> &path)
 {
     PortalPath portals;
 
-    getPortals(start, end, portals);
+    if(!getPortals(start, end, portals))
+    {
+        return false;
+    }
+
+    portals.prepend(Portal(startPos, startPos));
+    portals.append(Portal(endPos, endPos));
+
+    foreach(const Node n, m_graph)
+    {
+        n.value->visited = false;
+    }
 
     /* Midpoint method */
+    /*
     foreach(Portal portal, portals)
     {
         path.append((portal.first + portal.second) / 2.f);
     }
+    */
 
-    /* TODO: SSF */
+    /* String pulling */
+    glm::vec3 apex = portals[0].first;
+    glm::vec3 right = getRightEndpoint(portals[1], apex);
+    glm::vec3 left = getLeftEndpoint(portals[1], apex);
+
+    int rightIndex = 2;
+    int leftIndex = 2;
+
+    path.append(apex);
+
+    for(int i = 2; i < portals.size(); i++)
+    {
+        glm::vec3 tempRight = getRightEndpoint(portals[i], apex);
+        glm::vec3 tempLeft = getLeftEndpoint(portals[i], apex);
+
+        glm::vec3 newRight = 0.99f * tempRight + 0.01f * tempLeft;
+        glm::vec3 newLeft = 0.01f * tempRight + 0.99f * tempLeft;
+
+        if(triangleArea(apex, right, newRight) <= 0)
+        {
+            // Tighten funnel
+            if(vertexEquals(apex, right) || triangleArea(apex, left, newRight) >= 0)
+            {
+                right = newRight;
+                rightIndex = i;
+            }
+            // Right crossed over left
+            else
+            {
+                // Reset funnel at left endpoint
+                path.append(left);
+
+                i = leftIndex;
+                rightIndex = leftIndex;
+
+                apex = left;
+                left = apex;
+                right = apex;
+                continue;
+            }
+        }
+
+        if(triangleArea(apex, left, newLeft) >= 0)
+        {
+            // Tighten funnel
+            if(vertexEquals(apex, left) || triangleArea(apex, newLeft, right) >= 0)
+            {
+                left = newLeft;
+                leftIndex = i;
+            }
+            // Left crossed over right
+            else
+            {
+                // Reset funnel at left endpoint
+                path.append(right);
+
+                i = rightIndex;
+                leftIndex = rightIndex;
+
+                apex = right;
+                left = apex;
+                right = apex;
+                continue;
+            }
+        }
+    }
+
+    path.append(endPos);
 }
 
 bool NavMesh::getPortals(Triangle *start, Triangle *end, PortalPath &portals)
@@ -206,12 +318,9 @@ bool NavMesh::getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
 
 void NavMesh::draw(Graphics *graphics)
 {
-    if(m_visible)
-    {
-        graphics->sendUseTextureUniform(0);
-        graphics->sendUseLightingUniform(0);
-        graphics->sendModelUniform(glm::mat4x4());
-        graphics->sendColorUniform(glm::vec4(0, 1, 0, 0.5));
-        graphics->drawShape("navMesh");
-    }
+    graphics->sendUseTextureUniform(0);
+    graphics->sendUseLightingUniform(0);
+    graphics->sendModelUniform(glm::mat4x4());
+    graphics->sendColorUniform(glm::vec4(0, 1, 0, 0.5));
+    graphics->drawShape("navMesh");
 }

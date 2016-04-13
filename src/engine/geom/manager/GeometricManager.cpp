@@ -11,12 +11,7 @@
 #include "engine/geom/nav/NavMesh.h"
 
 /*
- * 2) Transform mouse position to environment ray (game world / player)
- * 3) Raycast nav mesh with ray
- * 4) Draw raycasted location in world (ellipsoid for drawing)
- * 5) Once raycasted target, create path
- * 6) Create list of ellipses for drawing on the fly (save path?)
- * 7) Draw them
+ * 7) Possibly fix BFS
  * 8) SSF
 */
 GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities,
@@ -25,17 +20,6 @@ GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<Entity *>
     navMesh(new NavMesh(triangles, graphics)),
     Manager(entities)
 {
-    CollisionData data;
-    Triangle *start = getTriangleBelow(navMesh->triangles, glm::vec3(0, 2, 0), data);
-    Triangle *end = getTriangleBelow(navMesh->triangles, glm::vec3(0, 10, 10), data);
-
-    QList<glm::vec3> path;
-    navMesh->getPath(start, end, path);
-
-    foreach(glm::vec3 p, path)
-    {
-        std::cout << glm::to_string(p) << std::endl;
-    }
 }
 
 GeometricManager::~GeometricManager()
@@ -58,6 +42,7 @@ bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 start
     /* Data for minimum intersection */
     CollisionData min_data;
     min_data.t = -1;
+    tri = NULL;
 
     bool intersected = false;
 
@@ -65,9 +50,8 @@ bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 start
     foreach(Triangle *triangle, ts)
     {
         Triangle scaledTriangle = triangle->scale(invDims);
-        Ray ray = Ray(scaledStart, startDir);
 
-        if(intersectTriangle(scaledTriangle, ray, data))
+        if(intersectTriangle(scaledTriangle, scaledStart, startDir, data))
         {
             if(data.t < min_data.t || min_data.t < 0)
             {
@@ -95,9 +79,11 @@ bool GeometricManager::intersectTriangles(QList<Triangle *> &ts, glm::vec3 start
     return intersected;
 }
 
-bool GeometricManager::intersectTriangle(const Triangle &triangle, Ray &ray,
-                                         CollisionData &data)
+bool GeometricManager::intersectTriangle(const Triangle &triangle, glm::vec3 p,
+                                         glm::vec3 d, CollisionData &data)
 {
+    Ray ray = Ray(p, d);
+
     CollisionData min_data;
     min_data.t = -1;
 
@@ -135,13 +121,13 @@ bool GeometricManager::intersectTriangle(const Triangle &triangle, Ray &ray,
     }
 
     /* Intersect with vertices */
-    ray.setDir(-ray.getDir());
+    ray.setDir(-d);
 
     for(int i = 0; i < 3; i++)
     {
         ray.setPos(triangle.vertices[i]);
 
-        if(ray.intersectSphere(ray.getPos(), data))
+        if(ray.intersectSphere(p, data))
         {
             if((data.t < min_data.t || min_data.t < 0) && (data.t <= 1))
             {
@@ -188,11 +174,11 @@ bool GeometricManager::intersectEnvironment(Entity *ent, glm::vec3 startPos,
     return false;
 }
 
-Triangle *GeometricManager::getTriangleRay(QList<Triangle *> &triangles, Ray &ray,
+Triangle *GeometricManager::getTriangleRay(QList<Triangle *> &triangles, Ray ray,
                                            CollisionData &data)
 {
     glm::vec3 endPos = ray.getPos();
-    endPos += 100.f * ray.getDir();
+    endPos += ray.getDir();
 
     Triangle *tri;
     intersectTriangles(triangles, ray.getPos(), endPos, glm::vec3(0.5, 1, 0.5), data, tri);
@@ -202,7 +188,7 @@ Triangle *GeometricManager::getTriangleRay(QList<Triangle *> &triangles, Ray &ra
 Triangle *GeometricManager::getTriangleBelow(QList<Triangle *> &triangles, glm::vec3 pos,
                                              CollisionData &data)
 {
-    Ray ray = Ray(pos, glm::vec3(0, -1, 0));
+    Ray ray = Ray(pos, glm::vec3(0, -100, 0));
 
     return getTriangleRay(triangles, ray, data);
 }
@@ -212,10 +198,7 @@ void GeometricManager::moveEntity(Entity *ent, float seconds)
     CollisionData data;
 
     glm::vec3 startPos = ent->getPosition();
-    std::cout << "start pos" << std::endl;
-    std::cout << getTriangleBelow(navMesh->triangles, startPos, data) << std::endl;
-    std::cout << "end pos" << std::endl;
-    std::cout << getTriangleBelow(navMesh->triangles, glm::vec3(0, 2.5, 4), data) << std::endl;
+
     glm::vec3 endPos = startPos + seconds * ent->getVelocity() * ent->getSpeed();
     endPos.y = startPos.y + seconds * ent->getVelocity().y;
 
@@ -276,8 +259,6 @@ void GeometricManager::onTick(float seconds)
 
 void GeometricManager::onDraw(Graphics *graphics)
 {
-    navMesh->draw(graphics);
-
     foreach(Entity *ent, m_entities)
     {
         ent->onDraw(graphics);

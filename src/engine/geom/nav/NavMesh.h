@@ -30,9 +30,7 @@ class NavMesh
 public:
     NavMesh(QList<Triangle *> triangleData, Graphics *graphics);
 
-    void toggleVisible();
-
-    bool getPath(Triangle *start, Triangle *end, QList<glm::vec3> &path);
+    bool getPath(glm::vec3 startPos, glm::vec3 endPos, Triangle *start, Triangle *end, QList<glm::vec3> &path);
     bool getPortals(Triangle *start, Triangle *end, PortalPath &path);
 
     void draw(Graphics *graphics);
@@ -41,7 +39,11 @@ public:
 
 private:
     bool vertexEquals(glm::vec3 v1, glm::vec3 v2);
+    float triangleArea(glm::vec3 apex, glm::vec3 p1, glm::vec3 p2);
     bool hasVertex(Triangle *t, glm::vec3 v);
+
+    glm::vec3 getRightEndpoint(Portal portal, glm::vec3 apex);
+    glm::vec3 getLeftEndpoint(Portal portal, glm::vec3 apex);
 
     void filterTriangles();
     void createGraph();
@@ -56,8 +58,6 @@ private:
 
     QVector<float> m_vboData;
     int m_vertexCount;
-
-    bool m_visible;
 };
 
 #endif // NAVMESH_H

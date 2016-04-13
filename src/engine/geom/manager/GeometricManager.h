@@ -23,30 +23,31 @@ public:
                      Graphics *graphics);
     ~GeometricManager();
 
-    /* Intersection calculation */
-    bool intersectTriangles(QList<Triangle *> &ts, glm::vec3 startPos, glm::vec3 endPos,
-                            glm::vec3 dims, CollisionData &data, Triangle *&tri);
-
-    bool intersectTriangle(const Triangle &triangle, Ray &ray,
-                           CollisionData &data);
-
-    /* Utility functions */
-    bool intersectEnvironment(Entity *ent, glm::vec3 startPos, glm::vec3 endPos,
-                              glm::vec3 &move, CollisionData &data);
-
     /* Raycasting */
-    Triangle *getTriangleRay(QList<Triangle *> &triangles, Ray &ray, CollisionData &data);
+    Triangle *getTriangleRay(QList<Triangle *> &triangles, Ray ray, CollisionData &data);
     Triangle *getTriangleBelow(QList<Triangle *> &triangles, glm::vec3 pos, CollisionData &data);
 
     /* Game loop */
-    void moveEntity(Entity *ent, float seconds);
-
     void onTick(float seconds);
     void onDraw(Graphics *graphics);
 
     NavMesh *navMesh;
 
 private:
+    /* Intersection calculation */
+    bool intersectTriangles(QList<Triangle *> &ts, glm::vec3 startPos, glm::vec3 endPos,
+                            glm::vec3 dims, CollisionData &data, Triangle *&tri);
+
+    bool intersectTriangle(const Triangle &triangle, glm::vec3 startPos, glm::vec3 endPos,
+                           CollisionData &data);
+
+    /* Utility functions */
+    bool intersectEnvironment(Entity *ent, glm::vec3 startPos, glm::vec3 endPos,
+                              glm::vec3 &move, CollisionData &data);
+
+    /* Game loop */
+    void moveEntity(Entity *ent, float seconds);
+
     QList<Triangle *> &m_env;
 };
 

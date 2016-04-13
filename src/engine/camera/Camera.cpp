@@ -65,8 +65,16 @@ void Camera::setFov(float fov)
     m_fov = fov;
 }
 
-glm::vec3 Camera::getEye() {
-    return m_eye;
+glm::vec3 Camera::getEye()
+{
+    if(m_thirdPerson)
+    {
+        return m_eye - 3.f * m_look;
+    }
+    else
+    {
+        return m_eye;
+    }
 }
 
 void Camera::setEye(glm::vec3 eye)
@@ -137,16 +145,7 @@ void Camera::updateTransforms()
     }
 
     /* Set eye */
-    glm::vec3 eye;
-
-    if(m_thirdPerson)
-    {
-        eye = m_eye - 3.f * m_look;
-    }
-    else
-    {
-        eye = m_eye;
-    }
+    glm::vec3 eye = getEye();
 
     /* Update transforms */
     m_view = glm::lookAt(eye, eye + m_look, m_up);

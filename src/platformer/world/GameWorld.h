@@ -2,13 +2,15 @@
 #define GAMEWORLD_H
 
 #include "engine/world/World.h"
+#include "engine/intersect/Ray.h"
 
 class Graphics;
 class Camera;
 class Player;
 class Ellipsoid;
 class OBJ;
-class Ray;
+
+const float RAY_LEN = 100.f;
 
 class GameWorld : public World
 {
@@ -19,14 +21,16 @@ public:
 
     Player *getPlayer();
 
-    Ray getRay(int mouseX, int mouseY);
+    void setRay();
     void setTarget();
+    void makePath();
 
     /* Events */
     virtual void mouseMoveEvent(QMouseEvent *event, int startX,
                                 int startY);
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
 
     /* Game loop */
     void onTick(float seconds);
@@ -34,7 +38,11 @@ public:
 
 private:
     Player *m_player;
+
+    bool m_navFeatures;
     Ellipsoid *m_target;
+    QList<Ellipsoid *> m_targetPath;
+    Ray m_ray;
 
     OBJ *m_level;
     QString m_levelKey;

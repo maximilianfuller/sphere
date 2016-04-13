@@ -36,10 +36,6 @@ glm::vec3 Shape::getPosition()
 void Shape::setPosition(glm::vec3 pos)
 {
     m_pos = pos;
-
-    glm::mat4x4 model = glm::mat4x4();
-
-    m_model = glm::translate(model, m_pos) * m_model;
 }
 
 glm::vec3 Shape::getDimensions()
@@ -50,10 +46,6 @@ glm::vec3 Shape::getDimensions()
 void Shape::setDimensions(glm::vec3 dims)
 {
     m_dims = dims;
-
-    glm::mat4x4 model = glm::mat4x4();
-
-    m_model = glm::scale(model, m_dims);
 }
 
 glm::vec4 Shape::getColor()
@@ -78,6 +70,9 @@ void Shape::setModelMatrix(glm::mat4x4 model)
 
 void Shape::draw(Graphics *graphics)
 {
+    glm::mat4x4 model = glm::mat4x4();
+    m_model = glm::translate(model, m_pos) * glm::scale(model, m_dims);
+
     graphics->sendModelUniform(m_model);
     graphics->sendColorUniform(m_color);
 }

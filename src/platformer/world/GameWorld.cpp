@@ -7,6 +7,7 @@
 #include "engine/light/Light.h"
 #include "engine/shape/Ellipsoid.h"
 #include "engine/intersect/Ray.h"
+#include "engine/intersect/Triangle.h"
 
 #include "engine/geom/manager/GeometricManager.h"
 #include "engine/geom/nav/NavMesh.h"
@@ -18,7 +19,9 @@
 GameWorld::GameWorld(Camera *camera, Graphics *graphics,
                      QString levelFile, QString levelKey) :
     m_levelKey(levelKey),
-    m_target(new Ellipsoid(glm::vec3(0, 3, 4), glm::vec3(0.5, 1, 0.5), glm::vec4(1, 0, 0, 1))),
+    m_target(new Ellipsoid(glm::vec3(0, 10, 10), glm::vec3(0.5, 1, 0.5), glm::vec4(1, 0, 1, 0.7))),
+    m_ray(Ray(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1))),
+    m_navFeatures(false),
     World(camera)
 {
     m_player = new Player(this, camera);
@@ -51,33 +54,72 @@ Player *GameWorld::getPlayer()
     return m_player;
 }
 
-Ray GameWorld::getRay(int mouseX, int mouseY)
+void GameWorld::setRay()
 {
-    glm::vec2 size = m_camera->getRatio();
-
-    /* Get film plane coordinates */
-    float filmX = ((2.f * mouseX) / size.x) - 1.f;
-    float filmY = 1.f - ((2.f * mouseY) / size.y);
-    float filmZ = -1.f;
-
     /* Player position */
-    glm::vec3 pos = m_player->getPosition();
+    glm::vec3 pos = m_camera->getEye();
 
     /* Get inverse matrix */
     glm::mat4x4 inverse = glm::inverse(m_camera->getPerspective());
 
-    /* Get ray */
-    glm::vec4 dir = inverse * glm::vec4(filmX, filmY, filmZ, 1);
+    /* Get position on film plane */
+    glm::vec4 filmPos = inverse * glm::vec4(0, 0, -1, 1);
 
-    /*
-    worldRay = glm::normalize(
-                glm::vec3(m_scene->m_filmToWorld * glm::vec4(filmX, filmY, filmZ, 1.f)) - worldEye);
-                */
+    m_ray = Ray(pos, RAY_LEN * glm::normalize(glm::vec3(filmPos) / filmPos.w - pos));
 }
 
 void GameWorld::setTarget()
 {
+    GeometricManager *manager = dynamic_cast<GeometricManager *>(m_managers.at(0));
 
+    CollisionData dataT;
+    Triangle *tri = manager->getTriangleRay(manager->navMesh->triangles, m_ray, dataT);
+
+    CollisionData dataS;
+    glm::vec3 dims = m_target->getDimensions();
+    glm::vec3 invDims = glm::vec3(2 / dims.x, 2 / dims.y, 2 / dims.z);
+    Ray temp = Ray(m_ray.getPos() * invDims, m_ray.getDir() * invDims);
+
+    if(temp.intersectSphere(m_target->getPosition() * invDims, dataS))
+    {
+        m_target->setPosition(m_ray.getPos() + (dataS.t - 0.01f) * m_ray.getDir());
+    }
+    else if(tri)
+    {
+        m_target->setPosition(m_ray.getPos() + dataT.t * m_ray.getDir());
+    }
+}
+
+void GameWorld::makePath()
+{
+    GeometricManager *manager = dynamic_cast<GeometricManager *>(m_managers.at(0));
+
+    glm::vec3 eps = glm::vec3(0, 0.01, 0);
+
+    CollisionData dataS, dataE;
+    Triangle *start = manager->getTriangleBelow(manager->navMesh->triangles, m_player->getPosition() + eps, dataS);
+    Triangle *end = manager->getTriangleBelow(manager->navMesh->triangles, m_target->getPosition() + eps, dataE);
+
+    QList<glm::vec3> path;
+
+    if(start && end)
+    {
+        manager->navMesh->getPath(m_player->getPosition() + dataS.t * glm::vec3(0, -RAY_LEN, 0),
+                                  m_target->getPosition() + dataE.t * glm::vec3(0, -RAY_LEN, 0),
+                                  start, end, path);
+    }
+
+    foreach(Ellipsoid *ell, m_targetPath)
+    {
+        delete(ell);
+    }
+
+    m_targetPath.clear();
+
+    for(int i = 1; i < path.size() - 1; i++)
+    {
+        m_targetPath.append(new Ellipsoid(path[i], glm::vec3(0.5, 1, 0.5), glm::vec4(1, 0, 0, 0.5)));
+    }
 }
 
 void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
@@ -123,7 +165,7 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
     {
         GeometricManager *manager = dynamic_cast<GeometricManager *>(m_managers.at(0));
 
-        manager->navMesh->toggleVisible();
+        m_navFeatures = !m_navFeatures;
     }
 
 }
@@ -156,8 +198,22 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
+void GameWorld::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(m_navFeatures)
+    {
+        setTarget();
+    }
+}
+
 void GameWorld::onTick(float seconds)
 {
+    if(m_navFeatures)
+    {
+        setRay();
+        makePath();
+    }
+
     World::onTick(seconds);
 }
 
@@ -172,7 +228,18 @@ void GameWorld::drawGeometry(Graphics *graphics)
     graphics->drawShape(m_levelKey);
 
     /* Draw target */
-    m_target->draw(graphics);
+    if(m_navFeatures)
+    {
+        GeometricManager *manager = dynamic_cast<GeometricManager *>(m_managers.at(0));
+        manager->navMesh->draw(graphics);
+
+        foreach(Ellipsoid *ell, m_targetPath)
+        {
+            ell->draw(graphics);
+        }
+
+        m_target->draw(graphics);
+    }
 
     World::drawGeometry(graphics);
 }
