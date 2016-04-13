@@ -144,6 +144,12 @@ void Graphics::removeProgram(QString key)
     m_programs.remove(key);
 }
 
+
+GLuint Graphics::getActiveProgram()
+{
+    return m_activeProgram;
+}
+
 void Graphics::setActiveProgram(QString key)
 {
     GLuint program = m_programs.value(key, -1);
@@ -316,4 +322,10 @@ void Graphics::sendUseLightingUniform(int useLighting)
 {
     glUniform1i(glGetUniformLocation(m_activeProgram, "useLighting"),
                 useLighting);
+}
+
+void Graphics::sendTexturePosition(char *textureName, int i)
+{
+    glUniform1i(glGetUniformLocation(m_activeProgram, textureName),
+                i);
 }

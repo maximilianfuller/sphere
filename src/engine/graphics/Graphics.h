@@ -27,6 +27,7 @@ public:
     GLuint createProgram(const char *vertexShaderFile, const char *fragmentShaderFile,
                          QString key);
     void removeProgram(QString key);
+    GLuint getActiveProgram();
     void setActiveProgram(QString key);
     void unloadProgram();
 
@@ -45,12 +46,14 @@ public:
     void sendIntensityUniform(glm::vec3 intensity);
     void sendAttenuationUniform(glm::vec3 att);
     void sendLightPositionUniform(glm::vec3 pos);
-    void sendModelUniform(glm::mat4x4 model);
-    void sendViewUniform(glm::mat4x4 model);
-    void sendProjectionUniform(glm::mat4x4 model);
     void sendOpacityUniform(float opacity);
     void sendUseTextureUniform(int useTexture);
     void sendUseLightingUniform(int useLighting);
+    void sendTexturePosition(char *textureName, int i);
+
+    void sendModelUniform(glm::mat4x4 model);
+    void sendViewUniform(glm::mat4x4 model);
+    void sendProjectionUniform(glm::mat4x4 model);
 
 private:
     /* Textures */

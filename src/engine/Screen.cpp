@@ -82,12 +82,15 @@ void Screen::drawDeferred(Graphics *graphics)
 
     m_objectDataFBO->bind();
     m_world->drawGeometry(graphics);
+    m_objectDataFBO->unbind();
 
     graphics->setActiveProgram("lights");
     m_camera->setTransforms(graphics);
 
-    m_objectDataFBO->unbind();
     m_objectDataFBO->useTextures();
+    graphics->sendTexturePosition("position", 0);
+    graphics->sendTexturePosition("normal", 1);
+
     m_world->drawGeometry(graphics);
 }
 

@@ -8,5 +8,5 @@ uniform sampler2D normal;
 
 void main(){
     vec2 res = vec2(800, 600);
-    fragColor = vec4(vec3(texture(normal, gl_FragCoord.xy / res)), 1);
+    fragColor = vec4(vec3(texture(position, gl_FragCoord.xy / res)), 1);
 }
