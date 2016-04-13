@@ -49,6 +49,7 @@ private:
     void createGraph();
     void createVBO(Graphics *graphics);
     void addTriangleFloats(Triangle *tri);
+    void resetVisited();
 
     bool getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
                        PortalPath &portals,

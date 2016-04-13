@@ -32,7 +32,7 @@ View::View(QWidget *parent) :
     setMouseTracking(true);
 
     // Hide the cursor
-    setCursor(Qt::BlankCursor);
+    //setCursor(Qt::BlankCursor);
 
     // Accept focus by tab and clicking
     setFocusPolicy(Qt::StrongFocus);

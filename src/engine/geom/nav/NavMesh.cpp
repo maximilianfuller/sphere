@@ -171,30 +171,30 @@ void NavMesh::addTriangleFloats(Triangle *tri)
     }
 }
 
+void NavMesh::resetVisited()
+{
+    foreach(const Node n, m_graph)
+    {
+        n.value->visited = false;
+    }
+}
+
 bool NavMesh::getPath(glm::vec3 startPos, glm::vec3 endPos, Triangle *start, Triangle *end, QList<glm::vec3> &path)
 {
     PortalPath portals;
 
     if(!getPortals(start, end, portals))
     {
+        resetVisited();
         return false;
+    }
+    else
+    {
+        resetVisited();
     }
 
     portals.prepend(Portal(startPos, startPos));
     portals.append(Portal(endPos, endPos));
-
-    foreach(const Node n, m_graph)
-    {
-        n.value->visited = false;
-    }
-
-    /* Midpoint method */
-    /*
-    foreach(Portal portal, portals)
-    {
-        path.append((portal.first + portal.second) / 2.f);
-    }
-    */
 
     /* String pulling */
     glm::vec3 apex = portals[0].first;
