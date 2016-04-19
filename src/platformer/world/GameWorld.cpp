@@ -40,7 +40,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     /* Add manager */
     addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
 
-    addLight(new Light());
+    addLight(new Light(glm::vec3(0, 10, 0), glm::vec3(0.1, 0.1, 0.1), glm::vec3(1, 1, 1)));
+    addLight(new Light(glm::vec3(0, 0, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1)));
 }
 
 GameWorld::~GameWorld()

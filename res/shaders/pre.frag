@@ -10,6 +10,6 @@ in vec4 position_worldSpace;
 in vec4 eye_worldSpace;
 
 void main(){
-     fragPosition = vec4(vec3(position_worldSpace), 1);
-     fragNormal = vec4(vec3(normal_worldSpace), 1);
+     fragPosition = vec4(vec3(position_worldSpace) / position_worldSpace.w, 1);
+     fragNormal = vec4(vec3(normal_worldSpace) / position_worldSpace.w, 1);
 }

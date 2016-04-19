@@ -16,14 +16,18 @@ Screen::Screen(Application *app, float opacity, int width, int height) :
     m_camera(NULL),
     m_world(NULL)
 {
-    GLint ifObject[3] = {GL_RGB16F, GL_RGB16F};
-    GLenum fObject[3] = {GL_RGB, GL_RGB};
-    GLenum tObject[3] = {GL_FLOAT, GL_FLOAT};
+    GLint internalFormatsObject[2] = {GL_RGB16F, GL_RGB16F};
+    GLenum formatsObject[2] = {GL_RGB, GL_RGB};
+    GLenum typesObject[2] = {GL_FLOAT, GL_FLOAT};
+
+    GLint internalFormatsLight[2] = {GL_RGBA};
+    GLenum formatsLight[2] = {GL_RGBA};
+    GLenum typesLight[2] = {GL_UNSIGNED_BYTE};
 
     m_objectDataFBO = new Framebuffer(800, 600, 2,
-                                      ifObject, fObject, tObject);
-
-    m_lightDataFBO = NULL;
+                                      internalFormatsObject, formatsObject, typesObject);
+    m_lightDataFBO = new Framebuffer(800, 600, 1,
+                                     internalFormatsLight, formatsLight, typesLight);
 }
 
 Screen::~Screen()
@@ -75,8 +79,16 @@ bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
     return morePaint;
 }
 
+/*
+ * Calculate attenuation using position and light position
+ * Calculate diffuse component using position, light position, normal
+ * Calculate specular component using eye position, position, light position
+ * Use default coefficients and then send to combine
+ * Make third shader which combines lighting (vector for each intensity) and color, by vector product.
+ */
 void Screen::drawDeferred(Graphics *graphics)
 {
+    /* Object data pass */
     graphics->setActiveProgram("pre");
     m_camera->setTransforms(graphics);
 
@@ -84,12 +96,37 @@ void Screen::drawDeferred(Graphics *graphics)
     m_world->drawGeometry(graphics);
     m_objectDataFBO->unbind();
 
+    /* Light pass */
     graphics->setActiveProgram("lights");
     m_camera->setTransforms(graphics);
 
     m_objectDataFBO->useTextures();
     graphics->sendTexturePosition("position", 0);
     graphics->sendTexturePosition("normal", 1);
+
+    m_lightDataFBO->bind();
+
+    glDisable(GL_CULL_FACE);
+
+    glBlendFunc(GL_ONE, GL_ONE);
+    glEnable(GL_BLEND);
+
+    m_world->drawLights(graphics);
+    m_lightDataFBO->unbind();
+
+    /* Final pass */
+    glDisable(GL_BLEND);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    glEnable(GL_DEPTH_TEST);
+
+    graphics->setActiveProgram("post");
+    m_camera->setTransforms(graphics);
+
+    m_lightDataFBO->useTextures();
+    graphics->sendTexturePosition("data", 0);
 
     m_world->drawGeometry(graphics);
 }

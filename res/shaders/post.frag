@@ -4,7 +4,7 @@ out vec4 fragColor;
 
 uniform vec4 color;
 
-uniform sampler2D tex;
+uniform sampler2D data;
 uniform int useTexture = 0;
 uniform int useLighting = 1;
 
@@ -14,6 +14,11 @@ in vec4 eye_worldSpace;
 in vec2 texc;
 
 void main(){
+    vec2 res = vec2(800, 600);
+    vec4 lightData = texture(data, gl_FragCoord.xy / res);
+    fragColor = color * lightData;
+
+    /*
     vec3 base_color = vec3(0);
     fragColor = vec4(0);
 
@@ -42,4 +47,5 @@ void main(){
     {
         fragColor = vec4(base_color, color.w);
     }
+    */
 }

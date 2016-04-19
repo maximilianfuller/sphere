@@ -34,7 +34,7 @@ void Light::setAttenuation(glm::vec3 att)
     m_att = att;
 
     /* Get minimum tolerated intensity and max light intensity */
-    float minIntensity = 256.0 / 5.0;
+    float minIntensity = 256.0;
     float lightIntensity = glm::max(m_int.x, glm::max(m_int.y, m_int.z));
 
     /* Calculated the radius in which the light is effective */

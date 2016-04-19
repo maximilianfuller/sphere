@@ -8,7 +8,7 @@
 #include <QKeyEvent>
 
 PlatformerApplication::PlatformerApplication(QGLWidget *container) :
-    Application(container, true, true, true, glm::vec4(0.4, 0.5, 0.9, 1))
+    Application(container, true, true, true, glm::vec4(0, 0, 0, 0))
 {
     /* Setup graphics object */
     m_graphics = new Graphics();
