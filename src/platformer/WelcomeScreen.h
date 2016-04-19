@@ -8,7 +8,7 @@ class Application;
 class WelcomeScreen : public Screen
 {
 public:
-    WelcomeScreen(Application *app, float opacity = 1.f);
+    WelcomeScreen(Application *app, int width, int height, float opacity = 1.f);
     ~WelcomeScreen();
 
     virtual void keyPressEvent(QKeyEvent *event);

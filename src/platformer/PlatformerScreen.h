@@ -8,7 +8,7 @@ class Graphics;
 class PlatformerScreen : public Screen
 {
 public:
-    PlatformerScreen(Application *app, float opacity,
+    PlatformerScreen(Application *app, int width, int height, float opacity,
                      Graphics *graphics);
     ~PlatformerScreen();
 

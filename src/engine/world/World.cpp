@@ -3,7 +3,8 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/entity/Entity.h"
-#include "engine/light/Light.h"
+#include "engine/light/PointLight.h"
+#include "engine/light/DirectionalLight.h"
 #include "engine/manager/Manager.h"
 
 World::World(Camera *camera) :
@@ -23,7 +24,12 @@ World::~World()
         delete(manager);
     }
 
-    foreach(Light *light, m_lights)
+    foreach(PointLight *light, m_pointLights)
+    {
+        delete(light);
+    }
+
+    foreach(DirectionalLight *light, m_directionalLights)
     {
         delete(light);
     }
@@ -67,21 +73,21 @@ void World::addManager(Manager *manager)
     m_managers.append(manager);
 }
 
-Light *World::getLight(int index)
+PointLight *World::getPointLight(int index)
 {
-    return m_lights[index];
+    return m_pointLights[index];
 }
 
-void World::addLight(Light *light)
+void World::addPointLight(PointLight *light)
 {
-    m_lights.append(light);
+    m_pointLights.append(light);
 }
 
-void World::removeLight(Light *light)
+void World::removePointLight(PointLight *light)
 {
     int i = 0;
 
-    foreach(Light *l, m_lights)
+    foreach(PointLight *l, m_pointLights)
     {
         if(light == l)
         {
@@ -91,8 +97,36 @@ void World::removeLight(Light *light)
         i++;
     }
 
-    delete m_lights[i];
-    m_lights.removeAt(i);
+    delete m_pointLights[i];
+    m_pointLights.removeAt(i);
+}
+
+DirectionalLight *World::getDirectionalLight(int index)
+{
+    return m_directionalLights[index];
+}
+
+void World::addDirectionalLight(DirectionalLight *light)
+{
+    m_directionalLights.append(light);
+}
+
+void World::removeDirectionalLight(DirectionalLight *light)
+{
+    int i = 0;
+
+    foreach(DirectionalLight *l, m_directionalLights)
+    {
+        if(light == l)
+        {
+            break;
+        }
+
+        i++;
+    }
+
+    delete m_directionalLights[i];
+    m_directionalLights.removeAt(i);
 }
 
 void World::onTick(float seconds)
@@ -105,6 +139,9 @@ void World::onTick(float seconds)
 
 void World::drawGeometry(Graphics *graphics)
 {
+    m_camera->setTransforms(graphics);
+    m_camera->setResolution(graphics);
+
     foreach(Manager *manager, m_managers)
     {
         manager->onDraw(graphics);
@@ -113,7 +150,17 @@ void World::drawGeometry(Graphics *graphics)
 
 void World::drawLights(Graphics *graphics)
 {
-    foreach(Light *light, m_lights)
+    m_camera->setTransforms(graphics);
+    m_camera->setResolution(graphics);
+
+    foreach(PointLight *light, m_pointLights)
+    {
+        light->draw(graphics);
+    }
+
+    graphics->sendEmptyMatrices();
+
+    foreach(DirectionalLight *light, m_directionalLights)
     {
         light->draw(graphics);
     }

@@ -9,8 +9,8 @@
 #include <QApplication>
 #include <QKeyEvent>
 
-WelcomeScreen::WelcomeScreen(Application *app, float opacity) :
-    Screen(app, opacity)
+WelcomeScreen::WelcomeScreen(Application *app, int width, int height, float opacity) :
+    Screen(app, opacity, width, height)
 {
     /* Setup camera */
     m_camera = dynamic_cast<Camera *>(new SimpleCamera());

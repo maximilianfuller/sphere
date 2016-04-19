@@ -4,7 +4,8 @@
 
 #include "engine/camera/Camera.h"
 #include "engine/graphics/Graphics.h"
-#include "engine/light/Light.h"
+#include "engine/light/PointLight.h"
+#include "engine/light/DirectionalLight.h"
 #include "engine/shape/Ellipsoid.h"
 #include "engine/intersect/Ray.h"
 #include "engine/intersect/Triangle.h"
@@ -40,8 +41,13 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     /* Add manager */
     addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
 
-    addLight(new Light(glm::vec3(0, 10, 0), glm::vec3(0.1, 0.1, 0.1), glm::vec3(1, 1, 1)));
-    addLight(new Light(glm::vec3(0, 0, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1)));
+    addPointLight(new PointLight(glm::vec3(-25, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(1, 0, 1), 1));
+    addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(1, 1, 1), 2));
+    addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(1, 0, 0), 3));
+    addPointLight(new PointLight(glm::vec3(0, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(0, 1, 0), 4));
+    addPointLight(new PointLight(glm::vec3(5, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(0, 0, 1), 5));
+
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1), 6));
 }
 
 GameWorld::~GameWorld()
@@ -225,7 +231,6 @@ void GameWorld::drawGeometry(Graphics *graphics)
     graphics->sendUseTextureUniform(0);
     graphics->sendModelUniform(glm::mat4x4());
     graphics->sendColorUniform(glm::vec4(1));
-    //graphics->loadTexture(m_levelKey, 0);
     graphics->drawShape(m_levelKey);
 
     /* Draw target */

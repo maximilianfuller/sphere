@@ -7,7 +7,8 @@
 
 class Graphics;
 class Entity;
-class Light;
+class PointLight;
+class DirectionalLight;
 class Camera;
 class Manager;
 
@@ -27,9 +28,13 @@ public:
     void addManager(Manager *manager);
 
     /* Light management */
-    Light *getLight(int index);
-    void addLight(Light *light);
-    void removeLight(Light *light);
+    PointLight *getPointLight(int index);
+    void addPointLight(PointLight *light);
+    void removePointLight(PointLight *light);
+
+    DirectionalLight *getDirectionalLight(int index);
+    void addDirectionalLight(DirectionalLight *light);
+    void removeDirectionalLight(DirectionalLight *light);
 
     /* Game Loop */
     virtual void onTick(float seconds);
@@ -50,7 +55,8 @@ public:
 protected:
     QList<Manager *> m_managers;
     QList<Entity *> m_entities;
-    QList<Light *> m_lights;
+    QList<PointLight *> m_pointLights;
+    QList<DirectionalLight *> m_directionalLights;
 
     Camera *m_camera;
 };

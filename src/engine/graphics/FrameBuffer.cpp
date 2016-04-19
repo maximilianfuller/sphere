@@ -11,7 +11,6 @@ Framebuffer::Framebuffer(int width, int height, int numTextures,
     glGenRenderbuffers(1, &m_depthBuffer);
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
 
     GLenum attachments[3];
 
@@ -34,8 +33,9 @@ Framebuffer::Framebuffer(int width, int height, int numTextures,
     glDrawBuffers(numTextures, attachments);
 
     /* Allocate depth buffer */
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_depthBuffer);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindTexture(GL_TEXTURE_2D, 0);

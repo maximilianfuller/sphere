@@ -265,21 +265,83 @@ bool Graphics::inFrustum(AABoundingBox *aabb)
     return true;
 }
 
+void Graphics::enableBlend()
+{
+    glDisable(GL_CULL_FACE);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_ONE, GL_ONE);
+
+    glEnable(GL_STENCIL_TEST);
+    glClear(GL_STENCIL_BUFFER_BIT);
+    glDepthMask(GL_FALSE);
+}
+
+void Graphics::disableBlend()
+{
+    glDisable(GL_BLEND);
+
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+
+    glDisable(GL_STENCIL_TEST);
+    glDepthMask(GL_TRUE);
+}
+
+void Graphics::setStencilId(int id)
+{
+    glStencilFunc(GL_NOTEQUAL, id, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    glStencilMask(0xFF);
+}
+
+void Graphics::sendResolutionUniform(glm::vec2 res)
+{
+    glUniform2fv(glGetUniformLocation(m_activeProgram, "res"), 1,
+                 glm::value_ptr(res));
+}
+
 void Graphics::sendColorUniform(glm::vec4 color)
 {
     glUniform4fv(glGetUniformLocation(m_activeProgram, "color"), 1,
                  glm::value_ptr(color));
 }
 
+void Graphics::sendShininessUniform(float shininess)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "shininess"), shininess);
+}
+
+
+void Graphics::sendLightTypeUniform(int lightType)
+{
+    glUniform1i(glGetUniformLocation(m_activeProgram, "lightType"), lightType);
+}
+
 void Graphics::sendIntensityUniform(glm::vec3 intensity)
 {
-    glUniform3fv(glGetUniformLocation(m_activeProgram, "intensity"), 1,
+    glUniform3fv(glGetUniformLocation(m_activeProgram, "lightInt"), 1,
                  glm::value_ptr(intensity));
+}
+
+void Graphics::sendAmbientCoefficient(float coeff)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "ambCoeff"), coeff);
+}
+
+void Graphics::sendDiffuseCoefficient(float coeff)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "diffCoeff"), coeff);
+}
+
+void Graphics::sendSpecularCoefficient(float coeff)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "specCoeff"), coeff);
 }
 
 void Graphics::sendAttenuationUniform(glm::vec3 att)
 {
-    glUniform3fv(glGetUniformLocation(m_activeProgram, "att"), 1,
+    glUniform3fv(glGetUniformLocation(m_activeProgram, "lightAtt"), 1,
                  glm::value_ptr(att));
 }
 
@@ -289,22 +351,10 @@ void Graphics::sendLightPositionUniform(glm::vec3 pos)
                  glm::value_ptr(pos));
 }
 
-void Graphics::sendModelUniform(glm::mat4x4 model)
+void Graphics::sendLightDirectionUniform(glm::vec3 dir)
 {
-    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "m"), 1, GL_FALSE,
-                       glm::value_ptr(model));
-}
-
-void Graphics::sendViewUniform(glm::mat4x4 view)
-{
-    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "v"), 1, GL_FALSE,
-                       glm::value_ptr(view));
-}
-
-void Graphics::sendProjectionUniform(glm::mat4x4 proj)
-{
-    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "p"), 1, GL_FALSE,
-                       glm::value_ptr(proj));
+    glUniform3fv(glGetUniformLocation(m_activeProgram, "lightDir"), 1,
+                 glm::value_ptr(dir));
 }
 
 void Graphics::sendOpacityUniform(float opacity)
@@ -328,4 +378,29 @@ void Graphics::sendTexturePosition(char *textureName, int i)
 {
     glUniform1i(glGetUniformLocation(m_activeProgram, textureName),
                 i);
+}
+
+void Graphics::sendModelUniform(glm::mat4x4 model)
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "m"), 1, GL_FALSE,
+                       glm::value_ptr(model));
+}
+
+void Graphics::sendViewUniform(glm::mat4x4 view)
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "v"), 1, GL_FALSE,
+                       glm::value_ptr(view));
+}
+
+void Graphics::sendProjectionUniform(glm::mat4x4 proj)
+{
+    glUniformMatrix4fv(glGetUniformLocation(m_activeProgram, "p"), 1, GL_FALSE,
+                       glm::value_ptr(proj));
+}
+
+void Graphics::sendEmptyMatrices()
+{
+    sendModelUniform(glm::mat4x4());
+    sendViewUniform(glm::mat4x4());
+    sendProjectionUniform(glm::mat4x4());
 }

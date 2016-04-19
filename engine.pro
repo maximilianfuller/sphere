@@ -57,7 +57,9 @@ SOURCES += \
     src/platformer/WelcomeScreen.cpp \
     src/platformer/entity/Player.cpp \
     src/platformer/world/WelcomeWorld.cpp \
-    src/platformer/world/GameWorld.cpp
+    src/platformer/world/GameWorld.cpp \
+    src/engine/light/PointLight.cpp \
+    src/engine/light/DirectionalLight.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -111,7 +113,9 @@ HEADERS += \
     src/platformer/WelcomeScreen.h \
     src/platformer/entity/Player.h \
     src/platformer/world/WelcomeWorld.h \
-    src/platformer/world/GameWorld.h
+    src/platformer/world/GameWorld.h \
+    src/engine/light/PointLight.h \
+    src/engine/light/DirectionalLight.h
 
 
 FORMS += src/mainwindow.ui

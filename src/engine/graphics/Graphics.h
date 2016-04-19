@@ -9,6 +9,10 @@
 
 class AABoundingBox;
 
+const int POINT_LIGHT = 0;
+const int DIRECTIONAL_LIGHT = 1;
+const int SPOT_LIGHT = 2;
+
 class Graphics
 {
 public:
@@ -42,10 +46,21 @@ public:
                           glm::vec4 frustumNZ, glm::vec4 frustumZ);
     bool inFrustum(AABoundingBox *aabb);
 
+    void enableBlend();
+    void disableBlend();
+    void setStencilId(int id);
+
+    void sendResolutionUniform(glm::vec2 res);
     void sendColorUniform(glm::vec4 color);
+    void sendShininessUniform(float shininess);
+    void sendLightTypeUniform(int lightType);
     void sendIntensityUniform(glm::vec3 intensity);
+    void sendAmbientCoefficient(float coeff);
+    void sendDiffuseCoefficient(float coeff);
+    void sendSpecularCoefficient(float coeff);
     void sendAttenuationUniform(glm::vec3 att);
     void sendLightPositionUniform(glm::vec3 pos);
+    void sendLightDirectionUniform(glm::vec3 dir);
     void sendOpacityUniform(float opacity);
     void sendUseTextureUniform(int useTexture);
     void sendUseLightingUniform(int useLighting);
@@ -54,6 +69,7 @@ public:
     void sendModelUniform(glm::mat4x4 model);
     void sendViewUniform(glm::mat4x4 model);
     void sendProjectionUniform(glm::mat4x4 model);
+    void sendEmptyMatrices();
 
 private:
     /* Textures */

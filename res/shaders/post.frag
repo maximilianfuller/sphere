@@ -13,10 +13,12 @@ in vec4 position_worldSpace;
 in vec4 eye_worldSpace;
 in vec2 texc;
 
+/* Resolution */
+uniform vec2 res;
+
 void main(){
-    vec2 res = vec2(800, 600);
     vec4 lightData = texture(data, gl_FragCoord.xy / res);
-    fragColor = color * lightData;
+    fragColor = lightData;
 
     /*
     vec3 base_color = vec3(0);

@@ -16,17 +16,17 @@ Screen::Screen(Application *app, float opacity, int width, int height) :
     m_camera(NULL),
     m_world(NULL)
 {
-    GLint internalFormatsObject[2] = {GL_RGB16F, GL_RGB16F};
-    GLenum formatsObject[2] = {GL_RGB, GL_RGB};
-    GLenum typesObject[2] = {GL_FLOAT, GL_FLOAT};
+    GLint internalFormatsObject[3] = {GL_RGB16F, GL_RGB16F, GL_RGBA};
+    GLenum formatsObject[3] = {GL_RGB, GL_RGB, GL_RGBA};
+    GLenum typesObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
 
-    GLint internalFormatsLight[2] = {GL_RGBA};
-    GLenum formatsLight[2] = {GL_RGBA};
-    GLenum typesLight[2] = {GL_UNSIGNED_BYTE};
+    GLint internalFormatsLight[1] = {GL_RGBA};
+    GLenum formatsLight[1] = {GL_RGBA};
+    GLenum typesLight[1] = {GL_UNSIGNED_BYTE};
 
-    m_objectDataFBO = new Framebuffer(800, 600, 2,
+    m_objectDataFBO = new Framebuffer(width, height, 3,
                                       internalFormatsObject, formatsObject, typesObject);
-    m_lightDataFBO = new Framebuffer(800, 600, 1,
+    m_lightDataFBO = new Framebuffer(width, height, 1,
                                      internalFormatsLight, formatsLight, typesLight);
 }
 
@@ -57,6 +57,23 @@ void Screen::onResize(int w, int h)
     /* Update camera */
     glm::vec2 size = glm::vec2(static_cast<float>(w), static_cast<float>(h));
     m_camera->setRatio(size);
+
+    /* Remake framebuffers */
+    GLint internalFormatsObject[3] = {GL_RGB16F, GL_RGB16F, GL_RGBA};
+    GLenum formatsObject[3] = {GL_RGB, GL_RGB, GL_RGBA};
+    GLenum typesObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
+
+    GLint internalFormatsLight[1] = {GL_RGBA};
+    GLenum formatsLight[1] = {GL_RGBA};
+    GLenum typesLight[1] = {GL_UNSIGNED_BYTE};
+
+    delete m_objectDataFBO;
+    delete m_lightDataFBO;
+
+    m_objectDataFBO = new Framebuffer(w, h, 3,
+                                      internalFormatsObject, formatsObject, typesObject);
+    m_lightDataFBO = new Framebuffer(w, h, 1,
+                                     internalFormatsLight, formatsLight, typesLight);
 }
 
 void Screen::onTick(float seconds)
@@ -79,18 +96,10 @@ bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
     return morePaint;
 }
 
-/*
- * Calculate attenuation using position and light position
- * Calculate diffuse component using position, light position, normal
- * Calculate specular component using eye position, position, light position
- * Use default coefficients and then send to combine
- * Make third shader which combines lighting (vector for each intensity) and color, by vector product.
- */
 void Screen::drawDeferred(Graphics *graphics)
 {
     /* Object data pass */
     graphics->setActiveProgram("pre");
-    m_camera->setTransforms(graphics);
 
     m_objectDataFBO->bind();
     m_world->drawGeometry(graphics);
@@ -98,37 +107,27 @@ void Screen::drawDeferred(Graphics *graphics)
 
     /* Light pass */
     graphics->setActiveProgram("lights");
-    m_camera->setTransforms(graphics);
 
     m_objectDataFBO->useTextures();
     graphics->sendTexturePosition("position", 0);
     graphics->sendTexturePosition("normal", 1);
+    graphics->sendTexturePosition("colorSpecular", 2);
 
     m_lightDataFBO->bind();
-
-    glDisable(GL_CULL_FACE);
-
-    glBlendFunc(GL_ONE, GL_ONE);
-    glEnable(GL_BLEND);
-
+    graphics->enableBlend();
     m_world->drawLights(graphics);
     m_lightDataFBO->unbind();
 
     /* Final pass */
-    glDisable(GL_BLEND);
-
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-
-    glEnable(GL_DEPTH_TEST);
-
     graphics->setActiveProgram("post");
-    m_camera->setTransforms(graphics);
 
     m_lightDataFBO->useTextures();
     graphics->sendTexturePosition("data", 0);
 
-    m_world->drawGeometry(graphics);
+    graphics->disableBlend();
+    graphics->sendEmptyMatrices();
+    m_camera->setResolution(graphics);
+    graphics->drawShape("fullscreenQuad");
 }
 
 void Screen::mousePressEvent(QMouseEvent *event)

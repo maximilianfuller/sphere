@@ -205,3 +205,8 @@ void Camera::setTransforms(Graphics *graphics)
     graphics->sendViewUniform(m_view);
     graphics->sendProjectionUniform(m_proj);
 }
+
+void Camera::setResolution(Graphics *graphics)
+{
+    graphics->sendResolutionUniform(m_ratio);
+}

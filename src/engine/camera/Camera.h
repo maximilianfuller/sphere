@@ -46,6 +46,7 @@ public:
     void updateFrustumPlanes(Graphics *graphics);
 
     virtual void setTransforms(Graphics *graphics);
+    virtual void setResolution(Graphics *graphics);
 
 protected:
     float m_yaw, m_pitch;

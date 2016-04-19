@@ -9,10 +9,10 @@
 #include <QApplication>
 #include <QKeyEvent>
 
-PlatformerScreen::PlatformerScreen(Application *app, float opacity,
-                                   Graphics *graphics) :
+PlatformerScreen::PlatformerScreen(Application *app, int width, int height,
+                                   float opacity, Graphics *graphics) :
     m_graphics(graphics),
-    Screen(app, opacity)
+    Screen(app, opacity, width, height)
 {
     /* Setup camera */
     m_camera = new Camera();

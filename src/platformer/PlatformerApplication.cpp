@@ -20,8 +20,11 @@ PlatformerApplication::PlatformerApplication(QGLWidget *container) :
     m_graphics->createTexture(":/images/plat_instructions.png", "welcome");
 
     /* Create screen */
-    addScreen(dynamic_cast<Screen *>(new PlatformerScreen(this, 1, m_graphics)));
-    addScreen(dynamic_cast<Screen *>(new WelcomeScreen(this, 1)));
+    addScreen(dynamic_cast<Screen *>(new PlatformerScreen(this,
+                                                          container->width(), container->height(),
+                                                          1, m_graphics)));
+    addScreen(dynamic_cast<Screen *>(new WelcomeScreen(this,
+                                                       container->width(), container->height(), 1)));
 }
 
 void PlatformerApplication::mouseMoveEvent(QMouseEvent *event)

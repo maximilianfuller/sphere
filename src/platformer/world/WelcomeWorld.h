@@ -15,6 +15,7 @@ public:
 
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
+    void drawLights(Graphics *graphics);
 
 private:
     FullscreenQuad *m_message;
