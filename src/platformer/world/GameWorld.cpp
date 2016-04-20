@@ -41,13 +41,38 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     /* Add manager */
     addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
 
-    addPointLight(new PointLight(glm::vec3(-25, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(1, 0, 1), 1));
-    addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(1, 1, 1), 2));
-    addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(1, 0, 0), 3));
-    addPointLight(new PointLight(glm::vec3(0, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(0, 1, 0), 4));
-    addPointLight(new PointLight(glm::vec3(5, 4, 0), glm::vec3(0.1, 0.4, 0.4), glm::vec3(0, 0, 1), 5));
+    /* Lights */
+    //int numLights = 500;
 
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1), 6));
+    //for(int i = 0; i < numLights; i++)
+    //{
+    //    addPointLight(new PointLight(glm::vec3(i * 5, 20, -i * 5),
+    //                                 glm::vec3(0.1, 0.1, 0.1),
+    //                                 glm::vec3(i / float(numLights), 1 - i / float(numLights), i / float(numLights)), i + 1));
+    //}
+
+    addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 1));
+    addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 2));
+    addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 3));
+    addPointLight(new PointLight(glm::vec3(0, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 4));
+    addPointLight(new PointLight(glm::vec3(5, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 5));
+
+    addPointLight(new PointLight(glm::vec3(10, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 6));
+    addPointLight(new PointLight(glm::vec3(-10, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 7));
+    addPointLight(new PointLight(glm::vec3(-5, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 8));
+    addPointLight(new PointLight(glm::vec3(0, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 9));
+    addPointLight(new PointLight(glm::vec3(5, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 10));
+
+    addPointLight(new PointLight(glm::vec3(10, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 11));
+    addPointLight(new PointLight(glm::vec3(-10, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 12));
+    addPointLight(new PointLight(glm::vec3(-5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 13));
+    addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 14));
+    addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 15));
+
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.05, 0.05, 0.05), 1000));
+
+    /* Particles */
+    addParticle(glm::vec3(0, 2, 0), glm::vec3(0, 0, 0), "particle");
 }
 
 GameWorld::~GameWorld()

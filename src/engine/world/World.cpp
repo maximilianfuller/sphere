@@ -3,13 +3,18 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/entity/Entity.h"
+#include "engine/manager/Manager.h"
 #include "engine/light/PointLight.h"
 #include "engine/light/DirectionalLight.h"
-#include "engine/manager/Manager.h"
+#include "engine/particle/Particle.h"
 
 World::World(Camera *camera) :
     m_camera(camera)
 {
+    for(int i = 0; i < MAX_PARTICLES; i++)
+    {
+        m_particles[i] = NULL;
+    }
 }
 
 World::~World()
@@ -32,6 +37,11 @@ World::~World()
     foreach(DirectionalLight *light, m_directionalLights)
     {
         delete(light);
+    }
+
+    for(int i = 0; i < MAX_PARTICLES; i++)
+    {
+        delete(m_particles[i]);
     }
 }
 
@@ -129,6 +139,18 @@ void World::removeDirectionalLight(DirectionalLight *light)
     m_directionalLights.removeAt(i);
 }
 
+Particle *World::getParticle(int index)
+{
+    return m_particles[index];
+}
+
+void World::addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey)
+{
+    delete m_particles[m_particleIndex];
+    m_particles[m_particleIndex++] = new Particle(pos, vel, textureKey);
+    m_particleIndex %= MAX_PARTICLES;
+}
+
 void World::onTick(float seconds)
 {
     foreach(Manager *manager, m_managers)
@@ -145,6 +167,15 @@ void World::drawGeometry(Graphics *graphics)
     foreach(Manager *manager, m_managers)
     {
         manager->onDraw(graphics);
+    }
+
+    for(int i = 0; i < MAX_PARTICLES; i++)
+    {
+        if(m_particles[i])
+        {
+            m_particles[i]->tick(1.0 / 60.0);
+            m_particles[i]->draw(graphics);
+        }
     }
 }
 

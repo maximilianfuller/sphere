@@ -10,6 +10,7 @@
         <file>level_island.png</file>
         <file>level_island_channels.png</file>
         <file>plat_instructions.png</file>
+        <file>particle_1.jpg</file>
     </qresource>
     <qresource prefix="/"/>
 </RCC>

@@ -4,13 +4,19 @@
 #include "util/CommonIncludes.h"
 
 #include <QList>
+#include <QString>
 
 class Graphics;
 class Entity;
-class PointLight;
-class DirectionalLight;
 class Camera;
 class Manager;
+
+class PointLight;
+class DirectionalLight;
+
+class Particle;
+
+const int MAX_PARTICLES = 500;
 
 class World
 {
@@ -36,6 +42,10 @@ public:
     void addDirectionalLight(DirectionalLight *light);
     void removeDirectionalLight(DirectionalLight *light);
 
+    /* Particle management */
+    Particle *getParticle(int index);
+    void addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey);
+
     /* Game Loop */
     virtual void onTick(float seconds);
     virtual void drawGeometry(Graphics *graphics);
@@ -57,6 +67,9 @@ protected:
     QList<Entity *> m_entities;
     QList<PointLight *> m_pointLights;
     QList<DirectionalLight *> m_directionalLights;
+
+    Particle* m_particles[MAX_PARTICLES];
+    int m_particleIndex = 0;
 
     Camera *m_camera;
 };
