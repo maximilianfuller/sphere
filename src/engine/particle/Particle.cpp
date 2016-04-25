@@ -39,12 +39,10 @@ void Particle::tick(float seconds)
 void Particle::draw(Graphics *graphics)
 {
     glm::mat4x4 rotate = glm::rotate(glm::mat4x4(), -float(M_PI) / 2.f, glm::vec3(1, 0, 0));
-    glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(0.1, 0.1, 0.1));
+    glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(0.2, 0.2, 0.2));
     glm::mat4x4 translate = glm::translate(glm::mat4x4(), m_pos);
 
     graphics->sendModelUniform(translate * scale * rotate);
-    graphics->sendColorUniform(glm::vec4(1));
-    graphics->sendUseTextureUniform(1);
     graphics->loadTexture(m_textureKey, 0);
 
     graphics->drawShape("quad");

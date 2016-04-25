@@ -26,6 +26,7 @@ void WelcomeWorld::onTick(float seconds)
 void WelcomeWorld::drawGeometry(Graphics *graphics)
 {
     graphics->sendEmptyMatrices();
+    m_camera->setResolution(graphics);
     m_message->draw(graphics);
 }
 

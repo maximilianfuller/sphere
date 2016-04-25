@@ -48,6 +48,9 @@ public:
 
     void enableBlend();
     void disableBlend();
+
+    void enableStencilTest();
+    void disableStencilTest();
     void setStencilId(int id);
 
     void sendResolutionUniform(glm::vec2 res);

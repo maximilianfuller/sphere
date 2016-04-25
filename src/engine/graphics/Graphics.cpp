@@ -22,6 +22,8 @@ Graphics::Graphics()
                 "sphere");
 
     /* Default Shaders */
+    createProgram(":/shaders/shader.vert", ":/shaders/shader.frag", "default");
+    createProgram(":/shaders/shader.vert", ":/shaders/combine.frag", "combine");
     createProgram(":/shaders/shader.vert", ":/shaders/pre.frag", "pre");
     createProgram(":/shaders/shader.vert", ":/shaders/lights.frag", "lights");
     createProgram(":/shaders/shader.vert", ":/shaders/post.frag", "post");
@@ -267,13 +269,11 @@ bool Graphics::inFrustum(AABoundingBox *aabb)
 
 void Graphics::enableBlend()
 {
-    glDisable(GL_CULL_FACE);
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_ONE, GL_ONE);
 
-    glEnable(GL_STENCIL_TEST);
-    glClear(GL_STENCIL_BUFFER_BIT);
+    glDisable(GL_CULL_FACE);
+
     glDepthMask(GL_FALSE);
 }
 
@@ -284,8 +284,18 @@ void Graphics::disableBlend()
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    glDisable(GL_STENCIL_TEST);
     glDepthMask(GL_TRUE);
+}
+
+void Graphics::enableStencilTest()
+{
+    glEnable(GL_STENCIL_TEST);
+    glClear(GL_STENCIL_BUFFER_BIT);
+}
+
+void Graphics::disableStencilTest()
+{
+    glDisable(GL_STENCIL_TEST);
 }
 
 void Graphics::setStencilId(int id)

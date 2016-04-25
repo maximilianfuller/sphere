@@ -15,8 +15,7 @@ class PointLight;
 class DirectionalLight;
 
 class Particle;
-
-const int MAX_PARTICLES = 500;
+class ParticleSystem;
 
 class World
 {
@@ -50,6 +49,7 @@ public:
     virtual void onTick(float seconds);
     virtual void drawGeometry(Graphics *graphics);
     virtual void drawLights(Graphics *graphics);
+    virtual void drawParticles(Graphics *graphics);
 
     /* Events */
     virtual void mousePressEvent(QMouseEvent *event);
@@ -68,8 +68,9 @@ protected:
     QList<PointLight *> m_pointLights;
     QList<DirectionalLight *> m_directionalLights;
 
-    Particle* m_particles[MAX_PARTICLES];
+    Particle* m_particles[500];
     int m_particleIndex = 0;
+    ParticleSystem *m_system;
 
     Camera *m_camera;
 };

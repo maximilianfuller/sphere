@@ -12,7 +12,9 @@ public:
 
     void bind();
     void unbind();
+
     void useTextures();
+    void blitDepthBuffer(GLuint dest);
 
 private:
     GLuint m_fbo;
@@ -20,6 +22,8 @@ private:
     GLuint *m_textures;
 
     int m_numTextures;
+    int m_width;
+    int m_height;
 };
 
 #endif // FRAMEBUFFER_H

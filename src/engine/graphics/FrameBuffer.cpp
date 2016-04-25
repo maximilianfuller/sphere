@@ -3,7 +3,9 @@
 Framebuffer::Framebuffer(int width, int height, int numTextures,
                          GLint *internalFormats, GLenum *formats, GLenum *types) :
     m_textures(new GLuint[numTextures]),
-    m_numTextures(numTextures)
+    m_numTextures(numTextures),
+    m_width(width),
+    m_height(height)
 {
     /* Generate OGL objects */
     glGenFramebuffers(1, &m_fbo);
@@ -63,7 +65,6 @@ void Framebuffer::unbind()
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-// NOTE: may have to find a way to bind more specifically
 void Framebuffer::useTextures()
 {
     for(int i = 0; i < m_numTextures; i++)
@@ -71,4 +72,15 @@ void Framebuffer::useTextures()
         glActiveTexture(GL_TEXTURE0 + i);
         glBindTexture(GL_TEXTURE_2D, m_textures[i]);
     }
+}
+
+void Framebuffer::blitDepthBuffer(GLuint dest)
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
+
+    glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
+                      GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

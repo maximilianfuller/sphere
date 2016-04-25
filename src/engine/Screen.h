@@ -51,8 +51,8 @@ protected:
     float m_opacity;
 
     /* Deferred lighting pipeline */
-    Framebuffer *m_objectDataFBO;
-    Framebuffer *m_lightDataFBO;
+    Framebuffer *m_geometryFramebuffer;
+    Framebuffer *m_lightFramebuffer;
 };
 
 #endif // SCREEN_H

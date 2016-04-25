@@ -7,14 +7,17 @@
 #include "engine/light/PointLight.h"
 #include "engine/light/DirectionalLight.h"
 #include "engine/particle/Particle.h"
+#include "engine/particle/ParticleSystem.h"
 
 World::World(Camera *camera) :
     m_camera(camera)
 {
-    for(int i = 0; i < MAX_PARTICLES; i++)
+    for(int i = 0; i < 500; i++)
     {
         m_particles[i] = NULL;
     }
+
+    m_system = new ParticleSystem("particle");
 }
 
 World::~World()
@@ -39,7 +42,7 @@ World::~World()
         delete(light);
     }
 
-    for(int i = 0; i < MAX_PARTICLES; i++)
+    for(int i = 0; i < 500; i++)
     {
         delete(m_particles[i]);
     }
@@ -148,7 +151,7 @@ void World::addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey)
 {
     delete m_particles[m_particleIndex];
     m_particles[m_particleIndex++] = new Particle(pos, vel, textureKey);
-    m_particleIndex %= MAX_PARTICLES;
+    m_particleIndex %= 500;
 }
 
 void World::onTick(float seconds)
@@ -168,15 +171,6 @@ void World::drawGeometry(Graphics *graphics)
     {
         manager->onDraw(graphics);
     }
-
-    for(int i = 0; i < MAX_PARTICLES; i++)
-    {
-        if(m_particles[i])
-        {
-            m_particles[i]->tick(1.0 / 60.0);
-            m_particles[i]->draw(graphics);
-        }
-    }
 }
 
 void World::drawLights(Graphics *graphics)
@@ -195,6 +189,28 @@ void World::drawLights(Graphics *graphics)
     {
         light->draw(graphics);
     }
+}
+
+void World::drawParticles(Graphics *graphics)
+{
+    m_camera->setTransforms(graphics);
+    m_camera->setResolution(graphics);
+
+    graphics->sendColorUniform(glm::vec4(1));
+    graphics->sendUseLightingUniform(0);
+    graphics->sendUseTextureUniform(1);
+
+    for(int i = 0; i < 500; i++)
+    {
+        if(m_particles[i])
+        {
+            m_particles[i]->tick(1.0 / 60.0);
+            m_particles[i]->draw(graphics);
+        }
+    }
+
+    m_system->tick(1.0 / 60.0);
+    m_system->draw(graphics);
 }
 
 void World::mousePressEvent(QMouseEvent *event)
