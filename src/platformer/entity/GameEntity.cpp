@@ -24,6 +24,16 @@ GameEntity::~GameEntity()
     delete m_particleSystem;
 }
 
+void GameEntity::startParticles()
+{
+    m_particleSystem->start();
+}
+
+void GameEntity::stopParticles()
+{
+    m_particleSystem->stop();
+}
+
 void GameEntity::onIntersect(Entity *ent, glm::vec3 mtv)
 {
     return;
@@ -52,9 +62,17 @@ void GameEntity::drawLights(Graphics *graphics)
 
 void GameEntity::drawParticles(Graphics *graphics)
 {
-    if(m_particleSystem)
+    if(m_particleSystem && m_particleSystem->getActivated())
     {
         m_particleSystem->draw(graphics,
                                glm::mat4x4(glm::mat3x3(glm::inverse(m_camera->getView()))));
+    }
+}
+
+void GameEntity::drawLightGeometry(Graphics *graphics)
+{
+    if(m_light)
+    {
+        m_light->drawGeometry(graphics);
     }
 }

@@ -22,11 +22,12 @@ Graphics::Graphics()
                 "sphere");
 
     /* Default Shaders */
-    createProgram(":/shaders/shader.vert", ":/shaders/shader.frag", "particle");
+    createProgram(":/shaders/shader.vert", ":/shaders/particles.frag", "particles");
     createProgram(":/shaders/shader.vert", ":/shaders/combine.frag", "combine");
     createProgram(":/shaders/shader.vert", ":/shaders/pre.frag", "pre");
     createProgram(":/shaders/shader.vert", ":/shaders/lights.frag", "lights");
     createProgram(":/shaders/shader.vert", ":/shaders/post.frag", "post");
+    createProgram(":/shaders/shader.vert", ":/shaders/lightGeometry.frag", "lightGeometry");
 }
 
 Graphics::~Graphics()
@@ -277,6 +278,12 @@ void Graphics::enableBlend()
     glDepthMask(GL_FALSE);
 }
 
+void Graphics::enableBlendAlpha()
+{
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
 void Graphics::disableBlend()
 {
     glDisable(GL_BLEND);
@@ -303,6 +310,11 @@ void Graphics::setStencilId(int id)
     glStencilFunc(GL_NOTEQUAL, id, 0xFF);
     glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
     glStencilMask(0xFF);
+}
+
+void Graphics::sendTimeUniform(float time)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "time"), time);
 }
 
 void Graphics::sendResolutionUniform(glm::vec2 res)
@@ -353,6 +365,11 @@ void Graphics::sendAttenuationUniform(glm::vec3 att)
 {
     glUniform3fv(glGetUniformLocation(m_activeProgram, "lightAtt"), 1,
                  glm::value_ptr(att));
+}
+
+void Graphics::sendLightRadiusUniform(float radius)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "lightRadius"), radius);
 }
 
 void Graphics::sendLightPositionUniform(glm::vec3 pos)

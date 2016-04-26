@@ -11,6 +11,7 @@
 Screen::Screen(Application *app, float opacity, int width, int height) :
     m_app(app),
     m_opacity(opacity),
+    m_time(0),
     m_width(width),
     m_height(height),
     m_camera(NULL),
@@ -68,6 +69,13 @@ void Screen::onResize(int w, int h)
 
 void Screen::onTick(float seconds)
 {
+    m_time += M_PI / 100;
+
+    if(m_time > M_PI * 2)
+    {
+        m_time = 0;
+    }
+
     m_world->onTick(seconds);
 }
 
@@ -124,13 +132,25 @@ void Screen::drawDeferred(Graphics *graphics)
     m_world->drawGeometry(graphics);
 
     /* Particle pass */
-    graphics->setActiveProgram("particle");
+    graphics->setActiveProgram("particles");
 
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
 
     graphics->enableBlend();
     m_world->drawParticles(graphics);
+    graphics->disableBlend();
+
+    /* Light geometry pass */
+    graphics->setActiveProgram("lightGeometry");
+
+    m_geometryFramebuffer->useTextures();
+    graphics->sendTexturePosition("position", 0);
+
+    graphics->sendTimeUniform(m_time);
+
+    graphics->enableBlendAlpha();
+    m_world->drawLightGeometry(graphics);
     graphics->disableBlend();
 }
 

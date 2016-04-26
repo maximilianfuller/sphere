@@ -12,14 +12,15 @@ uniform float opacity;
 out vec4 normal_worldSpace;
 out vec4 position_worldSpace;
 out vec4 eye_worldSpace;
+out vec4 position_screenSpace;
 out vec2 texc;
-
 
 
 void main(){
     texc = texCoord;
     position_worldSpace = m * vec4(position, 1.0);
     normal_worldSpace = vec4(normalize(mat3(transpose(inverse(m))) * normal), 0);
-    eye_worldSpace = inverse(v)*vec4(0,0,0,1);
-    gl_Position = p * v * m * vec4(position, 1.0);
+    eye_worldSpace = inverse(v) * vec4(0,0,0,1);
+    position_screenSpace = p * v * m * vec4(position, 1.0);
+    gl_Position = position_screenSpace;
 }

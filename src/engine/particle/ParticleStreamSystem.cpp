@@ -12,6 +12,8 @@ ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
     m_startRadius(startRadius),
     m_expireRadius(expireRadius),
     m_startVel(startVel),
+    m_activated(false),
+    m_stopTimer(40),
     ParticleSystem(textureKey)
 {
     for(int i = 0; i < MAX_PARTICLES; i++)
@@ -28,6 +30,22 @@ void ParticleStreamSystem::setStart(glm::vec3 start)
 void ParticleStreamSystem::setTarget(glm::vec3 target)
 {
     m_target = target;
+}
+
+void ParticleStreamSystem::start()
+{
+    m_activated = true;
+    m_stopTimer = 40;
+}
+
+void ParticleStreamSystem::stop()
+{
+    m_activated = false;
+}
+
+bool ParticleStreamSystem::getActivated()
+{
+    return !(m_stopTimer == 0 && !m_activated);
 }
 
 void ParticleStreamSystem::createParticle()
@@ -62,7 +80,14 @@ void ParticleStreamSystem::createParticle()
 void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 model)
 {
     /* Create a new particle */
-    createParticle();
+    if(m_activated)
+    {
+        createParticle();
+    }
+    else
+    {
+        m_stopTimer--;
+    }
 
     /* Update existing particles */
     glm::vec3 totalOffset = m_target - m_start;
@@ -84,10 +109,27 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 model)
                 continue;
             }
 
-            float mag = glm::length(m_particles[i]->vel);
-            m_particles[i]->vel = mag
-                    * glm::normalize(m_particles[i]->vel
-                                     + 5.f * offsetLeft * (distance / totalDistance));
+            if(m_activated)
+            {
+                float mag = glm::length(m_particles[i]->vel);
+                m_particles[i]->vel = mag
+                        * glm::normalize(m_particles[i]->vel
+                                         + 5.f * offsetLeft * (distance / totalDistance));
+            }
+            else
+            {
+                if(m_stopTimer == 0)
+                {
+                    delete(m_particles[i]);
+                    m_particles[i] = NULL;
+                    continue;
+                }
+
+                float mag = glm::length(m_particles[i]->vel);
+                m_particles[i]->vel = mag
+                        * glm::normalize(m_particles[i]->vel
+                                         + 0.3f * glm::vec3(0, -1, 0));
+            }
 
             m_particles[i]->tick(1.0 / 60.0);
             m_particles[i]->draw(graphics, model);

@@ -69,7 +69,7 @@ glm::vec3 Camera::getEye()
 {
     if(m_thirdPerson)
     {
-        return m_eye - 3.f * m_look;
+        return m_eye - 8.f * m_look;
     }
     else
     {

@@ -15,6 +15,7 @@ public:
     virtual void drawGeometry(Graphics *graphics);
     virtual void drawLights(Graphics *graphics);
     virtual void drawParticles(Graphics *graphics);
+    virtual void drawLightGeometry(Graphics *graphics);
 
 protected:
     QList<Entity *> &m_entities;

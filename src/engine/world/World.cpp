@@ -212,6 +212,23 @@ void World::drawParticles(Graphics *graphics)
     }
 }
 
+void World::drawLightGeometry(Graphics *graphics)
+{
+    /* Draw point lights */
+    m_camera->setTransforms(graphics);
+    m_camera->setResolution(graphics);
+
+    foreach(PointLight *light, m_pointLights)
+    {
+        light->drawGeometry(graphics);
+    }
+
+    foreach(Manager *manager, m_managers)
+    {
+        manager->drawLightGeometry(graphics);
+    }
+}
+
 void World::mousePressEvent(QMouseEvent *event)
 {
 }

@@ -173,6 +173,10 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
     {
         m_player->setMoveRight(true);
     }
+    else if(event->key() == Qt::Key_E)
+    {
+        m_player->startParticles();
+    }
     else if(event->key() == Qt::Key_Space)
     {
         m_player->setJump(true);
@@ -210,6 +214,10 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
     else if(event->key() == Qt::Key_D && m_player->getMoveRight())
     {
         m_player->setMoveRight(false);
+    }
+    else if(event->key() == Qt::Key_E)
+    {
+        m_player->stopParticles();
     }
     else if(event->key() == Qt::Key_Space && m_player->getJump())
     {

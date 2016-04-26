@@ -1,10 +1,11 @@
 <RCC>
     <qresource prefix="/shaders">
-        <file>shader.frag</file>
+        <file>particles.frag</file>
         <file>shader.vert</file>
         <file>pre.frag</file>
         <file>post.frag</file>
         <file>lights.frag</file>
         <file>combine.frag</file>
+        <file>lightGeometry.frag</file>
     </qresource>
 </RCC>

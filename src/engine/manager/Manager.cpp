@@ -39,3 +39,11 @@ void Manager::drawParticles(Graphics *graphics)
         entity->drawParticles(graphics);
     }
 }
+
+void Manager::drawLightGeometry(Graphics *graphics)
+{
+    foreach(Entity *entity, m_entities)
+    {
+        entity->drawLightGeometry(graphics);
+    }
+}

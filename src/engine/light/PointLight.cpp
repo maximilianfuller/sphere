@@ -4,7 +4,6 @@
 
 PointLight::PointLight(glm::vec3 pos, glm::vec3 att, glm::vec3 intensity,
              int lightId) :
-    m_model(glm::mat4x4()),
     Light(intensity, lightId)
 {
     setPosition(pos);
@@ -35,16 +34,10 @@ void PointLight::setAttenuation(glm::vec3 att)
     float lightIntensity = glm::max(m_int.x, glm::max(m_int.y, m_int.z));
 
     /* Calculated the radius in which the light is effective */
-    float radius = (-m_att.y
-                    + glm::sqrt(m_att.y * m_att.y - 4 * m_att.z
-                                * (m_att.x - minIntensity * lightIntensity)))
+    m_radius = (-m_att.y
+                + glm::sqrt(m_att.y * m_att.y - 4 * m_att.z
+                            * (m_att.x - minIntensity * lightIntensity)))
             / (2.0 * m_att.z);
-
-    /* Scale the unit sphere to fit the radius of the light */
-    glm::mat4x4 model = glm::mat4x4();
-    glm::vec3 scale = glm::vec3(radius, radius, radius);
-
-    m_model = m_model * glm::scale(model, scale);
 }
 
 glm::vec3 PointLight::getIntensity()
@@ -61,12 +54,30 @@ void PointLight::draw(Graphics *graphics)
 {
     Light::draw(graphics);
 
-    glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos) * m_model;
+    glm::vec3 scale = glm::vec3(m_radius, m_radius, m_radius);
+    glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos)
+            * glm::scale(glm::mat4x4(), scale);
 
     graphics->sendLightTypeUniform(POINT_LIGHT);
     graphics->sendModelUniform(model);
     graphics->sendAttenuationUniform(m_att);
     graphics->sendLightPositionUniform(m_pos);
+
+    graphics->drawShape("sphere");
+}
+
+void PointLight::drawGeometry(Graphics *graphics)
+{
+    Light::draw(graphics);
+
+    glm::vec3 scale = 0.1f * glm::vec3(m_radius, m_radius, m_radius);
+    glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos)
+            * glm::scale(glm::mat4x4(), scale);
+
+    graphics->sendModelUniform(model);
+    graphics->sendLightRadiusUniform(scale.x);
+    graphics->sendLightPositionUniform(m_pos);
+    graphics->sendIntensityUniform(0.5f * m_int + glm::vec3(0.5, 0.5, 0.5));
 
     graphics->drawShape("sphere");
 }

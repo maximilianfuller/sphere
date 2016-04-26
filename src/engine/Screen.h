@@ -49,6 +49,7 @@ protected:
     int m_height;
 
     float m_opacity;
+    float m_time;
 
     /* Deferred lighting pipeline */
     Framebuffer *m_geometryFramebuffer;

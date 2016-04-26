@@ -29,12 +29,12 @@ Player::Player(World *world, Camera *camera) :
     /* Create light */
     m_light = new PointLight(m_pos,
                              glm::vec3(0.1, 0.2, 0.2),
-                             glm::vec3(1, 0.8, 1), 1);
+                             glm::vec3(1, 0.5, 0.5), 1);
 
     /* Create particle system */
     m_particleSystem = new ParticleStreamSystem("particle",
                                                 glm::vec3(0, 0, 0), m_pos,
-                                                2.0, 0.5, 7.f);
+                                                2.0, 0.5, 9.f);
 
     /* Update shape and bounding shape to correspond to player's dimentions */
     updateShape();
@@ -247,10 +247,12 @@ void Player::onTick(float seconds)
 
 void Player::drawGeometry(Graphics *graphics)
 {
+    /*
     graphics->sendUseLightingUniform(1);
 
     if(m_camera->getThirdPerson())
     {
         m_shape->draw(graphics);
     }
+    */
 }

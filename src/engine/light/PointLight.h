@@ -24,11 +24,12 @@ public:
     void setIntensity(glm::vec3 intensity);
 
     void draw(Graphics *graphics);
+    void drawGeometry(Graphics *graphics);
 
 private:
-    glm::mat4x4 m_model;
     glm::vec3 m_pos;
     glm::vec3 m_att;
+    float m_radius;
 };
 
 #endif // POINTLIGHT_H

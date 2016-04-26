@@ -188,10 +188,14 @@ void Entity::drawGeometry(Graphics *graphics)
     m_shape->draw(graphics);
 }
 
+void Entity::drawLights(Graphics *graphics)
+{
+}
+
 void Entity::drawParticles(Graphics *graphics)
 {
 }
 
-void Entity::drawLights(Graphics *graphics)
+void Entity::drawLightGeometry(Graphics *graphics)
 {
 }

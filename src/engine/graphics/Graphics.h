@@ -47,12 +47,14 @@ public:
     bool inFrustum(AABoundingBox *aabb);
 
     void enableBlend();
+    void enableBlendAlpha();
     void disableBlend();
 
     void enableStencilTest();
     void disableStencilTest();
     void setStencilId(int id);
 
+    void sendTimeUniform(float time);
     void sendResolutionUniform(glm::vec2 res);
     void sendColorUniform(glm::vec4 color);
     void sendShininessUniform(float shininess);
@@ -62,6 +64,7 @@ public:
     void sendDiffuseCoefficient(float coeff);
     void sendSpecularCoefficient(float coeff);
     void sendAttenuationUniform(glm::vec3 att);
+    void sendLightRadiusUniform(float radius);
     void sendLightPositionUniform(glm::vec3 pos);
     void sendLightDirectionUniform(glm::vec3 dir);
     void sendOpacityUniform(float opacity);

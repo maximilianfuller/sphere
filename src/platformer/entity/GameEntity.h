@@ -23,6 +23,10 @@ public:
                float friction = MU_GROUND);
     virtual ~GameEntity();
 
+    /* Particles */
+    void startParticles();
+    void stopParticles();
+
     /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
 
@@ -30,6 +34,7 @@ public:
     void drawGeometry(Graphics *graphics);
     void drawLights(Graphics *graphics);
     void drawParticles(Graphics *graphics);
+    void drawLightGeometry(Graphics *graphics);
 
 protected:
     ParticleStreamSystem *m_particleSystem;
