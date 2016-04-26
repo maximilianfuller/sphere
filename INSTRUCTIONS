@@ -8,6 +8,7 @@ Press SPACE to jump
 Press SHIFT to sprint and jump higher
 Press F1 to toggle 3rd person camera
 Press F2 to toggle the navigation and pathfinding features
+Left click to emit a stream of particles from the origin.
 
 # Navigation feature controls
 Left click to raycast the target position onto the environment

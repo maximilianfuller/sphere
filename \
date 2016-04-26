@@ -35,11 +35,6 @@ Global requirements
 * 6 since last week, 13 total
 
 # Deferred lighting
-* Running the project will display platformer levels with deferred lighting
+* Running the project will display platformer scenes with deferred lighting
 built in. 
-* Lights are rendered as shapes (point lights are spheres and directional lights are full screen quads) -- look at the PointLight and DirectionalLight classes, as well as the renderDeferred functoin in the Screen class to look at the deferred pipeline.
-
-# Particles
-* Moving away from the origin in any one of the levels, and clicking will emit a stream of particles from the origin.
-* Particles created, rendered, and managed in the context of particle systems. The particle system that is displayed in this scene is an instance of ParticleStreamSystem, which has a start point, and a target, and sends particles from the start point to the target.
-* Particles always face towards the camera so that they appear more 3 dimensional.
+* Lights are represented 
