@@ -23,6 +23,8 @@ public:
     glm::vec3 getIntensity();
     void setIntensity(glm::vec3 intensity);
 
+    float getRadius();
+
     void draw(Graphics *graphics);
     void drawGeometry(Graphics *graphics);
 

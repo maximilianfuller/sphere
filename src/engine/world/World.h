@@ -75,4 +75,14 @@ protected:
     Camera *m_camera;
 };
 
+class CompareDepth
+{
+public:
+    bool operator()(std::pair<PointLight *,float> n1,
+                    std::pair<PointLight *,float> n2)
+    {
+        return n1.second < n2.second;
+    }
+};
+
 #endif // SCENE_H

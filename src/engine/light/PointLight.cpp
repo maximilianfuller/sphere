@@ -50,6 +50,11 @@ void PointLight::setIntensity(glm::vec3 intensity)
     m_int = intensity;
 }
 
+float PointLight::getRadius()
+{
+    return 0.05f * m_radius;
+}
+
 void PointLight::draw(Graphics *graphics)
 {
     Light::draw(graphics);

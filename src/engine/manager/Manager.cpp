@@ -2,6 +2,7 @@
 
 #include "engine/entity/Entity.h"
 #include "engine/graphics/Graphics.h"
+#include "engine/world/World.h"
 
 Manager::Manager(QList<Entity *> &entities) :
     m_entities(entities)
@@ -40,10 +41,13 @@ void Manager::drawParticles(Graphics *graphics)
     }
 }
 
-void Manager::drawLightGeometry(Graphics *graphics)
+void Manager::getLightGeometry(Graphics *graphics,
+                               std::priority_queue<std::pair<PointLight *,float>,
+                                   std::vector<std::pair<PointLight *,float> >,
+                                   CompareDepth> &depthQueue)
 {
     foreach(Entity *entity, m_entities)
     {
-        entity->drawLightGeometry(graphics);
+        entity->getLightGeometry(graphics, depthQueue);
     }
 }

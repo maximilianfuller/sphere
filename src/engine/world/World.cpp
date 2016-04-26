@@ -9,6 +9,9 @@
 #include "engine/particle/Particle.h"
 #include "engine/particle/ParticleSystem.h"
 
+#include <queue>
+#include <vector>
+
 World::World(Camera *camera) :
     m_camera(camera)
 {
@@ -218,14 +221,28 @@ void World::drawLightGeometry(Graphics *graphics)
     m_camera->setTransforms(graphics);
     m_camera->setResolution(graphics);
 
-    foreach(PointLight *light, m_pointLights)
-    {
-        light->drawGeometry(graphics);
-    }
+    std::priority_queue<std::pair<PointLight *,float>,
+            std::vector<std::pair<PointLight *,float> >, CompareDepth> depthQueue;
 
     foreach(Manager *manager, m_managers)
     {
-        manager->drawLightGeometry(graphics);
+        manager->getLightGeometry(graphics, depthQueue);
+    }
+
+    foreach(PointLight *light, m_pointLights)
+    {
+        float dist = glm::max(glm::length(light->getPosition() - m_camera->getEye())
+                - light->getRadius(), 0.f);
+
+        std::pair<PointLight *, float> p(light, dist);
+
+        depthQueue.push(p);
+    }
+
+    while(!depthQueue.empty())
+    {
+        (depthQueue.top()).first->drawGeometry(graphics);
+        depthQueue.pop();
     }
 }
 

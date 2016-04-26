@@ -44,7 +44,6 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
 
     /* Lights */
-    /*
     addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 1));
     addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 2));
     addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 3));
@@ -62,7 +61,6 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addPointLight(new PointLight(glm::vec3(-5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 13));
     addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 14));
     addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 15));
-    */
 
     addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01), 1000));
 }
@@ -155,6 +153,21 @@ void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
     m_player->rotate(dx / 100.f, -dy / 100.f);
 }
 
+void GameWorld::mousePressEvent(QMouseEvent *event)
+{
+    m_player->startParticles();
+}
+
+void GameWorld::mouseReleaseEvent(QMouseEvent *event)
+{
+    m_player->stopParticles();
+
+    if(m_navFeatures)
+    {
+        setTarget();
+    }
+}
+
 void GameWorld::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_W)
@@ -172,10 +185,6 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
     else if(event->key() == Qt::Key_D)
     {
         m_player->setMoveRight(true);
-    }
-    else if(event->key() == Qt::Key_E)
-    {
-        m_player->startParticles();
     }
     else if(event->key() == Qt::Key_Space)
     {
@@ -215,10 +224,6 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
     {
         m_player->setMoveRight(false);
     }
-    else if(event->key() == Qt::Key_E)
-    {
-        m_player->stopParticles();
-    }
     else if(event->key() == Qt::Key_Space && m_player->getJump())
     {
         m_player->setJump(false);
@@ -226,14 +231,6 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
     else if(event->key() == Qt::Key_Shift && m_player->getNitro())
     {
         m_player->setNitro(false);
-    }
-}
-
-void GameWorld::mouseReleaseEvent(QMouseEvent *event)
-{
-    if(m_navFeatures)
-    {
-        setTarget();
     }
 }
 

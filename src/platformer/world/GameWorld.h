@@ -28,9 +28,11 @@ public:
     /* Events */
     virtual void mouseMoveEvent(QMouseEvent *event, int startX,
                                 int startY);
+    virtual void mousePressEvent(QMouseEvent *event);
+    virtual void mouseReleaseEvent(QMouseEvent *event);
+
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
-    virtual void mouseReleaseEvent(QMouseEvent *event);
 
     /* Game loop */
     void onTick(float seconds);

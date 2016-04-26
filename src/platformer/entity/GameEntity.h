@@ -34,7 +34,10 @@ public:
     void drawGeometry(Graphics *graphics);
     void drawLights(Graphics *graphics);
     void drawParticles(Graphics *graphics);
-    void drawLightGeometry(Graphics *graphics);
+    void getLightGeometry(Graphics *graphics,
+                          std::priority_queue<std::pair<PointLight *,float>,
+                          std::vector<std::pair<PointLight *,float> >,
+                          CompareDepth> &depthQueue);
 
 protected:
     ParticleStreamSystem *m_particleSystem;

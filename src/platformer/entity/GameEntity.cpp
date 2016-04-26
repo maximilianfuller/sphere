@@ -3,9 +3,13 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/shape/Shape.h"
+#include "engine/world/World.h"
 
 #include "engine/light/PointLight.h"
 #include "engine/particle/ParticleStreamSystem.h"
+
+#include <queue>
+#include <vector>
 
 GameEntity::GameEntity(World *world, Camera *camera,
                        glm::vec3 pos, glm::vec3 dims,
@@ -69,10 +73,17 @@ void GameEntity::drawParticles(Graphics *graphics)
     }
 }
 
-void GameEntity::drawLightGeometry(Graphics *graphics)
+void GameEntity::getLightGeometry(Graphics *graphics,
+                                  std::priority_queue<std::pair<PointLight *,float>,
+                                  std::vector<std::pair<PointLight *,float> >,
+                                  CompareDepth> &depthQueue)
 {
     if(m_light)
     {
-        m_light->drawGeometry(graphics);
+        float dist = glm::max(glm::length(m_light->getPosition() - m_camera->getEye())
+                - m_light->getRadius(), 0.f);
+
+        std::pair<PointLight *, float> p(m_light, dist);
+        depthQueue.push(p);
     }
 }
