@@ -28,8 +28,8 @@ Player::Player(World *world, Camera *camera) :
 
     /* Create light */
     m_light = new PointLight(m_pos,
-                             glm::vec3(0.1, 0.2, 0.2),
-                             glm::vec3(1, 0.5, 0.5), 1);
+                             glm::vec3(0.1, 0.05, 0.05),
+                             glm::vec3(0.8, 0.8, 1.0), 1);
 
     /* Create particle system */
     m_particleSystem = new ParticleStreamSystem("particle",

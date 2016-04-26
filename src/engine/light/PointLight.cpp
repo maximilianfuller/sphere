@@ -70,7 +70,7 @@ void PointLight::drawGeometry(Graphics *graphics)
 {
     Light::draw(graphics);
 
-    glm::vec3 scale = 0.1f * glm::vec3(m_radius, m_radius, m_radius);
+    glm::vec3 scale = 0.05f * glm::vec3(m_radius, m_radius, m_radius);
     glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos)
             * glm::scale(glm::mat4x4(), scale);
 
