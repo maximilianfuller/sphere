@@ -19,10 +19,6 @@ glm::vec3 PointLight::getPosition()
 void PointLight::setPosition(glm::vec3 pos)
 {
     m_pos = pos;
-
-    glm::mat4x4 model = glm::mat4x4();
-
-    m_model = glm::translate(model, m_pos) * m_model;
 }
 
 glm::vec3 PointLight::getAttenuation()
@@ -65,8 +61,10 @@ void PointLight::draw(Graphics *graphics)
 {
     Light::draw(graphics);
 
+    glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos) * m_model;
+
     graphics->sendLightTypeUniform(POINT_LIGHT);
-    graphics->sendModelUniform(m_model);
+    graphics->sendModelUniform(model);
     graphics->sendAttenuationUniform(m_att);
     graphics->sendLightPositionUniform(m_pos);
 

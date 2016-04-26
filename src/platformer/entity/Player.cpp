@@ -5,8 +5,10 @@
 #include "engine/shape/Ellipsoid.h"
 #include "engine/intersect/BoundingCylinder.h"
 
+#include "engine/light/PointLight.h"
+#include "engine/particle/ParticleStreamSystem.h"
+
 Player::Player(World *world, Camera *camera) :
-    m_camera(camera),
     m_moveForward(false),
     m_moveBackward(false),
     m_moveLeft(false),
@@ -15,7 +17,7 @@ Player::Player(World *world, Camera *camera) :
     m_nitro(false),
     m_yaw(0),
     m_pitch(0),
-    Entity(world, glm::vec3(0, 2.0, 0), glm::vec3(0.5, 1, 0.5), 7)
+    GameEntity(world, camera, glm::vec3(0, 2.0, 0), glm::vec3(0.5, 1, 0.5), 7)
 {
     /* Initialize camera */
     m_camera->setYaw(m_yaw);
@@ -23,6 +25,16 @@ Player::Player(World *world, Camera *camera) :
 
     /* Create shape and bounding shape */
     m_shape = new Ellipsoid(m_pos, m_dims);
+
+    /* Create light */
+    m_light = new PointLight(m_pos,
+                             glm::vec3(0.1, 0.2, 0.2),
+                             glm::vec3(1, 0.8, 1), 1);
+
+    /* Create particle system */
+    m_particleSystem = new ParticleStreamSystem("particle",
+                                                glm::vec3(0, 0, 0), m_pos,
+                                                2.0, 0.5, 7.f);
 
     /* Update shape and bounding shape to correspond to player's dimentions */
     updateShape();
@@ -227,13 +239,13 @@ void Player::onTick(float seconds)
     }
 
     /* Call superclass method to update player */
-    Entity::onTick(seconds);
+    GameEntity::onTick(seconds);
 
     /* Update camera */
     updateCamera();
 }
 
-void Player::onDraw(Graphics *graphics)
+void Player::drawGeometry(Graphics *graphics)
 {
     graphics->sendUseLightingUniform(1);
 

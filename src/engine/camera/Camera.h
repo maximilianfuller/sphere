@@ -34,6 +34,9 @@ public:
     glm::vec3 getLook();
     void setLook(glm::vec3 look);
 
+    glm::vec3 getUp();
+
+    glm::mat4x4 getView();
     glm::mat4x4 getPerspective();
 
     bool getThirdPerson();

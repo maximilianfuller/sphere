@@ -9,6 +9,8 @@
 #include "engine/shape/Ellipsoid.h"
 #include "engine/intersect/Ray.h"
 #include "engine/intersect/Triangle.h"
+#include "engine/particle/ParticleSystem.h"
+#include "engine/particle/ParticleStreamSystem.h"
 
 #include "engine/geom/manager/GeometricManager.h"
 #include "engine/geom/nav/NavMesh.h"
@@ -42,6 +44,7 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
 
     /* Lights */
+    /*
     addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 1));
     addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 2));
     addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 3));
@@ -59,8 +62,9 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addPointLight(new PointLight(glm::vec3(-5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 13));
     addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 14));
     addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 15));
+    */
 
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1), 1000));
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01), 1000));
 }
 
 GameWorld::~GameWorld()
@@ -187,7 +191,6 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
 
         m_navFeatures = !m_navFeatures;
     }
-
 }
 
 void GameWorld::keyReleaseEvent(QKeyEvent *event)

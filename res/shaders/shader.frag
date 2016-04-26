@@ -1,18 +1,34 @@
 #version 330 core
 
 out vec4 fragColor;
+in vec4 gl_FragCoord;
 
 uniform vec4 color;
 
-uniform sampler2D tex;
-uniform int useTexture = 0;
-uniform int useLighting = 1;
+/* Resolution */
+uniform vec2 res;
 
-in vec4 normal_worldSpace;
+/* Particle texture and position data */
+uniform sampler2D tex;
+uniform sampler2D position;
+
 in vec4 position_worldSpace;
-in vec4 eye_worldSpace;
 in vec2 texc;
 
+void main()
+{
+    vec3 particlePos = vec3(position_worldSpace);
+    vec3 fragPos = vec3(texture(position, gl_FragCoord.xy / res));
+
+    float depth = length(particlePos - fragPos);
+    float t = smoothstep(0, 0.5, depth);
+
+    vec4 color = clamp(texture(tex, texc), 0, 1);
+
+    fragColor = t * color;
+}
+
+/*
 void main(){
     vec3 base_color = vec3(0);
     fragColor = vec4(0);
@@ -43,3 +59,4 @@ void main(){
         fragColor = vec4(base_color, color.w);
     }
 }
+*/

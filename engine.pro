@@ -61,7 +61,9 @@ SOURCES += \
     src/engine/light/PointLight.cpp \
     src/engine/light/DirectionalLight.cpp \
     src/engine/particle/Particle.cpp \
-    src/engine/particle/ParticleSystem.cpp
+    src/engine/particle/ParticleSystem.cpp \
+    src/engine/particle/ParticleStreamSystem.cpp \
+    src/platformer/entity/GameEntity.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -119,7 +121,9 @@ HEADERS += \
     src/engine/light/PointLight.h \
     src/engine/light/DirectionalLight.h \
     src/engine/particle/Particle.h \
-    src/engine/particle/ParticleSystem.h
+    src/engine/particle/ParticleSystem.h \
+    src/engine/particle/ParticleStreamSystem.h \
+    src/platformer/entity/GameEntity.h
 
 
 FORMS += src/mainwindow.ui

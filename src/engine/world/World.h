@@ -70,7 +70,6 @@ protected:
 
     Particle* m_particles[500];
     int m_particleIndex = 0;
-    ParticleSystem *m_system;
 
     Camera *m_camera;
 };

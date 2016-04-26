@@ -183,7 +183,15 @@ void Entity::onTick(float seconds)
     updateBoundingShape();
 }
 
-void Entity::onDraw(Graphics *graphics)
+void Entity::drawGeometry(Graphics *graphics)
 {
     m_shape->draw(graphics);
+}
+
+void Entity::drawParticles(Graphics *graphics)
+{
+}
+
+void Entity::drawLights(Graphics *graphics)
+{
 }

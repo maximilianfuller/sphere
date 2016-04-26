@@ -124,7 +124,10 @@ void Screen::drawDeferred(Graphics *graphics)
     m_world->drawGeometry(graphics);
 
     /* Particle pass */
-    graphics->setActiveProgram("default");
+    graphics->setActiveProgram("particle");
+
+    m_geometryFramebuffer->useTextures();
+    graphics->sendTexturePosition("position", 0);
 
     graphics->enableBlend();
     m_world->drawParticles(graphics);

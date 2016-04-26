@@ -12,7 +12,9 @@ public:
     Manager(QList<Entity *> &entities);
 
     virtual void onTick(float seconds);
-    virtual void onDraw(Graphics *graphics);
+    virtual void drawGeometry(Graphics *graphics);
+    virtual void drawLights(Graphics *graphics);
+    virtual void drawParticles(Graphics *graphics);
 
 protected:
     QList<Entity *> &m_entities;

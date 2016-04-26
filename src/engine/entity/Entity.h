@@ -61,7 +61,10 @@ public:
     virtual bool intersect(Entity *ent);
     virtual void onIntersect(Entity *ent, glm::vec3 mtv);
     virtual void onTick(float seconds);
-    virtual void onDraw(Graphics *graphics);
+
+    virtual void drawGeometry(Graphics *graphics);
+    virtual void drawLights(Graphics *graphics);
+    virtual void drawParticles(Graphics *graphics);
 
 protected:
     World *m_world;

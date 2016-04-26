@@ -13,21 +13,14 @@ public:
              glm::vec3 vel = glm::vec3(1, 1, 1),
              QString textureKey = QString(""));
 
-    void setPos(glm::vec3 pos);
-    void setVel(glm::vec3 vel);
-    void setTextureKey(QString textureKey);
-
-    float getAge();
-
     virtual void tick(float seconds);
-    virtual void draw(Graphics *graphics);
+    virtual void draw(Graphics *graphics, glm::mat4x4 model);
 
-private:
-    glm::vec3 m_pos;
-    glm::vec3 m_vel;
-    float m_age;
+    glm::vec3 pos;
+    glm::vec3 vel;
+    float age;
 
-    QString m_textureKey;
+    QString textureKey;
 };
 
 #endif // PARTICLE_H

@@ -29,8 +29,8 @@ public:
 
     /* Game loop */
     void onTick(float seconds);
-    void onDraw(Graphics *graphics);
 
+    /* Navigation Mesh */
     NavMesh *navMesh;
 
 private:

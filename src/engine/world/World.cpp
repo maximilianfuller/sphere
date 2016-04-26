@@ -16,8 +16,6 @@ World::World(Camera *camera) :
     {
         m_particles[i] = NULL;
     }
-
-    m_system = new ParticleSystem("particle");
 }
 
 World::~World()
@@ -169,12 +167,13 @@ void World::drawGeometry(Graphics *graphics)
 
     foreach(Manager *manager, m_managers)
     {
-        manager->onDraw(graphics);
+        manager->drawGeometry(graphics);
     }
 }
 
 void World::drawLights(Graphics *graphics)
 {
+    /* Draw point lights */
     m_camera->setTransforms(graphics);
     m_camera->setResolution(graphics);
 
@@ -183,6 +182,12 @@ void World::drawLights(Graphics *graphics)
         light->draw(graphics);
     }
 
+    foreach(Manager *manager, m_managers)
+    {
+        manager->drawLights(graphics);
+    }
+
+    /* Draw directional lights */
     graphics->sendEmptyMatrices();
 
     foreach(DirectionalLight *light, m_directionalLights)
@@ -200,17 +205,11 @@ void World::drawParticles(Graphics *graphics)
     graphics->sendUseLightingUniform(0);
     graphics->sendUseTextureUniform(1);
 
-    for(int i = 0; i < 500; i++)
+    /* Draw entity owned particle systems */
+    foreach(Manager *manager, m_managers)
     {
-        if(m_particles[i])
-        {
-            m_particles[i]->tick(1.0 / 60.0);
-            m_particles[i]->draw(graphics);
-        }
+        manager->drawParticles(graphics);
     }
-
-    m_system->tick(1.0 / 60.0);
-    m_system->draw(graphics);
 }
 
 void World::mousePressEvent(QMouseEvent *event)

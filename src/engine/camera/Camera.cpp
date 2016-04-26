@@ -90,6 +90,16 @@ glm::vec3 Camera::getLook()
                      glm::sin(m_yaw) * glm::cos(m_pitch));
 }
 
+glm::vec3 Camera::getUp()
+{
+    return m_up;
+}
+
+glm::mat4x4 Camera::getView()
+{
+    return m_view;
+}
+
 glm::mat4x4 Camera::getPerspective()
 {
     return m_persp;

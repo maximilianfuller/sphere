@@ -256,11 +256,3 @@ void GeometricManager::onTick(float seconds)
         ent->onTick(seconds);
     }
 }
-
-void GeometricManager::onDraw(Graphics *graphics)
-{
-    foreach(Entity *ent, m_entities)
-    {
-        ent->onDraw(graphics);
-    }
-}

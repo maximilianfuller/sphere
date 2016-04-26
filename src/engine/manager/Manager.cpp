@@ -16,10 +16,26 @@ void Manager::onTick(float seconds)
     }
 }
 
-void Manager::onDraw(Graphics *graphics)
+void Manager::drawGeometry(Graphics *graphics)
 {
     foreach(Entity *entity, m_entities)
     {
-        entity->onDraw(graphics);
+        entity->drawGeometry(graphics);
+    }
+}
+
+void Manager::drawLights(Graphics *graphics)
+{
+    foreach(Entity *entity, m_entities)
+    {
+        entity->drawLights(graphics);
+    }
+}
+
+void Manager::drawParticles(Graphics *graphics)
+{
+    foreach(Entity *entity, m_entities)
+    {
+        entity->drawParticles(graphics);
     }
 }

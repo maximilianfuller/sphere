@@ -16,10 +16,9 @@ public:
     ParticleSystem(QString textureKey);
     virtual ~ParticleSystem();
 
-    void tick(float seconds);
-    void draw(Graphics *graphics);
+    virtual void draw(Graphics *graphics, glm::mat4x4 model);
 
-private:
+protected:
     Particle* m_particles[MAX_PARTICLES];
     int m_particleIndex = 0;
 

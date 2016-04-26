@@ -22,7 +22,7 @@ Graphics::Graphics()
                 "sphere");
 
     /* Default Shaders */
-    createProgram(":/shaders/shader.vert", ":/shaders/shader.frag", "default");
+    createProgram(":/shaders/shader.vert", ":/shaders/shader.frag", "particle");
     createProgram(":/shaders/shader.vert", ":/shaders/combine.frag", "combine");
     createProgram(":/shaders/shader.vert", ":/shaders/pre.frag", "pre");
     createProgram(":/shaders/shader.vert", ":/shaders/lights.frag", "lights");

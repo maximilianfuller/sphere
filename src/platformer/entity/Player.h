@@ -1,13 +1,9 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "engine/entity/Entity.h"
+#include "platformer/entity/GameEntity.h"
 
-class Graphics;
-class Camera;
-class World;
-
-class Player : public Entity
+class Player : public GameEntity
 {
 public:
     Player(World *manager, Camera *camera);
@@ -60,11 +56,9 @@ public:
     void onIntersect(Entity *ent, glm::vec3 mtv);
 
     void onTick(float seconds);
-    void onDraw(Graphics *graphics);
+    void drawGeometry(Graphics *graphics);
 
 private:
-    Camera *m_camera;
-
     /* Movement */
     bool m_moveForward;
     bool m_moveBackward;
