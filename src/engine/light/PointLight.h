@@ -24,6 +24,7 @@ public:
     void setIntensity(glm::vec3 intensity);
 
     float getRadius();
+    void setRadius(float radius);
 
     void draw(Graphics *graphics);
     void drawGeometry(Graphics *graphics);

@@ -9,7 +9,6 @@ PointLight::PointLight(glm::vec3 pos, glm::vec3 att, glm::vec3 intensity,
     setPosition(pos);
     setAttenuation(att);
 }
-
 glm::vec3 PointLight::getPosition()
 {
     return m_pos;
@@ -31,12 +30,12 @@ void PointLight::setAttenuation(glm::vec3 att)
 
     /* Get minimum tolerated intensity and max light intensity */
     float minIntensity = 256.0;
-    float lightIntensity = glm::max(m_int.x, glm::max(m_int.y, m_int.z));
+    float maxIntensity = glm::max(m_int.x, glm::max(m_int.y, m_int.z));
 
     /* Calculated the radius in which the light is effective */
     m_radius = (-m_att.y
                 + glm::sqrt(m_att.y * m_att.y - 4 * m_att.z
-                            * (m_att.x - minIntensity * lightIntensity)))
+                            * (m_att.x - minIntensity * maxIntensity)))
             / (2.0 * m_att.z);
 }
 
@@ -52,17 +51,30 @@ void PointLight::setIntensity(glm::vec3 intensity)
 
 float PointLight::getRadius()
 {
-    return 0.05f * m_radius;
+    return m_radius;
+}
+
+void PointLight::setRadius(float radius)
+{
+    float lightRadius = radius / 0.05f;
+    float minIntensity = 256.0;
+    float maxIntensity = glm::max(m_int.x, glm::max(m_int.y, m_int.z));
+    float k = (minIntensity * maxIntensity) / (lightRadius * lightRadius);
+
+    m_att = glm::vec3(0, 0, k);
+    m_radius = lightRadius;
 }
 
 void PointLight::draw(Graphics *graphics)
 {
     Light::draw(graphics);
 
+    /* Get model matrix */
     glm::vec3 scale = glm::vec3(m_radius, m_radius, m_radius);
     glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos)
             * glm::scale(glm::mat4x4(), scale);
 
+    /* Send light uniforms */
     graphics->sendLightTypeUniform(POINT_LIGHT);
     graphics->sendModelUniform(model);
     graphics->sendAttenuationUniform(m_att);
@@ -75,14 +87,20 @@ void PointLight::drawGeometry(Graphics *graphics)
 {
     Light::draw(graphics);
 
-    glm::vec3 scale = 0.05f * glm::vec3(m_radius, m_radius, m_radius);
+    /* Get geometry model matrix */
+    float geomRadius = 0.05f * m_radius;
+    glm::vec3 scale = glm::vec3(geomRadius, geomRadius, geomRadius);
     glm::mat4x4 model = glm::translate(glm::mat4x4(), m_pos)
             * glm::scale(glm::mat4x4(), scale);
 
+    /* Get updated color */
+    glm::vec3 color = glm::mix(m_int, glm::vec3(1), 0.5);
+
+    /* Send geometry uniforms */
     graphics->sendModelUniform(model);
-    graphics->sendLightRadiusUniform(scale.x);
+    graphics->sendLightRadiusUniform(geomRadius);
     graphics->sendLightPositionUniform(m_pos);
-    graphics->sendIntensityUniform(0.5f * m_int + glm::vec3(0.5, 0.5, 0.5));
+    graphics->sendIntensityUniform(color);
 
     graphics->drawShape("sphere");
 }

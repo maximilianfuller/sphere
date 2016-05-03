@@ -13,6 +13,7 @@ class BoundingShape;
 class Shape;
 class CompareDepth;
 class PointLight;
+class Light;
 
 class Entity
 {
@@ -70,10 +71,7 @@ public:
     virtual void drawGeometry(Graphics *graphics);
     virtual void drawLights(Graphics *graphics);
     virtual void drawParticles(Graphics *graphics);
-    virtual void getLightGeometry(Graphics *graphics,
-                                  std::priority_queue<std::pair<PointLight *,float>,
-                                      std::vector<std::pair<PointLight *,float> >,
-                                      CompareDepth> &depthQueue);
+    virtual void getLights(QList<PointLight *> &lights);
 
 protected:
     World *m_world;

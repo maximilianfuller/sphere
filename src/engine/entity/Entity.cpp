@@ -196,9 +196,6 @@ void Entity::drawParticles(Graphics *graphics)
 {
 }
 
-void Entity::getLightGeometry(Graphics *graphics,
-                               std::priority_queue<std::pair<PointLight *,float>,
-                                   std::vector<std::pair<PointLight *,float> >,
-                                   CompareDepth> &depthQueue)
+void Entity::getLights(QList<PointLight *> &lights)
 {
 }

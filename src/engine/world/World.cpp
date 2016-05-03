@@ -143,6 +143,19 @@ void World::removeDirectionalLight(DirectionalLight *light)
     m_directionalLights.removeAt(i);
 }
 
+void World::getLights(QList<PointLight *> &lights)
+{
+    foreach(Manager *manager, m_managers)
+    {
+        manager->getLights(lights);
+    }
+
+    foreach(PointLight *light, m_pointLights)
+    {
+        lights.append(light);
+    }
+}
+
 Particle *World::getParticle(int index)
 {
     return m_particles[index];
@@ -221,21 +234,20 @@ void World::drawLightGeometry(Graphics *graphics)
     m_camera->setTransforms(graphics);
     m_camera->setResolution(graphics);
 
+    QList<PointLight *> pointLights;
+    getLights(pointLights);
+
+    // Sort point lights by depth
     std::priority_queue<std::pair<PointLight *,float>,
             std::vector<std::pair<PointLight *,float> >, CompareDepth> depthQueue;
 
-    foreach(Manager *manager, m_managers)
+    foreach(PointLight *light, pointLights)
     {
-        manager->getLightGeometry(graphics, depthQueue);
-    }
-
-    foreach(PointLight *light, m_pointLights)
-    {
+        float radius = light->getRadius() * 0.05f;
         float dist = glm::max(glm::length(light->getPosition() - m_camera->getEye())
-                - light->getRadius(), 0.f);
+                - radius, 0.f);
 
         std::pair<PointLight *, float> p(light, dist);
-
         depthQueue.push(p);
     }
 

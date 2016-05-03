@@ -22,9 +22,3 @@ void Light::draw(Graphics *graphics)
     graphics->sendIntensityUniform(m_int);
     graphics->setStencilId(m_id);
 }
-
-void Light::drawGeometry(Graphics *graphics)
-{
-    graphics->sendIntensityUniform(m_int);
-    graphics->setStencilId(m_id);
-}

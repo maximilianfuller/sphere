@@ -41,13 +41,10 @@ void Manager::drawParticles(Graphics *graphics)
     }
 }
 
-void Manager::getLightGeometry(Graphics *graphics,
-                               std::priority_queue<std::pair<PointLight *,float>,
-                                   std::vector<std::pair<PointLight *,float> >,
-                                   CompareDepth> &depthQueue)
+void Manager::getLights(QList<PointLight *> &lights)
 {
     foreach(Entity *entity, m_entities)
     {
-        entity->getLightGeometry(graphics, depthQueue);
+        entity->getLights(lights);
     }
 }

@@ -15,7 +15,6 @@ public:
     void setIntensity(glm::vec3 intensity);
 
     virtual void draw(Graphics *graphics);
-    virtual void drawGeometry(Graphics *graphics);
 
 protected:
     glm::vec3 m_int;

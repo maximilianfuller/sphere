@@ -17,7 +17,7 @@ Player::Player(World *world, Camera *camera) :
     m_nitro(false),
     m_yaw(0),
     m_pitch(0),
-    GameEntity(world, camera, glm::vec3(0, 2.0, 0), glm::vec3(0.5, 1, 0.5), 7)
+    GameEntity(world, camera, glm::vec3(0, 2.0, 0), glm::vec3(1, 1, 1), 7)
 {
     /* Initialize camera */
     m_camera->setYaw(m_yaw);
@@ -27,9 +27,10 @@ Player::Player(World *world, Camera *camera) :
     m_shape = new Ellipsoid(m_pos, m_dims);
 
     /* Create light */
-    m_light = new PointLight(m_pos,
+    m_light = new PointLight(m_pos + glm::vec3(0, 1, 0),
                              glm::vec3(0.1, 0.05, 0.05),
                              glm::vec3(0.8, 0.8, 1.0), 1);
+    m_light->setRadius(2.0);
 
     /* Create particle system */
     m_particleSystem = new ParticleStreamSystem("particle",

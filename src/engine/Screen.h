@@ -6,7 +6,6 @@
 class Application;
 class Graphics;
 class Camera;
-class SimpleCamera;
 class World;
 class Framebuffer;
 

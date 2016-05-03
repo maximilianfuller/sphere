@@ -97,60 +97,95 @@ bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
 void Screen::drawDeferred(Graphics *graphics)
 {
     /* Object data pass */
+
+    // Set pre pass shader
     graphics->setActiveProgram("pre");
+
+    // Bind geometry framebuffer
     m_geometryFramebuffer->bind();
 
+    // Draw geometry
     m_world->drawGeometry(graphics);
 
+    // Cleanup
     m_geometryFramebuffer->unbind();
 
     /* Light pass */
+
+    // Set light pass shader
     graphics->setActiveProgram("lights");
+
+    // Bind light framebuffer
     m_lightFramebuffer->bind();
 
+    // Bind g buffer textures
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
     graphics->sendTexturePosition("normal", 1);
     graphics->sendTexturePosition("colorSpecular", 2);
 
+    // Enable light blending
     graphics->enableBlend();
     graphics->enableStencilTest();
 
+    // Draw lights
     m_world->drawLights(graphics);
 
+    // Cleanup
     graphics->disableStencilTest();
     graphics->disableBlend();
 
     m_lightFramebuffer->unbind();
 
-    /* Combination */
+    /* Post pass */
+
+    // Set post pass shader
     graphics->setActiveProgram("post");
 
+    // Bind light data textures
     m_lightFramebuffer->useTextures();
     graphics->sendTexturePosition("data", 0);
 
+    // Draw geometry
     m_world->drawGeometry(graphics);
 
     /* Particle pass */
+
+    // Set particle shader
     graphics->setActiveProgram("particles");
 
+    // Bind g buffer position texture for environment blending
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
 
+    // Enable particle blending
     graphics->enableBlend();
+
+    // Draw particles
     m_world->drawParticles(graphics);
+
+    // Cleanup
     graphics->disableBlend();
 
     /* Light geometry pass */
+
+    // Set light geometry shader
     graphics->setActiveProgram("lightGeometry");
 
+    // Bind g buffer position texture for environment blending
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
 
+    // Send time uniform
     graphics->sendTimeUniform(m_time);
 
+    // Enable alpha blending
     graphics->enableBlendAlpha();
+
+    // Draw light geometry
     m_world->drawLightGeometry(graphics);
+
+    // Cleanup
     graphics->disableBlend();
 }
 

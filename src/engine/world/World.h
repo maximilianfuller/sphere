@@ -41,6 +41,8 @@ public:
     void addDirectionalLight(DirectionalLight *light);
     void removeDirectionalLight(DirectionalLight *light);
 
+    void getLights(QList<PointLight *> &lights);
+
     /* Particle management */
     Particle *getParticle(int index);
     void addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey);

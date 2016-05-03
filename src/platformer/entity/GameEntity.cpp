@@ -45,8 +45,8 @@ void GameEntity::onIntersect(Entity *ent, glm::vec3 mtv)
 
 void GameEntity::onTick(float seconds)
 {
-    m_light->setPosition(m_pos);
-    m_particleSystem->setTarget(m_pos);
+    m_light->setPosition(m_pos + glm::vec3(0, 1, 0));
+    m_particleSystem->setTarget(m_light->getPosition());
 
     Entity::onTick(seconds);
 }
@@ -73,17 +73,10 @@ void GameEntity::drawParticles(Graphics *graphics)
     }
 }
 
-void GameEntity::getLightGeometry(Graphics *graphics,
-                                  std::priority_queue<std::pair<PointLight *,float>,
-                                  std::vector<std::pair<PointLight *,float> >,
-                                  CompareDepth> &depthQueue)
+void GameEntity::getLights(QList<PointLight *> &lights)
 {
     if(m_light)
     {
-        float dist = glm::max(glm::length(m_light->getPosition() - m_camera->getEye())
-                - m_light->getRadius(), 0.f);
-
-        std::pair<PointLight *, float> p(m_light, dist);
-        depthQueue.push(p);
+        lights.append(m_light);
     }
 }
