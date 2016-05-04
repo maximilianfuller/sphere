@@ -1,6 +1,6 @@
 #include "CylinderCollisionManager.h"
 
-#include "engine/intersect/BoundingCylinder.h"
+#include "engine/shape/Cylinder.h"
 #include "engine/entity/Entity.h"
 
 CylinderCollisionManager::CylinderCollisionManager(QList<Entity *> &entities) :
@@ -10,8 +10,8 @@ CylinderCollisionManager::CylinderCollisionManager(QList<Entity *> &entities) :
 
 void CylinderCollisionManager::intersect(Entity *e1, Entity *e2)
 {
-    BoundingCylinder *c1 = dynamic_cast<BoundingCylinder *>(e1->getBoundingShape());
-    BoundingCylinder *c2 = dynamic_cast<BoundingCylinder *>(e2->getBoundingShape());
+    Cylinder *c1 = dynamic_cast<Cylinder *>(e1->getShape());
+    Cylinder *c2 = dynamic_cast<Cylinder *>(e2->getShape());
 
     glm::vec3 c1Pos = c1->getPosition();
     glm::vec3 c2Pos = c2->getPosition();

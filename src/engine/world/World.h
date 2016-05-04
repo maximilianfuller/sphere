@@ -44,8 +44,6 @@ public:
     void addDirectionalLight(DirectionalLight *light);
     void removeDirectionalLight(DirectionalLight *light);
 
-    void getLights(QList<PointLight *> &lights);
-
     /* Particle management */
     Particle *getParticle(int index);
     void addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey);
@@ -78,16 +76,6 @@ protected:
     int m_particleIndex = 0;
 
     Camera *m_camera;
-};
-
-class CompareDepth
-{
-public:
-    bool operator()(std::pair<PointLight *,float> n1,
-                    std::pair<PointLight *,float> n2)
-    {
-        return n1.second < n2.second;
-    }
 };
 
 #endif // SCENE_H

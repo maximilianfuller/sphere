@@ -40,7 +40,7 @@ void Enemy::setFollower(GameEntity *follower)
 
 void Enemy::tryConnect(GameEntity *entity)
 {
-    float radius = m_light->getLightRadius();
+    float radius = m_light->getRadius();
 
     if(glm::length2(m_pos - entity->getPosition()) < radius * radius)
     {
@@ -49,7 +49,7 @@ void Enemy::tryConnect(GameEntity *entity)
 
         m_stream->setSource(entity->getPosition() + glm::vec3(0, 1, 0));
         m_stream->setColor(entity->getLightColor());
-        m_stream->setSourceRadius(entity->getRadius());
+        m_stream->setSourceRadius(entity->getRadius() / 2.f);
 
         setTarget(entity);
         transferPower(entity);
@@ -103,16 +103,11 @@ void Enemy::updateGoalVelocity()
             m_goal = glm::normalize(diff);
         }
     }
-}
 
-void Enemy::updateAcceleration()
-{
-    glm::vec3 diff = m_goal - m_vel;
-    diff.x = m_friction * diff.x;
-    diff.z = m_friction * diff.z;
-
-    m_acc.x = diff.x;
-    m_acc.z = diff.z;
+    if(!m_target && !m_follower)
+    {
+        m_goal = glm::vec3(0);
+    }
 }
 
 void Enemy::onTick(float seconds)

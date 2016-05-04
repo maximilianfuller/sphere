@@ -12,5 +12,4 @@ BackgroundEntity::~BackgroundEntity()
 void BackgroundEntity::onTick(float seconds)
 {
     updateShape();
-    updateBoundingShape();
 }

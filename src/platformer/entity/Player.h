@@ -51,10 +51,7 @@ public:
     void jump();
 
     /* Update methods on tick */
-    void updateFriction();
     void updateGoalVelocity();
-    void updateAcceleration();
-
     void updateCamera();
 
     /* Game loop */
@@ -62,7 +59,6 @@ public:
     void onConnected(GameEntity *entity);
 
     void onTick(float seconds);
-    void drawGeometry(Graphics *graphics);
 
 private:
     /* Movement */

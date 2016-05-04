@@ -48,12 +48,11 @@ public:
 
     /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
-
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
     void drawLights(Graphics *graphics);
     void drawParticles(Graphics *graphics);
-    void getLights(QList<PointLight *> &lights);
+    void drawLightGeometry(Graphics *graphics);
 
 protected:
     ParticleStreamSystem *m_stream;

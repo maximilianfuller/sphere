@@ -4,12 +4,10 @@
 #include "engine/shape/Shape.h"
 #include "engine/world/World.h"
 #include "engine/camera/Camera.h"
+#include "engine/shape/Ellipsoid.h"
 
 #include "engine/light/PointLight.h"
 #include "engine/particle/ParticleStreamSystem.h"
-
-#include <queue>
-#include <vector>
 
 GameEntity::GameEntity(World *world,
                        float power, glm::vec3 color,
@@ -22,8 +20,11 @@ GameEntity::GameEntity(World *world,
     m_connected(true),
     Entity(world, pos, dims, speed, vel, acc, goal, friction)
 {
+    /* Create shape */
+    m_shape = new Ellipsoid(m_pos, m_dims);
+
     /* Create light */
-    m_light = new PointLight(m_pos + glm::vec3(0, 1, 0), 1.0, color);
+    m_light = new PointLight(m_pos + glm::vec3(0, 1, 0), color);
 
     /* Create particle system */
     m_stream = new ParticleStreamSystem("particle", glm::vec3(0, 0, 0), m_pos,
@@ -58,12 +59,12 @@ void GameEntity::setConnected(bool connected)
 
 float GameEntity::getRadius()
 {
-    return m_light->getShapeRadius();
+    return m_shape->getDimensions().x * 2;
 }
 
 void GameEntity::setRadius(float radius)
 {
-    m_light->setShapeRadius(radius);
+    m_shape->setDimensions(glm::vec3(radius * 2, radius * 2, radius * 2));
 }
 
 glm::vec3 GameEntity::getLightColor()
@@ -114,19 +115,16 @@ void GameEntity::onIntersect(Entity *ent, glm::vec3 mtv)
 
 void GameEntity::onTick(float seconds)
 {
-    m_light->setPosition(m_pos + glm::vec3(0, 1, 0));
-    m_light->setLightRadius(m_power);
-    m_stream->setTarget(m_light->getPosition());
-
     Entity::onTick(seconds);
+
+    m_shape->setPosition(m_pos + glm::vec3(0, 1, 0));
+    m_light->setPosition(m_pos + glm::vec3(0, 1, 0));
+    m_light->setRadius(m_power);
+    m_stream->setTarget(m_light->getPosition());
 }
 
 void GameEntity::drawGeometry(Graphics *graphics)
 {
-    if(m_shape)
-    {
-        m_shape->draw(graphics);
-    }
 }
 
 void GameEntity::drawLights(Graphics *graphics)
@@ -157,10 +155,27 @@ void GameEntity::drawParticles(Graphics *graphics)
     }
 }
 
-void GameEntity::getLights(QList<PointLight *> &lights)
+void GameEntity::drawLightGeometry(Graphics *graphics)
 {
     if(m_light)
     {
-        lights.append(m_light);
+        glm::vec3 pos = m_shape->getPosition();
+
+        /* Model matrix */
+        float radius = getRadius();
+        glm::vec3 scale = glm::vec3(radius, radius, radius);
+        glm::mat4x4 model = glm::translate(glm::mat4x4(), pos) * glm::scale(glm::mat4x4(), scale);
+
+        /* Updated color */
+        glm::vec3 mixed = glm::mix(m_light->getIntensity(), glm::vec3(1), 0.5f);
+        glm::vec4 color = glm::vec4(mixed, glm::min(m_power / 100.f, 1.f));
+
+        /* Send uniforms */
+        graphics->sendModelUniform(model);
+        graphics->sendLightRadiusUniform(radius);
+        graphics->sendLightPositionUniform(pos);
+        graphics->sendColorUniform(color);
+
+        graphics->drawShape("sphere");
     }
 }

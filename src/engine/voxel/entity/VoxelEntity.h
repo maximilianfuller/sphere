@@ -20,7 +20,7 @@ public:
     /* Accessors */
     AABoundingBox *getAABB();
 
-    void updateBoundingShape();
+    void updateShape();
 
     /* Intersect methods */
     virtual void onIntersect(MinecraftPlayer *ent, glm::vec3 mtv);

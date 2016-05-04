@@ -107,5 +107,4 @@ void ActiveEntity::onTick(float seconds)
     m_acc = glm::vec3(0, G, 0);
 
     updateShape();
-    updateBoundingShape();
 }

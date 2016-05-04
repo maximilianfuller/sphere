@@ -35,7 +35,6 @@ public:
 
     /* Game loop */
     void updateGoalVelocity();
-    void updateAcceleration();
     void onTick(float seconds);
 
 protected:

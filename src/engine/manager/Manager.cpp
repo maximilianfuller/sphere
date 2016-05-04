@@ -41,10 +41,10 @@ void Manager::drawParticles(Graphics *graphics)
     }
 }
 
-void Manager::getLights(QList<PointLight *> &lights)
+void Manager::drawLightGeometry(Graphics *graphics)
 {
     foreach(Entity *entity, m_entities)
     {
-        entity->getLights(lights);
+        entity->drawLightGeometry(graphics);
     }
 }

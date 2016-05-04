@@ -9,9 +9,6 @@
 #include "engine/particle/Particle.h"
 #include "engine/particle/ParticleSystem.h"
 
-#include <queue>
-#include <vector>
-
 World::World(Camera *camera) :
     m_camera(camera)
 {
@@ -148,19 +145,6 @@ void World::removeDirectionalLight(DirectionalLight *light)
     m_directionalLights.removeAt(i);
 }
 
-void World::getLights(QList<PointLight *> &lights)
-{
-    foreach(Manager *manager, m_managers)
-    {
-        manager->getLights(lights);
-    }
-
-    foreach(PointLight *light, m_pointLights)
-    {
-        lights.append(light);
-    }
-}
-
 Particle *World::getParticle(int index)
 {
     return m_particles[index];
@@ -237,27 +221,10 @@ void World::drawLightGeometry(Graphics *graphics)
     m_camera->setTransforms(graphics);
     m_camera->setResolution(graphics);
 
-    QList<PointLight *> pointLights;
-    getLights(pointLights);
-
-    // Sort point lights by depth
-    std::priority_queue<std::pair<PointLight *,float>,
-            std::vector<std::pair<PointLight *,float> >, CompareDepth> depthQueue;
-
-    foreach(PointLight *light, pointLights)
+    /* Draw entity owned light geometry */
+    foreach(Manager *manager, m_managers)
     {
-        float radius = light->getShapeRadius();
-        float dist = glm::max(glm::length(light->getPosition() - m_camera->getEye())
-                - radius, 0.f);
-
-        std::pair<PointLight *, float> p(light, dist);
-        depthQueue.push(p);
-    }
-
-    while(!depthQueue.empty())
-    {
-        (depthQueue.top()).first->drawGeometry(graphics);
-        depthQueue.pop();
+        manager->drawLightGeometry(graphics);
     }
 }
 

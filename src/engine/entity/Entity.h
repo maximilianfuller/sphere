@@ -9,7 +9,6 @@
 
 class Graphics;
 class World;
-class BoundingShape;
 class Shape;
 class CompareDepth;
 class PointLight;
@@ -29,7 +28,6 @@ public:
     virtual ~Entity();
 
     Shape *getShape() const;
-    BoundingShape *getBoundingShape() const;
 
     glm::vec3 getPosition();
     void setPosition(glm::vec3 pos);
@@ -65,7 +63,6 @@ public:
     virtual void updatePosition(float seconds);
 
     virtual void updateShape();
-    virtual void updateBoundingShape();
 
     virtual bool intersect(Entity *ent);
     virtual void onIntersect(Entity *ent, glm::vec3 mtv);
@@ -74,11 +71,10 @@ public:
     virtual void drawGeometry(Graphics *graphics);
     virtual void drawLights(Graphics *graphics);
     virtual void drawParticles(Graphics *graphics);
-    virtual void getLights(QList<PointLight *> &lights);
+    virtual void drawLightGeometry(Graphics *graphics);
 
 protected:
     World *m_world;
-    BoundingShape *m_boundingShape;
     Shape *m_shape;
 
     glm::vec3 m_pos;

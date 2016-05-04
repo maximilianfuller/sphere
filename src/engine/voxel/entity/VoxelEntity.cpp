@@ -25,12 +25,12 @@ AABoundingBox *VoxelEntity::getAABB()
     return m_aabb;
 }
 
-void VoxelEntity::updateBoundingShape()
+void VoxelEntity::updateShape()
 {
     m_aabb->setDimensions(m_dims);
     m_aabb->setPosition(m_pos);
 
-    Entity::updateBoundingShape();
+    Entity::updateShape();
 }
 
 void VoxelEntity::onIntersect(MinecraftPlayer *ent, glm::vec3 mtv)

@@ -2,8 +2,6 @@
 
 #include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
-#include "engine/shape/Ellipsoid.h"
-#include "engine/intersect/BoundingCylinder.h"
 
 #include "engine/light/PointLight.h"
 #include "engine/particle/ParticleStreamSystem.h"
@@ -24,13 +22,6 @@ Player::Player(World *world, Camera *camera) :
     /* Initialize camera */
     m_camera->setYaw(m_yaw);
     m_camera->setPitch(m_pitch);
-
-    /* Create shape and bounding shape */
-    m_shape = new Ellipsoid(m_pos, m_dims);
-
-    /* Update shape and bounding shape to correspond to player's dimentions */
-    updateShape();
-    updateBoundingShape();
 }
 
 Player::~Player()
@@ -164,11 +155,6 @@ void Player::jump()
     }
 }
 
-void Player::updateFriction()
-{
-    m_friction = m_grounded ? MU_GROUND : MU_AIR;
-}
-
 void Player::updateGoalVelocity()
 {
     /* Player direction */
@@ -209,16 +195,6 @@ void Player::updateGoalVelocity()
     }
 }
 
-void Player::updateAcceleration()
-{
-    glm::vec3 diff = m_goal - m_vel;
-    diff.x = m_friction * diff.x;
-    diff.z = m_friction * diff.z;
-
-    m_acc.x = diff.x;
-    m_acc.z = diff.z;
-}
-
 void Player::updateCamera()
 {
     glm::vec3 pos = m_pos;
@@ -229,7 +205,7 @@ void Player::updateCamera()
 
 void Player::tryConnect(GameEntity *entity)
 {
-    float radius = m_light->getLightRadius();
+    float radius = m_light->getRadius();
 
     if(glm::length2(m_pos - entity->getPosition()) < radius * radius && m_absorb)
     {
@@ -239,7 +215,7 @@ void Player::tryConnect(GameEntity *entity)
         /* Set up connection */
         m_stream->setSource(entity->getPosition() + glm::vec3(0, 1, 0));
         m_stream->setColor(entity->getLightColor());
-        m_stream->setSourceRadius(entity->getRadius());
+        m_stream->setSourceRadius(entity->getRadius() / 2.f);
 
         transferPower(entity);
     }
@@ -252,19 +228,14 @@ void Player::onConnected(GameEntity *entity)
 
 void Player::onTick(float seconds)
 {
-    /* Jump */
+    GameEntity::onTick(seconds);
+
+    /* Set jump velocity */
     if(m_jump && m_grounded)
     {
         jump();
     }
 
-    /* Call superclass method to update player */
-    GameEntity::onTick(seconds);
-
     /* Update camera */
     updateCamera();
-}
-
-void Player::drawGeometry(Graphics *graphics)
-{
 }

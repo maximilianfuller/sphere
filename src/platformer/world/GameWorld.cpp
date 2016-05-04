@@ -51,6 +51,24 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addManager(new InteractionManager(m_entities));
 
     /* Lights */
+    addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(1, 1, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(0, 4, 0), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(5, 4, 0), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+
+    addPointLight(new PointLight(glm::vec3(10, 4, 4), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(-10, 4, 4), glm::vec3(1, 1, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(-5, 4, 4), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(0, 4, 4), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(5, 4, 4), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+
+    addPointLight(new PointLight(glm::vec3(10, 4, -4), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(-10, 4, -4), glm::vec3(1, 1, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(-5, 4, -4), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
+    addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+
     addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01)));
 }
 

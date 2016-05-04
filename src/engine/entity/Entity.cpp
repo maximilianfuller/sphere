@@ -1,7 +1,6 @@
 #include "engine/entity/Entity.h"
 
 #include "engine/world/World.h"
-#include "engine/intersect/BoundingShape.h"
 #include "engine/graphics/Graphics.h"
 #include "engine/shape/Shape.h"
 
@@ -9,7 +8,6 @@ Entity::Entity(World *world, glm::vec3 pos, glm::vec3 dims,
                float speed, glm::vec3 vel, glm::vec3 acc,
                glm::vec3 goal, float friction) :
     m_world(world),
-    m_boundingShape(NULL),
     m_shape(NULL),
     m_pos(pos),
     m_dims(dims),
@@ -26,17 +24,11 @@ Entity::Entity(World *world, glm::vec3 pos, glm::vec3 dims,
 Entity::~Entity()
 {
     delete m_shape;
-    delete m_boundingShape;
 }
 
 Shape *Entity::getShape() const
 {
     return m_shape;
-}
-
-BoundingShape *Entity::getBoundingShape() const
-{
-    return m_boundingShape;
 }
 
 glm::vec3 Entity::getPosition()
@@ -131,6 +123,7 @@ void Entity::setMoved(bool moved)
 
 void Entity::updateFriction()
 {
+    m_friction = m_grounded ? MU_GROUND : MU_AIR;
 }
 
 void Entity::updateGoalVelocity()
@@ -139,6 +132,12 @@ void Entity::updateGoalVelocity()
 
 void Entity::updateAcceleration()
 {
+    glm::vec3 diff = m_goal - m_vel;
+    diff.x = m_friction * diff.x;
+    diff.z = m_friction * diff.z;
+
+    m_acc.x = diff.x;
+    m_acc.z = diff.z;
 }
 
 void Entity::updateVelocity(float seconds)
@@ -167,15 +166,6 @@ void Entity::updateShape()
     }
 }
 
-void Entity::updateBoundingShape()
-{
-    if(m_boundingShape)
-    {
-        m_boundingShape->setDimensions(m_dims);
-        m_boundingShape->setPosition(m_pos);
-    }
-}
-
 bool Entity::intersect(Entity *ent)
 {
     return false;
@@ -190,16 +180,15 @@ void Entity::onTick(float seconds)
 {
     seconds = glm::min(1.f / 30.f, seconds);
 
-    /* State updates */
+    /* Update state */
     updateFriction();
     updateGoalVelocity();
     updateAcceleration();
     updateVelocity(seconds);
     updatePosition(seconds);
-
     updateShape();
-    updateBoundingShape();
 
+    /* Reset acceleration */
     m_acc = glm::vec3(0, G, 0);
 }
 
@@ -216,6 +205,6 @@ void Entity::drawParticles(Graphics *graphics)
 {
 }
 
-void Entity::getLights(QList<PointLight *> &lights)
+void Entity::drawLightGeometry(Graphics *graphics)
 {
 }
