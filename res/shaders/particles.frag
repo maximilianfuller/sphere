@@ -20,13 +20,13 @@ in vec2 texc;
 
 void main()
 {
+    vec4 particleColor = clamp(texture(tex, texc), 0, 1) * color;
+
     // Fade based on proximity to g buffer
     vec3 particlePos = vec3(position_worldSpace);
     vec3 fragPos = vec3(texture(position, gl_FragCoord.xy / res));
     float depth = length(particlePos - fragPos);
     float t = smoothstep(0, 0.5, depth);
 
-    vec4 color = clamp(texture(tex, texc), 0, 1);
-
-    fragColor = t * color;
+    fragColor = t * particleColor;
 }

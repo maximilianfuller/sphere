@@ -149,24 +149,6 @@ void Screen::drawDeferred(Graphics *graphics)
     // Draw geometry
     m_world->drawGeometry(graphics);
 
-    /* Particle pass */
-
-    // Set particle shader
-    graphics->setActiveProgram("particles");
-
-    // Bind g buffer position texture for environment blending
-    m_geometryFramebuffer->useTextures();
-    graphics->sendTexturePosition("position", 0);
-
-    // Enable particle blending
-    graphics->enableBlend();
-
-    // Draw particles
-    m_world->drawParticles(graphics);
-
-    // Cleanup
-    graphics->disableBlend();
-
     /* Light geometry pass */
 
     // Set light geometry shader
@@ -184,6 +166,24 @@ void Screen::drawDeferred(Graphics *graphics)
 
     // Draw light geometry
     m_world->drawLightGeometry(graphics);
+
+    // Cleanup
+    graphics->disableBlend();
+
+    /* Particle pass */
+
+    // Set particle shader
+    graphics->setActiveProgram("particles");
+
+    // Bind g buffer position texture for environment blending
+    m_geometryFramebuffer->useTextures();
+    graphics->sendTexturePosition("position", 0);
+
+    // Enable particle blending
+    graphics->enableBlend();
+
+    // Draw particles
+    m_world->drawParticles(graphics);
 
     // Cleanup
     graphics->disableBlend();

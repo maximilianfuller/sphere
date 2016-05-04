@@ -16,6 +16,8 @@
 #include "engine/geom/nav/NavMesh.h"
 
 #include "platformer/entity/Player.h"
+#include "platformer/entity/Enemy.h"
+#include "platformer/manager/InteractionManager.h"
 
 #include <QKeyEvent>
 
@@ -27,8 +29,12 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     m_navFeatures(false),
     World(camera)
 {
+    /* Player */
     m_player = new Player(this, camera);
     addEntity(m_player);
+
+    /* Enemies */
+    addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 10, 0)));
 
     /* Create mesh data */
     m_level = new OBJ(levelFile);
@@ -40,29 +46,12 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
                               m_level->vertexCount, levelKey);
     }
 
-    /* Add manager */
+    /* Add managers */
     addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
+    addManager(new InteractionManager(m_entities));
 
     /* Lights */
-    addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 1));
-    addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 2));
-    addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 3));
-    addPointLight(new PointLight(glm::vec3(0, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 4));
-    addPointLight(new PointLight(glm::vec3(5, 4, 0), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 5));
-
-    addPointLight(new PointLight(glm::vec3(10, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 6));
-    addPointLight(new PointLight(glm::vec3(-10, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 7));
-    addPointLight(new PointLight(glm::vec3(-5, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 8));
-    addPointLight(new PointLight(glm::vec3(0, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 9));
-    addPointLight(new PointLight(glm::vec3(5, 4, 4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 10));
-
-    addPointLight(new PointLight(glm::vec3(10, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 1), 11));
-    addPointLight(new PointLight(glm::vec3(-10, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 1, 1), 12));
-    addPointLight(new PointLight(glm::vec3(-5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(1, 0, 0), 13));
-    addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 1, 0), 14));
-    addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0.1, 0.2, 0.2), glm::vec3(0, 0, 1), 15));
-
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01), 1000));
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01)));
 }
 
 GameWorld::~GameWorld()
@@ -155,12 +144,12 @@ void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
 
 void GameWorld::mousePressEvent(QMouseEvent *event)
 {
-    m_player->startParticles();
+    m_player->setAbsorb(true);
 }
 
 void GameWorld::mouseReleaseEvent(QMouseEvent *event)
 {
-    m_player->stopParticles();
+    m_player->setAbsorb(false);
 
     if(m_navFeatures)
     {

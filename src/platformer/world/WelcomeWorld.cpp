@@ -10,8 +10,7 @@ WelcomeWorld::WelcomeWorld(Camera *camera) :
 {
     m_message = new FullscreenQuad("welcome");
 
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1),
-                                             glm::vec3(1, 1, 1), 1));
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(1, 1, 1)));
 }
 
 WelcomeWorld::~WelcomeWorld()

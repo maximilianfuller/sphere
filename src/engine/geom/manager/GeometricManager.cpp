@@ -10,10 +10,6 @@
 #include "util/obj.h"
 #include "engine/geom/nav/NavMesh.h"
 
-/*
- * 7) Possibly fix BFS
- * 8) SSF
-*/
 GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities,
                                    Graphics *graphics) :
     m_env(triangles),
@@ -253,6 +249,7 @@ void GeometricManager::onTick(float seconds)
     {
         moveEntity(ent, seconds);
 
+        ent->setMoved(true);
         ent->onTick(seconds);
     }
 }

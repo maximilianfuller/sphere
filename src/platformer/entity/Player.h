@@ -3,6 +3,8 @@
 
 #include "platformer/entity/GameEntity.h"
 
+class Camera;
+
 class Player : public GameEntity
 {
 public:
@@ -30,6 +32,9 @@ public:
     bool getNitro();
     void setNitro(bool val);
 
+    bool getAbsorb();
+    void setAbsorb(bool val);
+
     float getYaw();
     void setYaw(float yaw);
 
@@ -53,7 +58,8 @@ public:
     void updateCamera();
 
     /* Game loop */
-    void onIntersect(Entity *ent, glm::vec3 mtv);
+    void tryConnect(GameEntity *entity);
+    void onConnected(GameEntity *entity);
 
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
@@ -66,10 +72,14 @@ private:
     bool m_moveRight;
     bool m_jump;
     bool m_nitro;
+    bool m_absorb;
 
     /* Attributes */
     float m_yaw;
     float m_pitch;
+
+    /* Camera */
+    Camera *m_camera;
 };
 
 #endif // PLAYER_H

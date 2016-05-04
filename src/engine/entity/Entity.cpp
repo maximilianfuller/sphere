@@ -18,7 +18,8 @@ Entity::Entity(World *world, glm::vec3 pos, glm::vec3 dims,
     m_acc(acc),
     m_goal(goal),
     m_friction(friction),
-    m_grounded(true)
+    m_grounded(true),
+    m_moved(false)
 {
 }
 
@@ -118,6 +119,16 @@ void Entity::setGrounded(bool grounded)
     m_grounded = grounded;
 }
 
+bool Entity::getMoved()
+{
+    return m_moved;
+}
+
+void Entity::setMoved(bool moved)
+{
+    m_moved = moved;
+}
+
 void Entity::updateFriction()
 {
 }
@@ -137,15 +148,23 @@ void Entity::updateVelocity(float seconds)
 
 void Entity::updatePosition(float seconds)
 {
-    m_pos.x += getSpeed() * getVelocity().x * seconds;
-    m_pos.y += getVelocity().y * seconds;
-    m_pos.z += getSpeed() * getVelocity().z * seconds;
+    if(!m_moved)
+    {
+        m_pos.x += getSpeed() * getVelocity().x * seconds;
+        m_pos.y += getVelocity().y * seconds;
+        m_pos.z += getSpeed() * getVelocity().z * seconds;
+    }
+
+    m_moved = false;
 }
 
 void Entity::updateShape()
 {
-    m_shape->setDimensions(m_dims);
-    m_shape->setPosition(m_pos);
+    if(m_shape)
+    {
+        m_shape->setDimensions(m_dims);
+        m_shape->setPosition(m_pos);
+    }
 }
 
 void Entity::updateBoundingShape()
@@ -171,16 +190,17 @@ void Entity::onTick(float seconds)
 {
     seconds = glm::min(1.f / 30.f, seconds);
 
-    /* Movement updates */
+    /* State updates */
     updateFriction();
     updateGoalVelocity();
     updateAcceleration();
     updateVelocity(seconds);
-
-    m_acc = glm::vec3(0, G, 0);
+    updatePosition(seconds);
 
     updateShape();
     updateBoundingShape();
+
+    m_acc = glm::vec3(0, G, 0);
 }
 
 void Entity::drawGeometry(Graphics *graphics)

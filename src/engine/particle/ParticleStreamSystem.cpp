@@ -4,12 +4,13 @@
 #include "engine/graphics/Graphics.h"
 
 ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
-                                           glm::vec3 start, glm::vec3 target,
-                                           float startRadius, float expireRadius,
+                                           glm::vec3 source, glm::vec3 target, glm::vec3 color,
+                                           float sourceRadius, float expireRadius,
                                            float startVel) :
-    m_start(start),
+    m_source(source),
     m_target(target),
-    m_startRadius(startRadius),
+    m_color(color),
+    m_sourceRadius(sourceRadius),
     m_expireRadius(expireRadius),
     m_startVel(startVel),
     m_activated(false),
@@ -22,14 +23,24 @@ ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
     }
 }
 
-void ParticleStreamSystem::setStart(glm::vec3 start)
+void ParticleStreamSystem::setSource(glm::vec3 source)
 {
-    m_start = start;
+    m_source = source;
 }
 
 void ParticleStreamSystem::setTarget(glm::vec3 target)
 {
     m_target = target;
+}
+
+void ParticleStreamSystem::setColor(glm::vec3 color)
+{
+    m_color = color;
+}
+
+void ParticleStreamSystem::setSourceRadius(float radius)
+{
+    m_sourceRadius = radius;
 }
 
 void ParticleStreamSystem::start()
@@ -60,17 +71,17 @@ void ParticleStreamSystem::createParticle()
     /* Angle and radius */
     float theta = 2 * M_PI * rand_angle;
     float u = rand_rad1 + rand_rad2;
-    float radius = m_startRadius * (u > 1 ? 2 - u : u);
+    float radius = m_sourceRadius * 0.4 * (u > 1 ? 2 - u : u);
 
     /* Circle rotation */
-    glm::mat4x4 view = glm::lookAt(glm::vec3(0, 0, 0), m_target - m_start, glm::vec3(0, 1, 0));
+    glm::mat4x4 view = glm::lookAt(glm::vec3(0, 0, 0), m_target - m_source, glm::vec3(0, 1, 0));
     glm::mat4x4 model = glm::inverse(view);
 
     /* Create particle */
     glm::vec3 pos = glm::mat3x3(model)
             * glm::vec3(radius * glm::cos(theta), radius * glm::sin(theta), 0)
-            + m_start;
-    glm::vec3 vel = (rand_vel + m_startVel) * glm::normalize(m_target - m_start);
+            + m_source;
+    glm::vec3 vel = (rand_vel + m_startVel) * glm::normalize(m_target - m_source);
 
     delete m_particles[m_particleIndex];
     m_particles[m_particleIndex++] = new Particle(pos, vel, m_textureKey);
@@ -89,15 +100,18 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 model)
         m_stopTimer--;
     }
 
+    /* Send color */
+    graphics->sendColorUniform(glm::vec4(m_color, 1.0));
+
     /* Update existing particles */
-    glm::vec3 totalOffset = m_target - m_start;
+    glm::vec3 totalOffset = m_target - m_source;
     float totalDistance = glm::length(totalOffset);
 
     for(int i = 0; i < MAX_PARTICLES; i++)
     {
         if(m_particles[i])
         {
-            glm::vec3 offset = m_particles[i]->pos - m_start;
+            glm::vec3 offset = m_particles[i]->pos - m_source;
             glm::vec3 offsetLeft = m_target - m_particles[i]->pos;
 
             float distance = glm::length(offset);

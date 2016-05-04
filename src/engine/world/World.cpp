@@ -49,6 +49,11 @@ World::~World()
     }
 }
 
+Camera *World::getCamera()
+{
+    return m_camera;
+}
+
 int World::getNumEntities()
 {
     return m_entities.size();
@@ -190,7 +195,7 @@ void World::drawGeometry(Graphics *graphics)
 void World::drawLights(Graphics *graphics)
 {
     /* Draw point lights */
-    m_camera->setTransforms(graphics);
+    graphics->sendEmptyMatrices();
     m_camera->setResolution(graphics);
 
     foreach(PointLight *light, m_pointLights)
@@ -204,8 +209,6 @@ void World::drawLights(Graphics *graphics)
     }
 
     /* Draw directional lights */
-    graphics->sendEmptyMatrices();
-
     foreach(DirectionalLight *light, m_directionalLights)
     {
         light->draw(graphics);
@@ -243,7 +246,7 @@ void World::drawLightGeometry(Graphics *graphics)
 
     foreach(PointLight *light, pointLights)
     {
-        float radius = light->getRadius() * 0.05f;
+        float radius = light->getShapeRadius();
         float dist = glm::max(glm::length(light->getPosition() - m_camera->getEye())
                 - radius, 0.f);
 

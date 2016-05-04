@@ -9,8 +9,7 @@ class DirectionalLight : public Light
 {
 public:
     DirectionalLight(glm::vec3 dir = glm::vec3(1, 1, 1),
-                     glm::vec3 intensity = glm::vec3(1, 1, 1),
-                     int lightId = 0);
+                     glm::vec3 intensity = glm::vec3(1, 1, 1));
 
     void draw(Graphics *graphics);
 

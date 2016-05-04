@@ -9,7 +9,7 @@ out vec4 fragColor;
 uniform float time;
 
 /* Lights */
-uniform vec3 lightInt;
+uniform vec4 color;
 uniform float ambCoeff = 0.1;
 uniform float diffCoeff = 1.0;
 uniform float specCoeff = 0.8;
@@ -34,7 +34,7 @@ uniform sampler2D position;
 
 void main()
 {
-    fragColor = vec4(lightInt, 1.0);
+    fragColor = color;
     vec2 ratio = normalize(res);
 
     // Get amount to fade based on proximity to g buffer

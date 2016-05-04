@@ -55,6 +55,9 @@ public:
     virtual bool getGrounded();
     void setGrounded(bool grounded);
 
+    virtual bool getMoved();
+    void setMoved(bool moved);
+
     virtual void updateFriction();
     virtual void updateGoalVelocity();
     virtual void updateAcceleration();
@@ -89,6 +92,7 @@ protected:
     float m_friction;
 
     bool m_grounded;
+    bool m_moved;
 };
 
 #endif // ENTITY_H

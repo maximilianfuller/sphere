@@ -63,7 +63,9 @@ SOURCES += \
     src/engine/particle/Particle.cpp \
     src/engine/particle/ParticleSystem.cpp \
     src/engine/particle/ParticleStreamSystem.cpp \
-    src/platformer/entity/GameEntity.cpp
+    src/platformer/entity/GameEntity.cpp \
+    src/platformer/entity/Enemy.cpp \
+    src/platformer/manager/InteractionManager.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -123,7 +125,9 @@ HEADERS += \
     src/engine/particle/Particle.h \
     src/engine/particle/ParticleSystem.h \
     src/engine/particle/ParticleStreamSystem.h \
-    src/platformer/entity/GameEntity.h
+    src/platformer/entity/GameEntity.h \
+    src/platformer/entity/Enemy.h \
+    src/platformer/manager/InteractionManager.h
 
 
 FORMS += src/mainwindow.ui

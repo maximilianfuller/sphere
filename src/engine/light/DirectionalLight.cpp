@@ -2,10 +2,9 @@
 
 #include "engine/graphics/Graphics.h"
 
-DirectionalLight::DirectionalLight(glm::vec3 dir, glm::vec3 intensity,
-                                   int lightId) :
+DirectionalLight::DirectionalLight(glm::vec3 dir, glm::vec3 intensity) :
     m_dir(dir),
-    Light(intensity, lightId)
+    Light(intensity)
 {
 }
 

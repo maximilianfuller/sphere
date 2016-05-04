@@ -11,12 +11,14 @@ class ParticleStreamSystem : public ParticleSystem
 {
 public:
     ParticleStreamSystem(QString textureKey,
-                         glm::vec3 start, glm::vec3 target,
-                         float startRadius, float expireRadius,
+                         glm::vec3 source, glm::vec3 target, glm::vec3 color,
+                         float sourceRadius, float expireRadius,
                          float startVel);
 
-    void setStart(glm::vec3 start);
+    void setSource(glm::vec3 source);
     void setTarget(glm::vec3 target);
+    void setColor(glm::vec3 color);
+    void setSourceRadius(float radius);
 
     void start();
     void stop();
@@ -27,10 +29,11 @@ public:
     void draw(Graphics *graphics, glm::mat4x4 model);
 
 private:
-    glm::vec3 m_start;
+    glm::vec3 m_source;
     glm::vec3 m_target;
+    glm::vec3 m_color;
 
-    float m_startRadius;
+    float m_sourceRadius;
     float m_expireRadius;
 
     float m_startVel;

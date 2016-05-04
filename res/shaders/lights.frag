@@ -8,13 +8,14 @@ out vec4 lightData;
 /* Lights */
 uniform int lightType;
 uniform vec3 lightInt;
-uniform float ambCoeff = 0.1;
+uniform float ambCoeff = 0.0;
 uniform float diffCoeff = 1.0;
-uniform float specCoeff = 0.8;
+uniform float specCoeff = 1.0;
 
 /* Point Light */
 uniform vec3 lightAtt;
 uniform vec3 lightPos;
+uniform float lightRadius;
 
 /* Directional Light */
 uniform vec3 lightDir;
@@ -33,6 +34,12 @@ void main()
     vec4 fragColorSpecular = texture(colorSpecular, gl_FragCoord.xy / res);
     vec3 fragColor = vec3(fragColorSpecular) ;
     float fragSpecular = fragColorSpecular.w;
+
+    if(distance(lightPos, fragPos) > lightRadius && lightType == 0)
+    {
+        lightData = vec4(0, 0, 0, 1);
+        return;
+    }
 
     /* Lighting calculation */
     lightData = vec4(0);

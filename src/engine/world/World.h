@@ -23,6 +23,9 @@ public:
     World(Camera *camera);
     virtual ~World();
 
+    /* Camera Management */
+    Camera *getCamera();
+
     /* Entity management */
     int getNumEntities();
     Entity *getEntity(int index);
