@@ -68,20 +68,31 @@ void World::addEntity(Entity *ent)
 
 void World::removeEntity(Entity *ent)
 {
+    m_toRemove.append(ent);
+}
+
+void World::removeEntities()
+{
     int i = 0;
+    QList<int> removeIndices;
 
     foreach(Entity *e, m_entities)
     {
-        if(ent == e)
+        if(m_toRemove.contains(e))
         {
-            break;
+            removeIndices.append(i);
         }
 
         i++;
     }
 
-    delete m_entities[i];
-    m_entities.removeAt(i);
+    foreach(int j, removeIndices)
+    {
+        delete m_entities[j];
+        m_entities.removeAt(j);
+    }
+
+    m_toRemove.clear();
 }
 
 void World::addManager(Manager *manager)
@@ -162,6 +173,7 @@ void World::onTick(float seconds)
     foreach(Manager *manager, m_managers)
     {
         manager->onTick(seconds);
+        removeEntities();
     }
 }
 

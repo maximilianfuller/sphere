@@ -209,15 +209,7 @@ void Player::tryConnect(GameEntity *entity)
 
     if(glm::length2(m_pos - entity->getPosition()) < radius * radius && m_absorb)
     {
-        setConnected(true);
-        entity->onConnected(this);
-
-        /* Set up connection */
-        m_stream->setSource(entity->getPosition() + glm::vec3(0, 1, 0));
-        m_stream->setColor(entity->getLightColor());
-        m_stream->setSourceRadius(entity->getRadius() / 2.f);
-
-        transferPower(entity);
+        connect(entity);
     }
 }
 

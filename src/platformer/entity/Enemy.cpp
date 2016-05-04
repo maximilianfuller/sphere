@@ -8,7 +8,6 @@ Enemy::Enemy(World *world, float power, glm::vec3 color,
              glm::vec3 pos, glm::vec3 dims,
              float speed, glm::vec3 vel, glm::vec3 acc,
              glm::vec3 goal, float friction) :
-    m_target(NULL),
     m_follower(NULL),
     GameEntity(world, power, color, pos, dims, speed, vel, acc, goal, friction)
 {
@@ -16,16 +15,6 @@ Enemy::Enemy(World *world, float power, glm::vec3 color,
 
 Enemy::~Enemy()
 {
-}
-
-GameEntity *Enemy::getTarget()
-{
-    return m_target;
-}
-
-void Enemy::setTarget(GameEntity *target)
-{
-    m_target = target;
 }
 
 GameEntity *Enemy::getFollower()
@@ -44,15 +33,8 @@ void Enemy::tryConnect(GameEntity *entity)
 
     if(glm::length2(m_pos - entity->getPosition()) < radius * radius)
     {
-        setConnected(true);
-        entity->onConnected(this);
-
-        m_stream->setSource(entity->getPosition() + glm::vec3(0, 1, 0));
-        m_stream->setColor(entity->getLightColor());
-        m_stream->setSourceRadius(entity->getRadius() / 2.f);
-
+        connect(entity);
         setTarget(entity);
-        transferPower(entity);
     }
 }
 
@@ -117,10 +99,11 @@ void Enemy::onTick(float seconds)
     /* Destroy enemy */
     if(m_power <= 0)
     {
+        std::cout << "removed" << std::endl;
+        std::cout << this << std::endl;
         m_world->removeEntity(this);
         return;
     }
 
     m_follower = NULL;
-    m_target = NULL;
 }

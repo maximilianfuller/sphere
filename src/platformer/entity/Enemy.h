@@ -23,9 +23,6 @@ public:
           float friction = MU_GROUND);
     virtual ~Enemy();
 
-    GameEntity *getTarget();
-    void setTarget(GameEntity *target);
-
     GameEntity *getFollower();
     void setFollower(GameEntity *follower);
 
@@ -38,7 +35,6 @@ public:
     void onTick(float seconds);
 
 protected:
-    GameEntity *m_target;
     GameEntity *m_follower;
 };
 

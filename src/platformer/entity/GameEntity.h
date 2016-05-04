@@ -23,6 +23,12 @@ public:
                float friction = MU_GROUND);
     virtual ~GameEntity();
 
+    /* Light and shape */
+    glm::vec3 getLightColor();
+
+    float getRadius();
+    void setRadius(float radius);
+
     /* Power */
     float getPower();
     void setPower(float power);
@@ -31,14 +37,13 @@ public:
     bool getConnected();
     void setConnected(bool connected);
 
-    float getRadius();
-    void setRadius(float radius);
-
-    glm::vec3 getLightColor();
-
     virtual float getTransferRate();
 
+    GameEntity *getTarget();
+    void setTarget(GameEntity *target);
+
     virtual void tryConnect(GameEntity *entity);
+    virtual void connect(GameEntity *entity);
     virtual void onConnected(GameEntity *entity);
     virtual void transferPower(GameEntity *entity);
 
@@ -57,6 +62,7 @@ public:
 protected:
     ParticleStreamSystem *m_stream;
     PointLight *m_light;
+    GameEntity *m_target;
 
     float m_power;
     bool m_connected;

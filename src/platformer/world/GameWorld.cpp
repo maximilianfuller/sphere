@@ -34,7 +34,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addEntity(m_player);
 
     /* Enemies */
-    addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 10, 0)));
+    addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 10, 0), glm::vec3(1, 1, 1), 3.0));
+    addEntity(new Enemy(this, 20, glm::vec3(0, 1, 0), glm::vec3(0, 10, 5), glm::vec3(1, 1, 1), 3.0));
 
     /* Create mesh data */
     m_level = new OBJ(levelFile);

@@ -241,6 +241,7 @@ void GeometricManager::moveEntity(Entity *ent, float seconds)
     }
 
     ent->setPosition(ent->getPosition() + moveXZ);
+    ent->setMoved(true);
 }
 
 void GeometricManager::onTick(float seconds)
@@ -248,8 +249,6 @@ void GeometricManager::onTick(float seconds)
     foreach(Entity *ent, m_entities)
     {
         moveEntity(ent, seconds);
-
-        ent->setMoved(true);
         ent->onTick(seconds);
     }
 }

@@ -31,6 +31,7 @@ public:
     Entity *getEntity(int index);
     void addEntity(Entity *ent);
     void removeEntity(Entity *ent);
+    void removeEntities();
 
     /* Manager management */
     void addManager(Manager *manager);
@@ -71,6 +72,8 @@ protected:
     QList<Entity *> m_entities;
     QList<PointLight *> m_pointLights;
     QList<DirectionalLight *> m_directionalLights;
+
+    QList<Entity *> m_toRemove;
 
     Particle* m_particles[500];
     int m_particleIndex = 0;

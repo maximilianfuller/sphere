@@ -17,6 +17,7 @@ GameEntity::GameEntity(World *world,
     m_power(power),
     m_light(NULL),
     m_stream(NULL),
+    m_target(NULL),
     m_connected(true),
     Entity(world, pos, dims, speed, vel, acc, goal, friction)
 {
@@ -78,8 +79,28 @@ float GameEntity::getTransferRate()
     return glm::max(rate, 0.005f);
 }
 
+GameEntity *GameEntity::getTarget()
+{
+    return m_target;
+}
+
+void GameEntity::setTarget(GameEntity *target)
+{
+    m_target = target;
+}
+
 void GameEntity::tryConnect(GameEntity *entity)
 {
+}
+
+void GameEntity::connect(GameEntity *entity)
+{
+    setConnected(true);
+    entity->onConnected(this);
+
+    m_stream->setSource(entity->getPosition() + glm::vec3(0, 1, 0));
+    m_stream->setColor(entity->getLightColor());
+    m_stream->setSourceRadius(entity->getRadius() / 2.f);
 }
 
 void GameEntity::onConnected(GameEntity *entity)
@@ -121,6 +142,13 @@ void GameEntity::onTick(float seconds)
     m_light->setPosition(m_pos + glm::vec3(0, 1, 0));
     m_light->setRadius(m_power);
     m_stream->setTarget(m_light->getPosition());
+
+    if(m_target)
+    {
+        transferPower(m_target);
+    }
+
+    m_target = NULL;
 }
 
 void GameEntity::drawGeometry(Graphics *graphics)
