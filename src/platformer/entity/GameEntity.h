@@ -27,12 +27,18 @@ public:
     void setRadius(float radius);
 
     float getLightRadius();
+    glm::vec3 getLightPosition();
     glm::vec3 getLightColor();
 
     /* Power */
     float getPower();
     void setPower(float power);
 
+    /* Stun */
+    bool getStun();
+    void setStun();
+
+    /* Transfer rate */
     float getTransferRate(GameEntity *target);
 
     /* Entity interactions */
@@ -57,6 +63,9 @@ protected:
     float m_time;
 
     bool m_warning;
+    bool m_stun;
+
+    int m_stunTimer;
 };
 
 #endif // GAMEENTITY_H

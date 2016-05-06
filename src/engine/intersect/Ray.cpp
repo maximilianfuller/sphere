@@ -57,7 +57,7 @@ bool Ray::intersectTriangle(const Triangle &triangle, CollisionData &data)
     return false;
 }
 
-bool Ray::intersectSphere(glm::vec3 center, CollisionData &data)
+bool Ray::intersectSphere(glm::vec3 center, float radius, CollisionData &data)
 {
     float a = m_dir.x * m_dir.x + m_dir.y * m_dir.y + m_dir.z * m_dir.z;
     float b = (2 * m_pos.x * m_dir.x - 2 * m_dir.x * center.x)
@@ -65,7 +65,7 @@ bool Ray::intersectSphere(glm::vec3 center, CollisionData &data)
             + (2 * m_pos.z * m_dir.z - 2 * m_dir.z * center.z);
     float c = m_pos.x * m_pos.x + m_pos.y * m_pos.y + m_pos.z * m_pos.z
             + center.x * center.x + center.y * center.y + center.z * center.z
-            - 2 * m_pos.x * center.x - 2 * m_pos.y * center.y - 2 * m_pos.z * center.z - 1;
+            - 2 * m_pos.x * center.x - 2 * m_pos.y * center.y - 2 * m_pos.z * center.z - radius;
 
     // Set normal to center minus vertex
     data.n = center - m_pos;

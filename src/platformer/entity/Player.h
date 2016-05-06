@@ -32,9 +32,6 @@ public:
     bool getNitro();
     void setNitro(bool val);
 
-    bool getAbsorb();
-    void setAbsorb(bool val);
-
     float getYaw();
     void setYaw(float yaw);
 
@@ -49,6 +46,7 @@ public:
     /* Actions */
     void rotate(float yaw, float pitch);
     void jump();
+    void attack();
 
     /* Update methods on tick */
     void updateGoalVelocity();
@@ -65,11 +63,13 @@ private:
     bool m_moveRight;
     bool m_jump;
     bool m_nitro;
-    bool m_absorb;
 
     /* Attributes */
     float m_yaw;
     float m_pitch;
+
+    /* Attack */
+    int m_attackTimer;
 
     /* Camera */
     Camera *m_camera;

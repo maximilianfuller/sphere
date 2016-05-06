@@ -113,7 +113,7 @@ void GameWorld::setTarget()
     glm::vec3 invDims = glm::vec3(2 / dims.x, 2 / dims.y, 2 / dims.z);
     Ray temp = Ray(m_ray.getPos() * invDims, m_ray.getDir() * invDims);
 
-    if(temp.intersectSphere(m_target->getPosition() * invDims, dataS))
+    if(temp.intersectSphere(m_target->getPosition() * invDims, 1, dataS))
     {
         m_target->setPosition(m_ray.getPos() + (dataS.t - 0.01f) * m_ray.getDir());
     }
@@ -166,13 +166,11 @@ void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
 
 void GameWorld::mousePressEvent(QMouseEvent *event)
 {
-    m_player->setAbsorb(true);
+    m_player->attack();
 }
 
 void GameWorld::mouseReleaseEvent(QMouseEvent *event)
 {
-    m_player->setAbsorb(false);
-
     if(m_navFeatures)
     {
         setTarget();

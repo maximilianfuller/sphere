@@ -3,8 +3,10 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
 #include "engine/world/World.h"
-
 #include "engine/light/PointLight.h"
+#include "engine/intersect/Ray.h"
+#include "engine/shape/Ellipsoid.h"
+
 #include "engine/particle/ParticleStreamSystem.h"
 
 Player::Player(World *world, Camera *camera) :
@@ -14,9 +16,9 @@ Player::Player(World *world, Camera *camera) :
     m_moveRight(false),
     m_jump(false),
     m_nitro(false),
-    m_absorb(false),
     m_yaw(0),
     m_pitch(0),
+    m_attackTimer(0),
     m_camera(camera),
     GameEntity(world, 20.0, glm::vec3(0.8, 0.8, 1.0), glm::vec3(0, 2.0, 0), glm::vec3(1, 1, 1), 7)
 {
@@ -99,16 +101,6 @@ void Player::setNitro(bool val)
     m_nitro = val;
 }
 
-bool Player::getAbsorb()
-{
-    return m_absorb;
-}
-
-void Player::setAbsorb(bool val)
-{
-    m_absorb = val;
-}
-
 float Player::getYaw()
 {
     return m_yaw;
@@ -153,6 +145,37 @@ void Player::jump()
     if(m_nitro)
     {
         m_vel.y *= 2.2;
+    }
+}
+
+void Player::attack()
+{
+    if(m_attackTimer > 0)
+        return;
+
+    Ray ray = Ray(m_camera->getEye(), m_camera->getLook());
+    CollisionData data;
+
+    float minT = -1;
+    GameEntity *minTarget = NULL;
+
+    foreach(GameEntity *target, m_targets)
+    {
+        if(ray.intersectSphere(target->getLightPosition(), target->getRadius(), data))
+        {
+            if(minT < 0 || data.t < minT)
+            {
+                minT = data.t;
+                minTarget = target;
+            }
+        }
+    }
+
+    if(minTarget)
+    {
+        std::cout << "attack" << std::endl;
+        minTarget->setStun();
+        m_attackTimer = 120;
     }
 }
 
@@ -212,6 +235,12 @@ void Player::onTick(float seconds)
     if(m_jump && m_grounded)
     {
         jump();
+    }
+
+    /* Update attack timer */
+    if(m_attackTimer > 0)
+    {
+        m_attackTimer--;
     }
 
     /* Update camera */

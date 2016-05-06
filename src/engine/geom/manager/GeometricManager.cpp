@@ -124,7 +124,7 @@ bool GeometricManager::intersectTriangle(const Triangle &triangle, glm::vec3 p,
     {
         ray.setPos(triangle.vertices[i]);
 
-        if(ray.intersectSphere(p, data))
+        if(ray.intersectSphere(p, 1, data))
         {
             if((data.t < min_data.t || min_data.t < 0) && (data.t <= 1))
             {

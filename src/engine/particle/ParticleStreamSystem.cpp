@@ -62,6 +62,7 @@ void ParticleStreamSystem::start()
         }
 
         m_started = true;
+        std::cout << "start" << std::endl;
     }
     else if(!m_started)
     {
@@ -159,8 +160,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
     glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(1, 1, totalDistance));
 
     /* Align particle stream */
-    glm::mat4x4 view = glm::lookAt(sourcePos, targetPos,
-                                   glm::vec3(0, 1, 0));
+    glm::mat4x4 view = glm::lookAt(sourcePos, targetPos, glm::vec3(0, 1, 0));
     glm::mat4x4 model = glm::inverse(view) * scale;
 
     for(int i = 0; i < MAX_PARTICLES; i++)
@@ -197,27 +197,16 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
             }
 
             // Set particle velocity
-            float vel = m_particles[i]->vel.z;
             float transVel = glm::clamp(source->getTransferRate(target) - target->getTransferRate(source),
                                        -5.f / totalDistance, 5.f / totalDistance);
+            float absVel = glm::abs(transVel);
 
-            m_particles[i]->vel.z += transVel;
-
-            // Set particle age
-            float age = m_particles[i]->age;
-
-            if(distance > age / MAX_AGE)
-            {
-                m_particles[i]->age = distance * MAX_AGE;
-            }
+            m_particles[i]->vel.z += transVel * 0.1;
+            m_particles[i]->vel.z = glm::clamp(-absVel, m_particles[i]->vel.z, absVel);
 
             // Tick and draw particle
             m_particles[i]->tick(1.0 / 60.0);
             m_particles[i]->draw(graphics, look, model);
-
-            // Reset velocity and age
-            m_particles[i]->vel.z = vel;
-            m_particles[i]->age = age;
         }
     }
 }

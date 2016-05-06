@@ -17,6 +17,8 @@ GameEntity::GameEntity(World *world,
     m_time(0),
     m_light(NULL),
     m_warning(false),
+    m_stun(false),
+    m_stunTimer(0),
     Entity(world, pos, dims, speed, vel, acc, goal, friction)
 {
     /* Create shape */
@@ -46,6 +48,11 @@ float GameEntity::getLightRadius()
     return m_power;
 }
 
+glm::vec3 GameEntity::getLightPosition()
+{
+    return m_light->getPosition();
+}
+
 glm::vec3 GameEntity::getLightColor()
 {
     return m_light->getLightColor();
@@ -61,10 +68,28 @@ void GameEntity::setPower(float power)
     m_power = power;
 }
 
+bool GameEntity::getStun()
+{
+    return m_stun;
+}
+
+void GameEntity::setStun()
+{
+    m_stun = true;
+    m_stunTimer = 0;
+}
+
 float GameEntity::getTransferRate(GameEntity *target)
 {
-    float dist = glm::length(target->getPosition() - m_pos);
-    return (4 * m_power / m_targets.length()) / glm::max(dist, 1.f);
+    if(!m_stun)
+    {
+        float dist = glm::length(target->getPosition() - m_pos);
+        return (4 * m_power / m_targets.length()) / glm::max(dist, 1.f);
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 bool GameEntity::hasTarget(GameEntity* target)
@@ -106,6 +131,17 @@ void GameEntity::onTick(float seconds)
     if(m_time > 2 * M_PI)
     {
         m_time = 0;
+    }
+
+    /* Update stun */
+    if(m_stunTimer < 60)
+    {
+        m_stunTimer++;
+    }
+    else
+    {
+        m_stun = false;
+        m_stunTimer = 0;
     }
 
     /* Update light */
@@ -193,13 +229,19 @@ void GameEntity::drawLightGeometry(Graphics *graphics)
         glm::mat4x4 model = glm::translate(glm::mat4x4(), pos) * glm::scale(glm::mat4x4(), scale);
 
         /* Updated color */
-        glm::vec3 mixed = glm::mix(m_light->getIntensity(), glm::vec3(1), 0.5f);
-        glm::vec4 color = glm::vec4(mixed, 1.f);
+        glm::vec4 color = glm::vec4(glm::mix(m_light->getIntensity(), glm::vec3(1), 0.5f), 1);
 
         // Warning color
         if(m_warning)
         {
             color.w = 0.6 + 0.4 * glm::cos(m_time);
+        }
+
+        // Stun color
+        if(m_stun)
+        {
+            float mix = glm::smoothstep(0.f, 60.f, float(m_stunTimer));
+            color = glm::mix(glm::vec4(1, 1, 1, 1), color, mix);
         }
 
         /* Screen space position */
