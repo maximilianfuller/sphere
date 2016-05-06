@@ -10,6 +10,7 @@ class Player;
 class Ellipsoid;
 class OBJ;
 class GameEntity;
+class Triangle;
 
 const float RAY_LEN = 100.f;
 
@@ -50,6 +51,8 @@ private:
 
     OBJ *m_level;
     QString m_levelKey;
+
+    QList<Triangle *> m_triangles;
 };
 
 class CompareDepth

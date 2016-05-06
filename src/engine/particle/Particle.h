@@ -6,7 +6,7 @@
 
 class Graphics;
 
-const int MAX_AGE = 10;
+const int MAX_AGE = 30;
 
 class Particle
 {

@@ -50,8 +50,16 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
                               m_level->vertexCount, levelKey);
     }
 
+    // Jank
+    m_triangles.append(new Triangle(glm::vec3(-1000, 0, 1000),
+                                  glm::vec3(1000, 0, 1000),
+                                  glm::vec3(-1000, 0, -1000)));
+    m_triangles.append(new Triangle(glm::vec3(1000, 0, 1000),
+                                  glm::vec3(1000, 0, -1000),
+                                  glm::vec3(-1000, 0, -1000)));
+
     /* Add managers */
-    addManager(new GeometricManager(this, m_level->triangles, m_entities, graphics));
+    addManager(new GeometricManager(this, m_triangles, m_entities, graphics));
     addManager(new InteractionManager(this, m_entities));
 
     /* Lights */
@@ -257,10 +265,12 @@ void GameWorld::onTick(float seconds)
 void GameWorld::drawGeometry(Graphics *graphics)
 {
     /* Draw mesh */
+    glm::mat4x4 model = glm::scale(glm::mat4x4(), glm::vec3(2000, 1, 2000));
+
     graphics->sendUseTextureUniform(0);
-    graphics->sendModelUniform(glm::mat4x4());
+    graphics->sendModelUniform(model);
     graphics->sendColorUniform(glm::vec4(1));
-    graphics->drawShape(m_levelKey);
+    graphics->drawShape("quad");
 
     /* Draw target */
     if(m_navFeatures)
