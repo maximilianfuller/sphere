@@ -67,6 +67,7 @@ public:
     void sendLightRadiusUniform(float radius);
     void sendLightPositionUniform(glm::vec3 pos);
     void sendLightDirectionUniform(glm::vec3 dir);
+    void sendParticleAgeUniform(float age);
     void sendOpacityUniform(float opacity);
     void sendUseTextureUniform(int useTexture);
     void sendUseLightingUniform(int useLighting);

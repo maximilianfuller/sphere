@@ -1,16 +1,17 @@
 #include "VoxelCollisionManager.h"
 
 #include "engine/entity/Entity.h"
+#include "engine/world/World.h"
 #include "engine/intersect/AABoundingBox.h"
 
 #include "engine/voxel/entity/VoxelEntity.h"
 #include "engine/voxel/chunk/Chunk.h"
 #include "engine/voxel/block/Block.h"
 
-VoxelCollisionManager::VoxelCollisionManager(QList<Chunk *> &chunks,
+VoxelCollisionManager::VoxelCollisionManager(World *world, QList<Chunk *> &chunks,
                                              QList<Entity *> &entities) :
     m_chunks(chunks),
-    Manager(entities)
+    Manager(world, entities)
 {
 }
 

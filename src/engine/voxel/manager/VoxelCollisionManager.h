@@ -7,11 +7,12 @@ const float EPS = 0.001;
 
 class Chunk;
 class VoxelEntity;
+class World;
 
 class VoxelCollisionManager : public Manager
 {
 public:
-    VoxelCollisionManager(QList<Chunk *> &chunks,
+    VoxelCollisionManager(World *world, QList<Chunk *> &chunks,
                           QList<Entity *> &entities);
 
     bool withinChunk(Chunk *chunk, VoxelEntity *ent);

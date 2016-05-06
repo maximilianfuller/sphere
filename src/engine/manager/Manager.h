@@ -5,14 +5,12 @@
 
 class Graphics;
 class Entity;
-class CompareDepth;
-class PointLight;
-class Light;
+class World;
 
 class Manager
 {
 public:
-    Manager(QList<Entity *> &entities);
+    Manager(World *world, QList<Entity *> &entities);
 
     virtual void onTick(float seconds);
     virtual void drawGeometry(Graphics *graphics);
@@ -22,6 +20,7 @@ public:
 
 protected:
     QList<Entity *> &m_entities;
+    World *m_world;
 };
 
 #endif // MANAGER_H

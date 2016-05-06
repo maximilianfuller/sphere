@@ -2,19 +2,21 @@
 
 #include "engine/particle/Particle.h"
 #include "engine/graphics/Graphics.h"
+#include "engine/entity/Entity.h"
+
+#include "platformer/entity/GameEntity.h"
 
 ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
-                                           glm::vec3 source, glm::vec3 target, glm::vec3 color,
-                                           float sourceRadius, float expireRadius,
+                                           Entity *source, Entity *target, glm::vec3 color,
                                            float startVel) :
     m_source(source),
     m_target(target),
     m_color(color),
-    m_sourceRadius(sourceRadius),
-    m_expireRadius(expireRadius),
     m_startVel(startVel),
-    m_activated(false),
-    m_stopTimer(40),
+    m_particleTimer(0),
+    m_particleTimeout(0),
+    m_started(false),
+    m_startTimer(0),
     ParticleSystem(textureKey)
 {
     for(int i = 0; i < MAX_PARTICLES; i++)
@@ -23,14 +25,24 @@ ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
     }
 }
 
-void ParticleStreamSystem::setSource(glm::vec3 source)
+Entity *ParticleStreamSystem::getSource()
 {
-    m_source = source;
+    return m_source;
 }
 
-void ParticleStreamSystem::setTarget(glm::vec3 target)
+void ParticleStreamSystem::setSource(Entity *ent)
 {
-    m_target = target;
+    m_source = ent;
+}
+
+Entity *ParticleStreamSystem::getTarget()
+{
+    return m_target;
+}
+
+void ParticleStreamSystem::setTarget(Entity *ent)
+{
+    m_target = ent;
 }
 
 void ParticleStreamSystem::setColor(glm::vec3 color)
@@ -38,115 +50,171 @@ void ParticleStreamSystem::setColor(glm::vec3 color)
     m_color = color;
 }
 
-void ParticleStreamSystem::setSourceRadius(float radius)
+bool ParticleStreamSystem::start()
 {
-    m_sourceRadius = radius;
+    /* Create particles and set their age */
+    if(!m_started && m_startTimer > 20)
+    {
+        for(int i = 0; i < 50; i++)
+        {
+            createParticle(true);
+            m_particles[i]->age = -m_particles[i]->pos.z;
+        }
+
+        m_started = true;
+    }
+    else if(!m_started)
+    {
+        m_startTimer++;
+    }
+
+    return m_started;
 }
 
-void ParticleStreamSystem::start()
+void ParticleStreamSystem::createParticle(bool start)
 {
-    m_activated = true;
-    m_stopTimer = 40;
-}
+    GameEntity *source = dynamic_cast<GameEntity *>(m_source);
+    GameEntity *target = dynamic_cast<GameEntity *>(m_target);
 
-void ParticleStreamSystem::stop()
-{
-    m_activated = false;
-}
-
-bool ParticleStreamSystem::getActivated()
-{
-    return !(m_stopTimer == 0 && !m_activated);
-}
-
-void ParticleStreamSystem::createParticle()
-{
-    /* Random values to generate pos and vel */
+    /* Random values to generate position and velocity */
     float rand_angle = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float rand_rad1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float rand_rad2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    float rand_vel = (m_startVel / 3.f)
-            * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float rand_vel = 0.05 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
-    /* Angle and radius */
+    /* Position on circle */
     float theta = 2 * M_PI * rand_angle;
     float u = rand_rad1 + rand_rad2;
-    float radius = m_sourceRadius * 0.4 * (u > 1 ? 2 - u : u);
+    float radius = (u > 1 ? 2 - u : u);
 
-    /* Circle rotation */
-    glm::mat4x4 view = glm::lookAt(glm::vec3(0, 0, 0), m_target - m_source, glm::vec3(0, 1, 0));
-    glm::mat4x4 model = glm::inverse(view);
+    float sourceRadius = source->getRadius() * 0.2 * radius;
+    float targetRadius = target->getRadius() * 0.2 * radius;
 
-    /* Create particle */
-    glm::vec3 pos = glm::mat3x3(model)
-            * glm::vec3(radius * glm::cos(theta), radius * glm::sin(theta), 0)
-            + m_source;
-    glm::vec3 vel = (rand_vel + m_startVel) * glm::normalize(m_target - m_source);
+    /* Particle position and velocity */
+    glm::vec3 pos, vel;
 
-    delete m_particles[m_particleIndex];
-    m_particles[m_particleIndex++] = new Particle(pos, vel, m_textureKey);
-    m_particleIndex %= MAX_PARTICLES;
-}
-
-void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 model)
-{
-    /* Create a new particle */
-    if(m_activated)
+    // Set depending on relative size of source and target
+    if(target->getTransferRate(source) < source->getTransferRate(target))
     {
-        createParticle();
+        pos = glm::vec3(targetRadius * glm::cos(theta), targetRadius * glm::sin(theta), -1);
+        vel = glm::vec3(0, 0, rand_vel);
     }
     else
     {
-        m_stopTimer--;
+        pos = glm::vec3(sourceRadius * glm::cos(theta), sourceRadius * glm::sin(theta), 0);
+        vel = glm::vec3(0, 0, -rand_vel);
+    }
+
+    /* Create particle */
+    delete m_particles[m_particleIndex];
+    Particle *particle = new Particle(pos, vel, radius, theta, m_textureKey);
+    m_particles[m_particleIndex++]  = particle;
+    m_particleIndex %= MAX_PARTICLES;
+
+    /* Move particles to middle of stream */
+    if(start)
+    {
+        float rand_dist = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+        particle->pos.z = -rand_dist;
+    }
+
+}
+
+void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
+{
+    GameEntity *source = dynamic_cast<GameEntity *>(m_source);
+    GameEntity *target = dynamic_cast<GameEntity *>(m_target);
+
+    /* Create new particle */
+    if(m_particleTimer > m_particleTimeout)
+    {
+        createParticle(false);
+        m_particleTimer = 0;
+
+        if(source->getTransferRate(target) - target->getTransferRate(source) != 0)
+        {
+            m_particleTimeout = int(glm::min(0.2f / glm::abs(source->getTransferRate(target) - target->getTransferRate(source)), 120.f));
+        }
+        else
+        {
+            m_particleTimeout = 120;
+        }
+    }
+    else
+    {
+        m_particleTimer++;
     }
 
     /* Send color */
     graphics->sendColorUniform(glm::vec4(m_color, 1.0));
 
     /* Update existing particles */
-    glm::vec3 totalOffset = m_target - m_source;
-    float totalDistance = glm::length(totalOffset);
+    glm::vec3 sourcePos = m_source->getPosition() + glm::vec3(0, 1, 0);
+    glm::vec3 targetPos = m_target->getPosition() + glm::vec3(0, 1, 0);
+
+    float totalDistance = glm::length(targetPos - sourcePos);
+    glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(1, 1, totalDistance));
+
+    /* Align particle stream */
+    glm::mat4x4 view = glm::lookAt(sourcePos, targetPos,
+                                   glm::vec3(0, 1, 0));
+    glm::mat4x4 model = glm::inverse(view) * scale;
 
     for(int i = 0; i < MAX_PARTICLES; i++)
     {
         if(m_particles[i])
         {
-            glm::vec3 offset = m_particles[i]->pos - m_source;
-            glm::vec3 offsetLeft = m_target - m_particles[i]->pos;
+            float distance;
 
-            float distance = glm::length(offset);
+            // Adjust distance based on relative size
+            if(target->getTransferRate(source) < source->getTransferRate(target))
+            {
+                distance = m_particles[i]->pos.z + 1;
+            }
+            else
+            {
+                distance = glm::abs(m_particles[i]->pos.z);
+            }
 
-            if(distance + m_expireRadius >= totalDistance)
+            // Particle expire by position
+            if(distance >= 1)
             {
                 delete(m_particles[i]);
                 m_particles[i] = NULL;
                 continue;
             }
 
-            if(m_activated)
+            // Particle expire by age
+            if(m_particles[i]->age >= MAX_AGE)
             {
-                float mag = glm::length(m_particles[i]->vel);
-                m_particles[i]->vel = mag
-                        * glm::normalize(m_particles[i]->vel
-                                         + 5.f * offsetLeft * (distance / totalDistance));
-            }
-            else
-            {
-                if(m_stopTimer == 0)
-                {
-                    delete(m_particles[i]);
-                    m_particles[i] = NULL;
-                    continue;
-                }
-
-                float mag = glm::length(m_particles[i]->vel);
-                m_particles[i]->vel = mag
-                        * glm::normalize(m_particles[i]->vel
-                                         + 0.3f * glm::vec3(0, -1, 0));
+                delete(m_particles[i]);
+                m_particles[i] = NULL;
+                createParticle(true);
+                continue;
             }
 
+            // Set particle velocity
+            float vel = m_particles[i]->vel.z;
+            float transVel = glm::clamp(source->getTransferRate(target) - target->getTransferRate(source),
+                                       -5.f / totalDistance, 5.f / totalDistance);
+
+            m_particles[i]->vel.z += transVel;
+
+            // Set particle age
+            float age = m_particles[i]->age;
+
+            if(distance > age / MAX_AGE)
+            {
+                m_particles[i]->age = distance * MAX_AGE;
+            }
+
+            // Tick and draw particle
             m_particles[i]->tick(1.0 / 60.0);
-            m_particles[i]->draw(graphics, model);
+            m_particles[i]->draw(graphics, look, model);
+
+            // Reset velocity and age
+            m_particles[i]->vel.z = vel;
+            m_particles[i]->age = age;
         }
     }
 }

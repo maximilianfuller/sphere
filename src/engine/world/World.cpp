@@ -161,10 +161,10 @@ Particle *World::getParticle(int index)
     return m_particles[index];
 }
 
-void World::addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey)
+void World::addParticle(glm::vec3 pos, glm::vec3 vel, float u, float v, QString textureKey)
 {
     delete m_particles[m_particleIndex];
-    m_particles[m_particleIndex++] = new Particle(pos, vel, textureKey);
+    m_particles[m_particleIndex++] = new Particle(pos, vel, u, v, textureKey);
     m_particleIndex %= 500;
 }
 

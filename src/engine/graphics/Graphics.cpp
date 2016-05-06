@@ -386,6 +386,11 @@ void Graphics::sendLightDirectionUniform(glm::vec3 dir)
                  glm::value_ptr(dir));
 }
 
+void Graphics::sendParticleAgeUniform(float age)
+{
+    glUniform1f(glGetUniformLocation(m_activeProgram, "age"), age);
+}
+
 void Graphics::sendOpacityUniform(float opacity)
 {
     glUniform1f(glGetUniformLocation(m_activeProgram, "opacity"), opacity);

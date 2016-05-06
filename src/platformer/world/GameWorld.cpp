@@ -17,9 +17,12 @@
 
 #include "platformer/entity/Player.h"
 #include "platformer/entity/Enemy.h"
+#include "platformer/entity/GameEntity.h"
 #include "platformer/manager/InteractionManager.h"
 
 #include <QKeyEvent>
+
+#include <queue>
 
 GameWorld::GameWorld(Camera *camera, Graphics *graphics,
                      QString levelFile, QString levelKey) :
@@ -34,8 +37,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     addEntity(m_player);
 
     /* Enemies */
-    addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 10, 0), glm::vec3(1, 1, 1), 3.0));
-    addEntity(new Enemy(this, 20, glm::vec3(0, 1, 0), glm::vec3(0, 10, 5), glm::vec3(1, 1, 1), 3.0));
+    addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 10, -5), glm::vec3(1, 1, 1), 3.0));
+    addEntity(new Enemy(this, 20, glm::vec3(0, 1, 0), glm::vec3(0, 10, -10), glm::vec3(1, 1, 1), 3.0));
 
     /* Create mesh data */
     m_level = new OBJ(levelFile);
@@ -48,8 +51,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics,
     }
 
     /* Add managers */
-    addManager(new GeometricManager(m_level->triangles, m_entities, graphics));
-    addManager(new InteractionManager(m_entities));
+    addManager(new GeometricManager(this, m_level->triangles, m_entities, graphics));
+    addManager(new InteractionManager(this, m_entities));
 
     /* Lights */
     addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
@@ -256,7 +259,6 @@ void GameWorld::onTick(float seconds)
 void GameWorld::drawGeometry(Graphics *graphics)
 {
     /* Draw mesh */
-    graphics->sendUseLightingUniform(0);
     graphics->sendUseTextureUniform(0);
     graphics->sendModelUniform(glm::mat4x4());
     graphics->sendColorUniform(glm::vec4(1));
@@ -277,4 +279,35 @@ void GameWorld::drawGeometry(Graphics *graphics)
     }
 
     World::drawGeometry(graphics);
+}
+
+void GameWorld::drawLightGeometry(Graphics *graphics)
+{
+    /* Draw point lights */
+    m_camera->setTransforms(graphics);
+    m_camera->setResolution(graphics);
+
+    /* Sort entities by depth */
+    std::priority_queue<std::pair<GameEntity *,float>,
+            std::vector<std::pair<GameEntity *,float> >, CompareDepth> depthQueue;
+
+    foreach(Entity *entity, m_entities)
+    {
+        GameEntity *ent = dynamic_cast<GameEntity *>(entity);
+
+        float radius = ent->getRadius();
+        float dist = glm::max(glm::length(ent->getPosition() + glm::vec3(0, 1, 0)
+                                          - m_camera->getEye())
+                - radius, 0.f);
+
+        std::pair<GameEntity *, float> p(ent, dist);
+        depthQueue.push(p);
+    }
+
+    /* Draw entities */
+    while(!depthQueue.empty())
+    {
+        (depthQueue.top()).first->drawLightGeometry(graphics);
+        depthQueue.pop();
+    }
 }

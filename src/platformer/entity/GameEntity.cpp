@@ -7,7 +7,6 @@
 #include "engine/shape/Ellipsoid.h"
 
 #include "engine/light/PointLight.h"
-#include "engine/particle/ParticleStreamSystem.h"
 
 GameEntity::GameEntity(World *world,
                        float power, glm::vec3 color,
@@ -15,10 +14,9 @@ GameEntity::GameEntity(World *world,
                        float speed, glm::vec3 vel, glm::vec3 acc,
                        glm::vec3 goal, float friction) :
     m_power(power),
+    m_time(0),
     m_light(NULL),
-    m_stream(NULL),
-    m_target(NULL),
-    m_connected(true),
+    m_warning(false),
     Entity(world, pos, dims, speed, vel, acc, goal, friction)
 {
     /* Create shape */
@@ -26,16 +24,31 @@ GameEntity::GameEntity(World *world,
 
     /* Create light */
     m_light = new PointLight(m_pos + glm::vec3(0, 1, 0), color);
-
-    /* Create particle system */
-    m_stream = new ParticleStreamSystem("particle", glm::vec3(0, 0, 0), m_pos,
-                                        color, 2.0, 0.5, 7.f);
 }
 
 GameEntity::~GameEntity()
 {
     delete m_light;
-    delete m_stream;
+}
+
+float GameEntity::getRadius()
+{
+    return glm::pow(m_power * 5.f, 0.333f);
+}
+
+void GameEntity::setRadius(float radius)
+{
+    m_power = radius * 5;
+}
+
+float GameEntity::getLightRadius()
+{
+    return m_power;
+}
+
+glm::vec3 GameEntity::getLightColor()
+{
+    return m_light->getLightColor();
 }
 
 float GameEntity::getPower()
@@ -48,85 +61,34 @@ void GameEntity::setPower(float power)
     m_power = power;
 }
 
-bool GameEntity::getConnected()
+float GameEntity::getTransferRate(GameEntity *target)
 {
-    return m_connected;
+    float dist = glm::length(target->getPosition() - m_pos);
+    return (4 * m_power / m_targets.length()) / glm::max(dist, 1.f);
 }
 
-void GameEntity::setConnected(bool connected)
+bool GameEntity::hasTarget(GameEntity* target)
 {
-    m_connected = connected;
-}
-
-float GameEntity::getRadius()
-{
-    return m_shape->getDimensions().x * 2;
-}
-
-void GameEntity::setRadius(float radius)
-{
-    m_shape->setDimensions(glm::vec3(radius * 2, radius * 2, radius * 2));
-}
-
-glm::vec3 GameEntity::getLightColor()
-{
-    return m_light->getLightColor();
-}
-
-float GameEntity::getTransferRate()
-{
-    float rate = glm::smoothstep(1.f, 100.f, m_power) * 0.1;
-    return glm::max(rate, 0.005f);
-}
-
-GameEntity *GameEntity::getTarget()
-{
-    return m_target;
-}
-
-void GameEntity::setTarget(GameEntity *target)
-{
-    m_target = target;
-}
-
-void GameEntity::tryConnect(GameEntity *entity)
-{
-}
-
-void GameEntity::connect(GameEntity *entity)
-{
-    setConnected(true);
-    entity->onConnected(this);
-
-    m_stream->setSource(entity->getPosition() + glm::vec3(0, 1, 0));
-    m_stream->setColor(entity->getLightColor());
-    m_stream->setSourceRadius(entity->getRadius() / 2.f);
-}
-
-void GameEntity::onConnected(GameEntity *entity)
-{
-}
-
-void GameEntity::transferPower(GameEntity *entity)
-{
-    /* Transfer power */
-    float rate = getTransferRate();
-
-    if(entity->getPower() > 0)
+    foreach(GameEntity *ent, m_targets)
     {
-        entity->setPower(entity->getPower() - rate);
-        setPower(m_power + rate);
+        if(ent == target)
+            return true;
     }
 }
 
-void GameEntity::startStream()
+void GameEntity::addTarget(GameEntity *target)
 {
-    m_stream->start();
+    m_targets.append(target);
 }
 
-void GameEntity::stopStream()
+int GameEntity::numTargets()
 {
-    m_stream->stop();
+    return m_targets.length();
+}
+
+void GameEntity::clearTargets()
+{
+    m_targets.clear();
 }
 
 void GameEntity::onIntersect(Entity *ent, glm::vec3 mtv)
@@ -138,17 +100,54 @@ void GameEntity::onTick(float seconds)
 {
     Entity::onTick(seconds);
 
+    /* Update age */
+    m_time += seconds;
+
+    if(m_time > 20 * M_PI)
+    {
+        m_time = 0;
+    }
+
+    /* Update light */
     m_shape->setPosition(m_pos + glm::vec3(0, 1, 0));
     m_light->setPosition(m_pos + glm::vec3(0, 1, 0));
     m_light->setRadius(m_power);
-    m_stream->setTarget(m_light->getPosition());
 
-    if(m_target)
+    /* Transfer matter */
+    float delta = 0;
+
+    // Absorb
+    foreach(GameEntity *target, m_targets)
     {
-        transferPower(m_target);
+        float amount = getTransferRate(target) * 0.002;
+
+        delta += amount;
     }
 
-    m_target = NULL;
+    // Give
+    foreach(GameEntity *target, m_targets)
+    {
+        float amount = target->getTransferRate(this) * 0.002;
+
+        delta -= amount;
+    }
+
+    m_power += delta;
+
+    // Update warning
+    if(!m_warning && delta < 0)
+    {
+        m_time = 0;
+        m_warning = true;
+    }
+
+    if(m_warning && delta > 0)
+    {
+        if(glm::abs(glm::cos(m_time)) < 0.1)
+        {
+            m_warning = false;
+        }
+    }
 }
 
 void GameEntity::drawGeometry(Graphics *graphics)
@@ -165,29 +164,13 @@ void GameEntity::drawLights(Graphics *graphics)
 
 void GameEntity::drawParticles(Graphics *graphics)
 {
-    Camera *camera = m_world->getCamera();
-
-    if(m_connected)
-    {
-        m_stream->start();
-    }
-    else
-    {
-        m_stream->stop();
-    }
-
-    if(m_stream && m_stream->getActivated())
-    {
-        m_stream->draw(graphics,
-                       glm::mat4x4(glm::mat3x3(glm::inverse(camera->getView()))));
-    }
 }
 
 void GameEntity::drawLightGeometry(Graphics *graphics)
 {
     if(m_light)
     {
-        glm::vec3 pos = m_shape->getPosition();
+        glm::vec3 pos = m_light->getPosition();
 
         /* Model matrix */
         float radius = getRadius();
@@ -196,13 +179,25 @@ void GameEntity::drawLightGeometry(Graphics *graphics)
 
         /* Updated color */
         glm::vec3 mixed = glm::mix(m_light->getIntensity(), glm::vec3(1), 0.5f);
-        glm::vec4 color = glm::vec4(mixed, glm::min(m_power / 100.f, 1.f));
+        glm::vec4 color = glm::vec4(mixed, 1.f);
+
+        // Warning color
+        if(m_warning)
+        {
+            //mixed = glm::mix(mixed, glm::vec3(1, 0, 0), 0.2 - 0.2 * glm::cos(m_time));
+            color.w = 0.6 + 0.4 * glm::cos(m_time);
+        }
+
+        /* Screen space position */
+        Camera *cam = m_world->getCamera();
+        glm::vec3 screenPos = glm::vec3(cam->getPerspective() * glm::vec4(pos, 1.0));
 
         /* Send uniforms */
         graphics->sendModelUniform(model);
         graphics->sendLightRadiusUniform(radius);
-        graphics->sendLightPositionUniform(pos);
+        graphics->sendLightPositionUniform(screenPos);
         graphics->sendColorUniform(color);
+        graphics->sendTimeUniform(m_time);
 
         graphics->drawShape("sphere");
     }

@@ -17,8 +17,8 @@ VoxelManager::VoxelManager(Camera *camera, Terrain *terrain) :
     m_terrain(terrain),
     World(camera)
 {
-    addManager(new VoxelCollisionManager(m_chunks, m_entities));
-    addManager(new CylinderCollisionManager(m_entities));
+    addManager(new VoxelCollisionManager(this, m_chunks, m_entities));
+    addManager(new CylinderCollisionManager(this, m_entities));
     m_face = new Quad(0, 0, "", glm::vec4(1, 0, 0, 0.5));
 }
 

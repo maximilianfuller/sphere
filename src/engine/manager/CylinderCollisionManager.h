@@ -4,11 +4,12 @@
 #include "engine/manager/Manager.h"
 
 class Entity;
+class World;
 
 class CylinderCollisionManager : public Manager
 {
 public:
-    CylinderCollisionManager(QList<Entity *> &entities);
+    CylinderCollisionManager(World *world, QList<Entity *> &entities);
 
     void intersect(Entity *e1, Entity *e2);
 

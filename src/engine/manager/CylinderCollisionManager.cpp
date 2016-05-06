@@ -2,9 +2,10 @@
 
 #include "engine/shape/Cylinder.h"
 #include "engine/entity/Entity.h"
+#include "engine/world/World.h"
 
-CylinderCollisionManager::CylinderCollisionManager(QList<Entity *> &entities) :
-    Manager(entities)
+CylinderCollisionManager::CylinderCollisionManager(World *world, QList<Entity *> &entities) :
+    Manager(world, entities)
 {
 }
 

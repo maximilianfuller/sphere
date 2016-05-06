@@ -2,19 +2,20 @@
 
 #include "engine/graphics/Graphics.h"
 
+#include "engine/entity/Entity.h"
+#include "engine/world/World.h"
 #include "engine/intersect/Ray.h"
 #include "engine/intersect/Triangle.h"
 #include "engine/shape/Ellipsoid.h"
-#include "engine/entity/Entity.h"
 
 #include "util/obj.h"
 #include "engine/geom/nav/NavMesh.h"
 
-GeometricManager::GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities,
+GeometricManager::GeometricManager(World *world, QList<Triangle *> &triangles, QList<Entity *> &entities,
                                    Graphics *graphics) :
     m_env(triangles),
     navMesh(new NavMesh(triangles, graphics)),
-    Manager(entities)
+    Manager(world, entities)
 {
 }
 

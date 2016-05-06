@@ -2,6 +2,7 @@
 
 #include "engine/graphics/Graphics.h"
 #include "engine/camera/Camera.h"
+#include "engine/world/World.h"
 
 #include "engine/light/PointLight.h"
 #include "engine/particle/ParticleStreamSystem.h"
@@ -201,21 +202,6 @@ void Player::updateCamera()
     pos.y += m_dims.y;
 
     m_camera->setEye(pos);
-}
-
-void Player::tryConnect(GameEntity *entity)
-{
-    float radius = m_light->getRadius();
-
-    if(glm::length2(m_pos - entity->getPosition()) < radius * radius && m_absorb)
-    {
-        connect(entity);
-    }
-}
-
-void Player::onConnected(GameEntity *entity)
-{
-    return;
 }
 
 void Player::onTick(float seconds)

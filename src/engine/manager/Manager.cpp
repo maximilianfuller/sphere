@@ -4,7 +4,8 @@
 #include "engine/graphics/Graphics.h"
 #include "engine/world/World.h"
 
-Manager::Manager(QList<Entity *> &entities) :
+Manager::Manager(World *world, QList<Entity *> &entities) :
+    m_world(world),
     m_entities(entities)
 {
 }

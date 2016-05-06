@@ -6,6 +6,7 @@
 
 class Graphics;
 class Entity;
+class World;
 class Ray;
 class Triangle;
 class TriangleData;
@@ -19,7 +20,7 @@ const float SLIDE_BOUND = glm::cos(M_PI / 4.0);
 class GeometricManager : public Manager
 {
 public:
-    GeometricManager(QList<Triangle *> &triangles, QList<Entity *> &entities,
+    GeometricManager(World *world, QList<Triangle *> &triangles, QList<Entity *> &entities,
                      Graphics *graphics);
     ~GeometricManager();
 

@@ -16,18 +16,18 @@ in vec4 eye_worldSpace;
 in vec2 texc;
 
 void main(){
-    // Output fragment position and normal to g buffer
-    fragPosition = vec4(vec3(position_worldSpace) / position_worldSpace.w, 1);
-    fragNormal = vec4(vec3(normal_worldSpace) / position_worldSpace.w, 1);
-
-    // Output fragment color
+    /* Fragment color without texture */
     vec3 fragColor = vec3(color);
 
+    /* Fragment color with texture */
     if(useTexture == 1)
     {
-        fragColor = vec3(texture(tex, texc));
+        fragColor = mix(fragColor, vec3(texture(tex, texc)), color.w);
     }
 
-    // Output specular component
+    /* G Buffer position, normal, and shininess */
+    fragPosition = vec4(vec3(position_worldSpace) / position_worldSpace.w, 1);
+    fragNormal = vec4(vec3(normal_worldSpace) / position_worldSpace.w, 1);
     fragColorSpecular = vec4(fragColor, shininess);
+
 }

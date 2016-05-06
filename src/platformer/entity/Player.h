@@ -55,9 +55,6 @@ public:
     void updateCamera();
 
     /* Game loop */
-    void tryConnect(GameEntity *entity);
-    void onConnected(GameEntity *entity);
-
     void onTick(float seconds);
 
 private:

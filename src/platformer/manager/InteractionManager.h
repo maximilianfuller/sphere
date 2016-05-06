@@ -4,13 +4,24 @@
 #include "engine/manager/Manager.h"
 
 class Entity;
+class GameEntity;
+class World;
+class ParticleStreamSystem;
 
 class InteractionManager : public Manager
 {
 public:
-    InteractionManager(QList<Entity *> &entities);
+    InteractionManager(World *world, QList<Entity *> &entities);
+    ~InteractionManager();
+
+    void connect(GameEntity *e1, GameEntity *e2,
+                 QList<std::pair<GameEntity *, GameEntity *> > &connections);
 
     void onTick(float seconds);
+    void drawParticles(Graphics *graphics);
+
+private:
+    QList<ParticleStreamSystem *> m_streams;
 };
 
 #endif // INTERACTIONMANAGER_H

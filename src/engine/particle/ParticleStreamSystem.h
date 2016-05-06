@@ -3,43 +3,48 @@
 
 
 #include "util/CommonIncludes.h"
+
 #include "engine/particle/ParticleSystem.h"
 
 #include <QString>
+
+class Entity;
 
 class ParticleStreamSystem : public ParticleSystem
 {
 public:
     ParticleStreamSystem(QString textureKey,
-                         glm::vec3 source, glm::vec3 target, glm::vec3 color,
-                         float sourceRadius, float expireRadius,
+                         Entity *source, Entity *target, glm::vec3 color,
                          float startVel);
 
-    void setSource(glm::vec3 source);
-    void setTarget(glm::vec3 target);
+    /* Access attributes */
+    Entity *getSource();
+    void setSource(Entity *ent);
+
+    Entity *getTarget();
+    void setTarget(Entity *ent);
+
     void setColor(glm::vec3 color);
-    void setSourceRadius(float radius);
 
-    void start();
-    void stop();
-    bool getActivated();
+    /* Create particles */
+    bool start();
 
-    void createParticle();
+    void createParticle(bool start);
 
-    void draw(Graphics *graphics, glm::mat4x4 model);
+    void draw(Graphics *graphics, glm::mat4x4 look);
 
 private:
-    glm::vec3 m_source;
-    glm::vec3 m_target;
+    Entity *m_source;
+    Entity *m_target;
     glm::vec3 m_color;
 
-    float m_sourceRadius;
-    float m_expireRadius;
+    bool m_started;
+    int m_startTimer;
 
     float m_startVel;
 
-    int m_stopTimer;
-    bool m_activated;
+    int m_particleTimer;
+    int m_particleTimeout;
 };
 
 #endif // PARTICLESTREAMSYSTEM_H

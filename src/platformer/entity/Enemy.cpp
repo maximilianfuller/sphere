@@ -27,37 +27,9 @@ void Enemy::setFollower(GameEntity *follower)
     m_follower = follower;
 }
 
-void Enemy::tryConnect(GameEntity *entity)
-{
-    float radius = m_light->getRadius();
-
-    if(glm::length2(m_pos - entity->getPosition()) < radius * radius)
-    {
-        connect(entity);
-        setTarget(entity);
-    }
-}
-
-void Enemy::onConnected(GameEntity *entity)
-{
-    if(m_follower)
-    {
-        float dist = glm::length2(m_pos - m_follower->getPosition());
-
-        if(glm::length2(m_pos - entity->getPosition()) < dist)
-        {
-            setFollower(entity);
-        }
-    }
-    else
-    {
-        setFollower(entity);
-    }
-}
-
 void Enemy::updateGoalVelocity()
 {
-    /* Update enemy */
+    /* Update enemy
     float rate = getTransferRate();
 
     if(m_target)
@@ -90,6 +62,7 @@ void Enemy::updateGoalVelocity()
     {
         m_goal = glm::vec3(0);
     }
+    */
 }
 
 void Enemy::onTick(float seconds)

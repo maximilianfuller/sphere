@@ -7,7 +7,6 @@ class Graphics;
 class World;
 
 class PointLight;
-class ParticleStreamSystem;
 
 class GameEntity : public Entity
 {
@@ -24,32 +23,23 @@ public:
     virtual ~GameEntity();
 
     /* Light and shape */
-    glm::vec3 getLightColor();
-
     float getRadius();
     void setRadius(float radius);
+
+    float getLightRadius();
+    glm::vec3 getLightColor();
 
     /* Power */
     float getPower();
     void setPower(float power);
 
+    float getTransferRate(GameEntity *target);
+
     /* Entity interactions */
-    bool getConnected();
-    void setConnected(bool connected);
-
-    virtual float getTransferRate();
-
-    GameEntity *getTarget();
-    void setTarget(GameEntity *target);
-
-    virtual void tryConnect(GameEntity *entity);
-    virtual void connect(GameEntity *entity);
-    virtual void onConnected(GameEntity *entity);
-    virtual void transferPower(GameEntity *entity);
-
-    /* Particles */
-    void startStream();
-    void stopStream();
+    bool hasTarget(GameEntity* target);
+    void addTarget(GameEntity *target);
+    int numTargets();
+    void clearTargets();
 
     /* Game loop */
     void onIntersect(Entity *ent, glm::vec3 mtv);
@@ -60,12 +50,13 @@ public:
     void drawLightGeometry(Graphics *graphics);
 
 protected:
-    ParticleStreamSystem *m_stream;
     PointLight *m_light;
-    GameEntity *m_target;
+    QList<GameEntity *> m_targets;
 
     float m_power;
-    bool m_connected;
+    float m_time;
+
+    bool m_warning;
 };
 
 #endif // GAMEENTITY_H

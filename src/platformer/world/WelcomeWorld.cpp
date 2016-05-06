@@ -31,13 +31,5 @@ void WelcomeWorld::drawGeometry(Graphics *graphics)
 
 void WelcomeWorld::drawLights(Graphics *graphics)
 {
-    graphics->sendAmbientCoefficient(1.0);
-    graphics->sendDiffuseCoefficient(0.0);
-    graphics->sendSpecularCoefficient(0.0);
-
     World::drawLights(graphics);
-
-    graphics->sendAmbientCoefficient(0.0);
-    graphics->sendDiffuseCoefficient(1.0);
-    graphics->sendSpecularCoefficient(0.8);
 }

@@ -5,12 +5,9 @@ in vec4 eye_worldSpace;
 
 out vec4 lightData;
 
-/* Lights */
+/* Light uniforms */
 uniform int lightType;
 uniform vec3 lightInt;
-uniform float ambCoeff = 0.0;
-uniform float diffCoeff = 1.0;
-uniform float specCoeff = 1.0;
 
 /* Point Light */
 uniform vec3 lightAtt;
@@ -23,52 +20,53 @@ uniform vec3 lightDir;
 /* Resolution */
 uniform vec2 res;
 
+/* G buffer */
 uniform sampler2D position;
 uniform sampler2D normal;
 uniform sampler2D colorSpecular;
 
 void main()
 {
+    /* Geometry data from textures */
     vec3 fragPos = vec3(texture(position, gl_FragCoord.xy / res));
     vec3 fragNormal = normalize(vec3(texture(normal, gl_FragCoord.xy / res)));
     vec4 fragColorSpecular = texture(colorSpecular, gl_FragCoord.xy / res);
     vec3 fragColor = vec3(fragColorSpecular) ;
     float fragSpecular = fragColorSpecular.w;
 
+    // Pass if light does not cover this location
     if(distance(lightPos, fragPos) > lightRadius && lightType == 0)
     {
         lightData = vec4(0, 0, 0, 1);
         return;
     }
 
-    /* Lighting calculation */
     lightData = vec4(0);
 
-    /* Ambient Component */
-    lightData += ambCoeff * vec4(fragColor, 0.0);
-
-    /* Diffuse component */
+    /* Diffsue component */
     vec3 vertexToLight;
 
+    // Point light
     if(lightType == 0)
     {
         vertexToLight = normalize(lightPos - fragPos);
     }
+    // Directional light
     else if(lightType == 1)
     {
         vertexToLight = normalize(lightDir);
     }
 
     float diffuseFactor = max(dot(fragNormal, vertexToLight), 0.0);
-    lightData += diffCoeff * vec4(max(vec3(0), fragColor * lightInt * diffuseFactor), 0.0);
+    lightData += vec4(max(vec3(0), fragColor * lightInt * diffuseFactor), 0.0);
 
     /* Specular component */
     vec3 lightReflection = normalize(-reflect(vertexToLight, fragNormal));
     vec3 eyeDirection = normalize(vec3(eye_worldSpace) - fragPos);
     float specFactor = pow(max(0.0, dot(eyeDirection, lightReflection)), fragSpecular * 256);
-    lightData += specCoeff * vec4(max(vec3(0), fragColor * lightInt * specFactor), 0.0);
+    lightData += vec4(max(vec3(0), fragColor * lightInt * specFactor), 0.0);
 
-    /* Attenuation */
+    /* Attenuation for point light */
     if(lightType == 0)
     {
         float d = length(lightPos - fragPos);

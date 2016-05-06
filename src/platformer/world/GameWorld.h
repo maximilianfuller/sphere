@@ -9,6 +9,7 @@ class Camera;
 class Player;
 class Ellipsoid;
 class OBJ;
+class GameEntity;
 
 const float RAY_LEN = 100.f;
 
@@ -37,6 +38,7 @@ public:
     /* Game loop */
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
+    void drawLightGeometry(Graphics *graphics);
 
 private:
     Player *m_player;
@@ -48,6 +50,16 @@ private:
 
     OBJ *m_level;
     QString m_levelKey;
+};
+
+class CompareDepth
+{
+public:
+    bool operator()(std::pair<GameEntity *,float> n1,
+                    std::pair<GameEntity *,float> n2)
+    {
+        return n1.second < n2.second;
+    }
 };
 
 #endif // GAMEWORLD_H

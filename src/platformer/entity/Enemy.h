@@ -26,10 +26,6 @@ public:
     GameEntity *getFollower();
     void setFollower(GameEntity *follower);
 
-    /* Entity interactions */
-    void tryConnect(GameEntity *entity);
-    void onConnected(GameEntity *entity);
-
     /* Game loop */
     void updateGoalVelocity();
     void onTick(float seconds);

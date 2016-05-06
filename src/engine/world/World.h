@@ -47,7 +47,7 @@ public:
 
     /* Particle management */
     Particle *getParticle(int index);
-    void addParticle(glm::vec3 pos, glm::vec3 vel, QString textureKey);
+    void addParticle(glm::vec3 pos, glm::vec3 vel, float u, float v, QString textureKey);
 
     /* Game Loop */
     virtual void onTick(float seconds);
