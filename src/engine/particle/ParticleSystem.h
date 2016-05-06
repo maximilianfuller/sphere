@@ -8,7 +8,7 @@
 class Graphics;
 class Particle;
 
-const int MAX_PARTICLES = 500;
+const int MAX_PARTICLES = 200;
 
 class ParticleSystem
 {

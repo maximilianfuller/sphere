@@ -27,7 +27,8 @@ public:
     void setColor(glm::vec3 color);
 
     /* Create particles */
-    bool start();
+    void start();
+    bool getStarted();
 
     void createParticle(bool start);
 

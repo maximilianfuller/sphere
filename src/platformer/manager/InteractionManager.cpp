@@ -101,7 +101,10 @@ void InteractionManager::onTick(float seconds)
             continue;
         }
 
-        stream->start();
+        if(m_streams.length() < MAX_STREAMS && !stream->getStarted())
+        {
+            stream->start();
+        }
     }
 }
 
@@ -114,5 +117,3 @@ void InteractionManager::drawParticles(Graphics *graphics)
                      glm::mat4x4(glm::mat3x3(glm::inverse(camera->getView()))));
     }
 }
-
-// Transfer matter

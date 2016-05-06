@@ -100,10 +100,10 @@ void GameEntity::onTick(float seconds)
 {
     Entity::onTick(seconds);
 
-    /* Update age */
+    /* Update time to avoid floating point errors */
     m_time += seconds;
 
-    if(m_time > 20 * M_PI)
+    if(m_time > 2 * M_PI)
     {
         m_time = 0;
     }
@@ -134,16 +134,18 @@ void GameEntity::onTick(float seconds)
 
     m_power += delta;
 
-    // Update warning
+    /* Update warning */
     if(!m_warning && delta < 0)
     {
-        m_time = 0;
-        m_warning = true;
+        if(m_time < 0.1 || glm::abs(2 * M_PI - m_time) < 0.1)
+        {
+            m_warning = true;
+        }
     }
 
-    if(m_warning && delta > 0)
+    if(m_warning && delta >= 0)
     {
-        if(glm::abs(glm::cos(m_time)) < 0.1)
+        if(m_time < 0.1 || glm::abs(2 * M_PI - m_time) < 0.1)
         {
             m_warning = false;
         }
@@ -158,7 +160,20 @@ void GameEntity::drawLights(Graphics *graphics)
 {
     if(m_light)
     {
-        m_light->draw(graphics);
+        if(m_warning)
+        {
+            float radius = m_light->getRadius();
+            float newRadius = glm::max(radius * glm::cos(m_time), 0.f);
+
+            m_light->setRadius(newRadius);
+            m_light->draw(graphics);
+
+            m_light->setRadius(radius);
+        }
+        else
+        {
+            m_light->draw(graphics);
+        }
     }
 }
 
@@ -184,7 +199,6 @@ void GameEntity::drawLightGeometry(Graphics *graphics)
         // Warning color
         if(m_warning)
         {
-            //mixed = glm::mix(mixed, glm::vec3(1, 0, 0), 0.2 - 0.2 * glm::cos(m_time));
             color.w = 0.6 + 0.4 * glm::cos(m_time);
         }
 
