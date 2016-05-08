@@ -14,9 +14,6 @@ PlatformerApplication::PlatformerApplication(QGLWidget *container) :
     m_graphics = new Graphics();
 
     // Create textures
-    m_graphics->createTexture(":/images/level_easy.png", "level_easy");
-    m_graphics->createTexture(":/images/level_hard.png", "level_hard");
-    m_graphics->createTexture(":/images/level_island.png", "level_island");
     m_graphics->createTexture(":/images/plat_instructions.png", "welcome");
     m_graphics->createTexture(":/images/particle_1.jpg", "particle");
 

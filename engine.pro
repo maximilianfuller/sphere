@@ -41,7 +41,6 @@ SOURCES += \
     src/engine/voxel/manager/VoxelManager.cpp \
     src/engine/manager/Manager.cpp \
     src/engine/manager/ModuleManager.cpp \
-    src/engine/manager/CollisionManager.cpp \
     src/engine/manager/CylinderCollisionManager.cpp \
     src/engine/voxel/manager/VoxelCollisionManager.cpp \
     src/engine/geom/manager/GeometricManager.cpp \
@@ -65,7 +64,11 @@ SOURCES += \
     src/engine/particle/ParticleStreamSystem.cpp \
     src/platformer/entity/GameEntity.cpp \
     src/platformer/entity/Enemy.cpp \
-    src/platformer/manager/InteractionManager.cpp
+    src/platformer/manager/InteractionManager.cpp \
+    src/platformer/manager/CollisionManager.cpp \
+    src/platformer/entity/VultureEnemy.cpp \
+    src/platformer/entity/AgroEnemy.cpp \
+    src/platformer/entity/PassiveEnemy.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -103,7 +106,6 @@ HEADERS += \
     src/engine/voxel/manager/VoxelManager.h \
     src/engine/manager/Manager.h \
     src/engine/manager/ModuleManager.h \
-    src/engine/manager/CollisionManager.h \
     src/engine/manager/CylinderCollisionManager.h \
     src/engine/voxel/manager/VoxelCollisionManager.h \
     src/engine/geom/manager/GeometricManager.h \
@@ -127,7 +129,11 @@ HEADERS += \
     src/engine/particle/ParticleStreamSystem.h \
     src/platformer/entity/GameEntity.h \
     src/platformer/entity/Enemy.h \
-    src/platformer/manager/InteractionManager.h
+    src/platformer/manager/InteractionManager.h \
+    src/platformer/manager/CollisionManager.h \
+    src/platformer/entity/VultureEnemy.h \
+    src/platformer/entity/AgroEnemy.h \
+    src/platformer/entity/PassiveEnemy.h
 
 
 FORMS += src/mainwindow.ui

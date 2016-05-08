@@ -18,17 +18,11 @@ PlatformerScreen::PlatformerScreen(Application *app, int width, int height,
     m_camera = new Camera();
 
     /* Setup world */
-    m_world = new GameWorld(m_camera, graphics, ":/obj/level_easy.obj", "level_easy");
+    m_world = new GameWorld(m_camera, graphics);
 }
 
 PlatformerScreen::~PlatformerScreen()
 {
-}
-
-void PlatformerScreen::setLevel(QString levelFile, QString levelKey)
-{
-    delete m_world;
-    m_world = new GameWorld(m_camera, m_graphics, levelFile, levelKey);
 }
 
 void PlatformerScreen::keyPressEvent(QKeyEvent *event)

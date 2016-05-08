@@ -7,25 +7,16 @@
 class Graphics;
 class Camera;
 class Player;
-class Ellipsoid;
-class OBJ;
 class GameEntity;
-class Triangle;
-
-const float RAY_LEN = 100.f;
+class Planet;
 
 class GameWorld : public World
 {
 public:
-    GameWorld(Camera *camera, Graphics *graphics,
-              QString levelFile, QString levelKey);
+    GameWorld(Camera *camera, Graphics *graphics);
     ~GameWorld();
 
     Player *getPlayer();
-
-    void setRay();
-    void setTarget();
-    void makePath();
 
     /* Events */
     virtual void mouseMoveEvent(QMouseEvent *event, int startX,
@@ -43,14 +34,7 @@ public:
 
 private:
     Player *m_player;
-
-    bool m_navFeatures;
-    Ellipsoid *m_target;
-    QList<Ellipsoid *> m_targetPath;
-    Ray m_ray;
-
-    OBJ *m_level;
-    QString m_levelKey;
+    Planet *m_planet;
 
     QList<Triangle *> m_triangles;
 };

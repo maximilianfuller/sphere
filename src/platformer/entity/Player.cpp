@@ -20,7 +20,7 @@ Player::Player(World *world, Camera *camera) :
     m_pitch(0),
     m_attackTimer(0),
     m_camera(camera),
-    GameEntity(world, 20.0, glm::vec3(0.8, 0.8, 1.0), glm::vec3(0, 2.0, 0), glm::vec3(1, 1, 1), 7)
+    GameEntity(world, 20.0, glm::vec3(0.8, 0.8, 1.0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 7)
 {
     /* Initialize camera */
     m_camera->setYaw(m_yaw);

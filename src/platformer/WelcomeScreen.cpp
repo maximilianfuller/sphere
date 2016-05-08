@@ -32,19 +32,6 @@ void WelcomeScreen::keyPressEvent(QKeyEvent *event)
     else if(event->key() == Qt::Key_1)
     {
         PlatformerScreen* screen = dynamic_cast<PlatformerScreen *>(m_app->getScreen(0));
-        screen->setLevel(":/obj/level_easy.obj", "level_easy");
-        m_app->moveScreen(this, 0);
-    }
-    else if(event->key() == Qt::Key_2)
-    {
-        PlatformerScreen* screen = dynamic_cast<PlatformerScreen *>(m_app->getScreen(0));
-        screen->setLevel(":/obj/level_hard.obj", "level_hard");
-        m_app->moveScreen(this, 0);
-    }
-    else if(event->key() == Qt::Key_3)
-    {
-        PlatformerScreen* screen = dynamic_cast<PlatformerScreen *>(m_app->getScreen(0));
-        screen->setLevel(":/obj/level_island.obj", "level_island");
         m_app->moveScreen(this, 0);
     }
 }

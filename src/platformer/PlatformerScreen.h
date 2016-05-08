@@ -12,8 +12,6 @@ public:
                      Graphics *graphics);
     ~PlatformerScreen();
 
-    void setLevel(QString levelFile, QString levelKey);
-
     void keyPressEvent(QKeyEvent *event);
 
     void onTick(float seconds);
