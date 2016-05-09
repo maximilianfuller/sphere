@@ -135,7 +135,9 @@ void Screen::drawDeferred(Graphics *graphics)
     graphics->sendTexturePosition("data", 0);
 
     graphics->sendEmptyMatrices();
+    glDepthMask(GL_FALSE);
     graphics->drawShape("fullscreenQuad");
+    glDepthMask(GL_TRUE);
 
     /* Light geometry pass */
     graphics->setActiveProgram("lightGeometry");
@@ -152,21 +154,15 @@ void Screen::drawDeferred(Graphics *graphics)
     graphics->disableBlend();
 
     /* Particle pass */
-
-    // Set particle shader
     graphics->setActiveProgram("particles");
 
-    // Bind g buffer position texture for environment blending
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
 
-    // Enable particle blending
     graphics->enableBlend();
 
-    // Draw particles
     m_world->drawParticles(graphics);
 
-    // Cleanup
     graphics->disableBlend();
 
     m_psFramebuffer->unbind();

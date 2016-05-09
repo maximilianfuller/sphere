@@ -163,8 +163,5 @@ void Chunk::onTick(float seconds)
 
 void Chunk::onDraw(Graphics *graphics)
 {
-    if(graphics->inFrustum(m_aabb))
-    {
-        m_vertexBuffer.draw();
-    }
+    m_vertexBuffer.draw();
 }
