@@ -61,6 +61,11 @@ Entity *World::getEntity(int index)
     return m_entities[index];
 }
 
+QList<Entity *> World::getEntities()
+{
+    return m_entities;
+}
+
 void World::addEntity(Entity *ent)
 {
     m_entities.append(ent);

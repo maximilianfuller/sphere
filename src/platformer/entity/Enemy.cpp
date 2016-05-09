@@ -8,7 +8,6 @@ Enemy::Enemy(World *world, float power, glm::vec3 color,
              glm::vec3 pos, glm::vec3 dims,
              float speed, glm::vec3 vel, glm::vec3 acc,
              glm::vec3 goal, float friction) :
-    m_follower(NULL),
     GameEntity(world, power, color, pos, dims, speed, vel, acc, goal, friction)
 {
 }
@@ -17,52 +16,73 @@ Enemy::~Enemy()
 {
 }
 
-GameEntity *Enemy::getFollower()
+void Enemy::idle()
 {
-    return m_follower;
-}
-
-void Enemy::setFollower(GameEntity *follower)
-{
-    m_follower = follower;
 }
 
 void Enemy::updateGoalVelocity()
 {
-    /* Update enemy
-    float rate = getTransferRate();
-
-    if(m_target)
+    /* Run from strongest enemy */
+    if(m_delta < 0)
     {
-        float targetRate = m_target->getTransferRate();
+        GameEntity *maxEnemy = NULL;
+        float maxTransfer = 0;
 
-        glm::vec3 targetPos = m_target->getPosition();
-        glm::vec3 diff = glm::vec3(targetPos.x - m_pos.x, 0, targetPos.z - m_pos.z);
-
-        if(glm::length2(diff) > 0)
+        foreach(GameEntity *target, m_targets)
         {
-            m_goal = glm::normalize(diff);
+            float transfer;
+
+            if((transfer = target->getTransferRate(this)) > maxTransfer)
+            {
+                maxTransfer = transfer;
+                maxEnemy = target;
+            }
+        }
+
+        if(maxEnemy)
+        {
+            glm::vec3 diff = m_pos - maxEnemy->getPosition();
+
+            if(glm::length2(diff) > 0)
+
+            {
+                m_goal = glm::normalize(diff);
+            }
         }
     }
-
-    if(m_follower)
+    /* Approach weakest enemy */
+    else if(m_delta > 0)
     {
-        float followerRate = m_follower->getTransferRate();
+        GameEntity *minEnemy = NULL;
+        float minTransfer = -1;
 
-        glm::vec3 followerPos = m_follower->getPosition();
-        glm::vec3 diff = glm::vec3(m_pos.x - followerPos.x, 0, m_pos.z - followerPos.z);
-
-        if(glm::length2(diff) > 0)
+        foreach(GameEntity *target, m_targets)
         {
-            m_goal = glm::normalize(diff);
+            float transfer;
+
+            if(minTransfer < 0 || (transfer = target->getTransferRate(this)) < minTransfer)
+            {
+                minTransfer = transfer;
+                minEnemy = target;
+            }
+        }
+
+        if(minEnemy)
+        {
+            glm::vec3 diff = minEnemy->getPosition() - m_pos;
+
+            if(glm::length2(diff) > 0)
+
+            {
+                m_goal = glm::normalize(diff);
+            }
         }
     }
-
-    if(!m_target && !m_follower)
+    /* Random direction */
+    else
     {
-        m_goal = glm::vec3(0);
+        idle();
     }
-    */
 }
 
 void Enemy::onTick(float seconds)
@@ -72,11 +92,7 @@ void Enemy::onTick(float seconds)
     /* Destroy enemy */
     if(m_power <= 0)
     {
-        std::cout << "removed" << std::endl;
-        std::cout << this << std::endl;
         m_world->removeEntity(this);
         return;
     }
-
-    m_follower = NULL;
 }

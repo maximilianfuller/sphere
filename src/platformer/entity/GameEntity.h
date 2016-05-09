@@ -34,6 +34,9 @@ public:
     float getPower();
     void setPower(float power);
 
+    /* Delta */
+    float getDelta();
+
     /* Stun */
     bool getStun();
     void setStun();
@@ -61,6 +64,7 @@ protected:
 
     float m_power;
     float m_time;
+    float m_delta;
 
     bool m_warning;
     bool m_stun;

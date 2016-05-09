@@ -29,6 +29,7 @@ public:
     /* Entity management */
     int getNumEntities();
     Entity *getEntity(int index);
+    QList<Entity *> getEntities();
     void addEntity(Entity *ent);
     void removeEntity(Entity *ent);
     void removeEntities();

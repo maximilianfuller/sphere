@@ -23,15 +23,11 @@ public:
           float friction = MU_GROUND);
     virtual ~Enemy();
 
-    GameEntity *getFollower();
-    void setFollower(GameEntity *follower);
+    void idle();
 
     /* Game loop */
     void updateGoalVelocity();
     void onTick(float seconds);
-
-protected:
-    GameEntity *m_follower;
 };
 
 #endif // ENEMY_H

@@ -15,6 +15,7 @@ GameEntity::GameEntity(World *world,
                        glm::vec3 goal, float friction) :
     m_power(power),
     m_time(0),
+    m_delta(0),
     m_light(NULL),
     m_warning(false),
     m_stun(false),
@@ -66,6 +67,11 @@ float GameEntity::getPower()
 void GameEntity::setPower(float power)
 {
     m_power = power;
+}
+
+float GameEntity::getDelta()
+{
+    return m_delta;
 }
 
 bool GameEntity::getStun()
@@ -150,14 +156,14 @@ void GameEntity::onTick(float seconds)
     m_light->setRadius(m_power);
 
     /* Transfer matter */
-    float delta = 0;
+    m_delta = 0;
 
     // Absorb
     foreach(GameEntity *target, m_targets)
     {
         float amount = getTransferRate(target) * 0.002;
 
-        delta += amount;
+        m_delta += amount;
     }
 
     // Give
@@ -165,13 +171,13 @@ void GameEntity::onTick(float seconds)
     {
         float amount = target->getTransferRate(this) * 0.002;
 
-        delta -= amount;
+        m_delta -= amount;
     }
 
-    m_power += delta;
+    m_power += m_delta;
 
     /* Update warning */
-    if(!m_warning && delta < 0)
+    if(!m_warning && m_delta < 0)
     {
         if(m_time < 0.1 || glm::abs(2 * M_PI - m_time) < 0.1)
         {
@@ -179,7 +185,7 @@ void GameEntity::onTick(float seconds)
         }
     }
 
-    if(m_warning && delta >= 0)
+    if(m_warning && m_delta >= 0)
     {
         if(m_time < 0.1 || glm::abs(2 * M_PI - m_time) < 0.1)
         {
