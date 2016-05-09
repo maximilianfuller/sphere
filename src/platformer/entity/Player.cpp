@@ -16,15 +16,10 @@ Player::Player(World *world, Camera *camera) :
     m_moveRight(false),
     m_jump(false),
     m_nitro(false),
-    m_yaw(0),
-    m_pitch(0),
     m_attackTimer(0),
     m_camera(camera),
-    GameEntity(world, 20.0, glm::vec3(0.8, 0.8, 1.0), glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 7)
+    GameEntity(world, 0.1, glm::vec3(0.8, 0.8, 1.0), glm::vec3(0, 3, 0), glm::vec3(1, 1, 1), 7)
 {
-    /* Initialize camera */
-    m_camera->setYaw(m_yaw);
-    m_camera->setPitch(m_pitch);
 }
 
 Player::~Player()
@@ -101,40 +96,9 @@ void Player::setNitro(bool val)
     m_nitro = val;
 }
 
-float Player::getYaw()
-{
-    return m_yaw;
-}
-
-void Player::setYaw(float yaw)
-{
-    m_yaw = yaw;
-}
-
-float Player::getPitch()
-{
-    return m_pitch;
-}
-
-void Player::setPitch(float pitch)
-{
-    m_pitch = pitch;
-}
-
 glm::vec3 Player::getDirection()
 {
-    glm::vec3 dir = glm::vec3(glm::cos(m_yaw) * glm::cos(m_pitch), glm::sin(m_pitch),
-                              glm::sin(m_yaw) * glm::cos(m_pitch));
-
-    return glm::normalize(glm::vec3(dir.x, 0, dir.z));
-}
-
-void Player::rotate(float yaw, float pitch)
-{
-    m_yaw += yaw;
-    m_pitch += pitch;
-    m_pitch = glm::clamp(static_cast<double>(m_pitch), -M_PI / 2.0 + 0.01, M_PI / 2.0 - 0.01);
-    m_camera->rotate(yaw, pitch);
+    return glm::normalize(m_camera->getLook());
 }
 
 void Player::jump()
@@ -173,7 +137,6 @@ void Player::attack()
 
     if(minTarget)
     {
-        std::cout << "attack" << std::endl;
         minTarget->setStun();
         m_attackTimer = 120;
     }
@@ -183,7 +146,7 @@ void Player::updateGoalVelocity()
 {
     /* Player direction */
     glm::vec3 dir = getDirection();
-    glm::vec3 perp = glm::vec3(dir.z, 0, -dir.x);
+    glm::vec3 perp = glm::normalize(glm::cross(m_camera->getUp(), dir));
 
     glm::vec3 inputVel = glm::vec3(0, 0, 0);
 
@@ -209,7 +172,7 @@ void Player::updateGoalVelocity()
     }
 
     /* Set goal velocity */
-    if(glm::length(inputVel) > 0)
+    if(glm::length2(inputVel) > 0)
     {
         m_goal = glm::normalize(inputVel);
     }
@@ -221,15 +184,14 @@ void Player::updateGoalVelocity()
 
 void Player::updateCamera()
 {
-    glm::vec3 pos = m_pos;
-    pos.y += m_dims.y;
-
-    m_camera->setEye(pos);
+    m_camera->setEye(m_pos);
 }
 
 void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
+
+    m_speed = 2.f*(glm::length(m_pos) - 1.f);
 
     /* Set jump velocity */
     if(m_jump && m_grounded)

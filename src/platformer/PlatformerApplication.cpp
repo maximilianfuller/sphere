@@ -21,8 +21,6 @@ PlatformerApplication::PlatformerApplication(QGLWidget *container) :
     addScreen(dynamic_cast<Screen *>(new PlatformerScreen(this,
                                                           container->width(), container->height(),
                                                           1, m_graphics)));
-    addScreen(dynamic_cast<Screen *>(new WelcomeScreen(this,
-                                                       container->width(), container->height(), 1)));
 }
 
 void PlatformerApplication::mouseMoveEvent(QMouseEvent *event)

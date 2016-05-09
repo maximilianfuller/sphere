@@ -5,12 +5,15 @@
 Camera::Camera(glm::vec2 size, glm::vec3 eye, float yaw, float pitch, float fov) :
     m_ratio(size),
     m_eye(eye),
+    m_look(glm::vec3(0, 0, -1)),
+    m_up(glm::vec3(0, 1, 0)),
     m_yaw(yaw),
     m_pitch(pitch),
     m_fov(fov),
     m_update(true),
     m_thirdPerson(false)
 {
+
 }
 
 Camera::~Camera()
@@ -86,13 +89,24 @@ void Camera::setEye(glm::vec3 eye)
 
 glm::vec3 Camera::getLook()
 {
-    return glm::vec3(glm::cos(m_yaw) * glm::cos(m_pitch), glm::sin(m_pitch),
-                     glm::sin(m_yaw) * glm::cos(m_pitch));
+    return m_look;
+}
+
+void Camera::setLook(glm::vec3 look)
+{
+    m_look = look;
 }
 
 glm::vec3 Camera::getUp()
 {
     return m_up;
+}
+
+void Camera::setUp(glm::vec3 up)
+{
+    m_update |= m_up != up;
+
+    m_up = up;
 }
 
 glm::mat4x4 Camera::getView()
@@ -103,11 +117,6 @@ glm::mat4x4 Camera::getView()
 glm::mat4x4 Camera::getPerspective()
 {
     return m_persp;
-}
-
-void Camera::setLook(glm::vec3 look)
-{
-    m_look = look;
 }
 
 bool Camera::getThirdPerson()
@@ -141,18 +150,7 @@ void Camera::rotate(float yaw, float pitch)
 void Camera::updateTransforms()
 {
     /* Update look */
-    m_look = glm::vec3(glm::cos(m_yaw) * glm::cos(m_pitch), glm::sin(m_pitch),
-                       glm::sin(m_yaw) * glm::cos(m_pitch));
-
-    /* Update up */
-    if(m_pitch < 0)
-    {
-        m_up = glm::normalize(glm::vec3(m_look.x, 1.f, m_look.z));
-    }
-    else
-    {
-        m_up = glm::vec3(0, 1.f, 0);
-    }
+    //std::cout << glm::to_string(m_look) << std::endl;
 
     /* Set eye */
     glm::vec3 eye = getEye();
@@ -205,11 +203,8 @@ void Camera::updateFrustumPlanes(Graphics *controller)
 void Camera::setTransforms(Graphics *graphics)
 {
     /* Update transforms if necessary */
-    if(m_update)
-    {
-        updateTransforms();
-        updateFrustumPlanes(graphics);
-    }
+    updateTransforms();
+    updateFrustumPlanes(graphics);
 
     /* Send matrices to the shader */
     graphics->sendViewUniform(m_view);

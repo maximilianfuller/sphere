@@ -133,11 +133,8 @@ void Entity::updateGoalVelocity()
 void Entity::updateAcceleration()
 {
     glm::vec3 diff = m_goal - m_vel;
-    diff.x = m_friction * diff.x;
-    diff.z = m_friction * diff.z;
 
-    m_acc.x = diff.x;
-    m_acc.z = diff.z;
+    m_acc = m_friction * diff;
 }
 
 void Entity::updateVelocity(float seconds)
@@ -149,9 +146,7 @@ void Entity::updatePosition(float seconds)
 {
     if(!m_moved)
     {
-        m_pos.x += getSpeed() * getVelocity().x * seconds;
-        m_pos.y += getVelocity().y * seconds;
-        m_pos.z += getSpeed() * getVelocity().z * seconds;
+        m_pos += getSpeed() * getVelocity() * seconds;
     }
 
     m_moved = false;
@@ -187,9 +182,6 @@ void Entity::onTick(float seconds)
     updateVelocity(seconds);
     updatePosition(seconds);
     updateShape();
-
-    /* Reset acceleration */
-    m_acc = glm::vec3(0, G, 0);
 }
 
 void Entity::drawGeometry(Graphics *graphics)

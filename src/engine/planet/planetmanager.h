@@ -4,11 +4,12 @@
 #include <util/CommonIncludes.h>
 
 class TileShape;
+class Graphics;
 
 class PlanetManager
 {
 public:
-    PlanetManager();
+    PlanetManager(Graphics *graphics);
     void drawPlanet(glm::vec3 eye, glm::vec3 look);
     void setRatio(glm::vec2 ratio);
     glm::mat4 getQuadModel(int face, int depth, int x, int y);
@@ -47,7 +48,7 @@ private:
     void initializeQuad(int width);
     void initializeNoiseTexture();
     TileShape *m_tile;
-    GLuint m_shader;
+    Graphics *m_graphics;
 };
 
 

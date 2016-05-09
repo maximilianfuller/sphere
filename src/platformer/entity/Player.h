@@ -32,19 +32,12 @@ public:
     bool getNitro();
     void setNitro(bool val);
 
-    float getYaw();
-    void setYaw(float yaw);
-
-    float getPitch();
-    void setPitch(float pitch);
-
     float getHeight();
 
     /* Camera direction */
     glm::vec3 getDirection();
 
     /* Actions */
-    void rotate(float yaw, float pitch);
     void jump();
     void attack();
 
@@ -63,10 +56,6 @@ private:
     bool m_moveRight;
     bool m_jump;
     bool m_nitro;
-
-    /* Attributes */
-    float m_yaw;
-    float m_pitch;
 
     /* Attack */
     int m_attackTimer;

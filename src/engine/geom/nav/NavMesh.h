@@ -16,7 +16,7 @@ class Ray;
 struct Triangle;
 struct CollisionData;
 
-struct Node
+struct TriangleNode
 {
     Triangle *value;
     QList<Triangle *> neighbors;
@@ -51,11 +51,11 @@ private:
     void addTriangleFloats(Triangle *tri);
     void resetVisited();
 
-    bool getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
+    bool getPortalsHelper(QPair<TriangleNode, PortalPath> curPair, Triangle *goal,
                        PortalPath &portals,
-                       QQueue<QPair<Node, PortalPath> > &toVisit);
+                       QQueue<QPair<TriangleNode, PortalPath> > &toVisit);
 
-    QHash<Triangle *, Node> m_graph;
+    QHash<Triangle *, TriangleNode> m_graph;
 
     QVector<float> m_vboData;
     int m_vertexCount;

@@ -32,6 +32,8 @@ public:
     void drawGeometry(Graphics *graphics);
     void drawLightGeometry(Graphics *graphics);
 
+    const float LOOK_ANGLE_EPS = 0.001;
+
 private:
     Player *m_player;
     PlanetManager *m_planet;

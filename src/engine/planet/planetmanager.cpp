@@ -4,12 +4,13 @@
 #include "util/ResourceLoader.h"
 #include "quadtree.h"
 
+#include "engine/graphics/Graphics.h"
 
-PlanetManager::PlanetManager()
+PlanetManager::PlanetManager(Graphics *graphics)
 {
     initializeQuad(QUAD_WIDTH);
     initializeNoiseTexture();
-    m_shader = ResourceLoader::loadShaders(":/shaders/planet.vert",":/shaders/shader.frag");
+    m_graphics = graphics;
     m_ratio = glm::vec2(16.f, 9.f);
     m_fov = 45.f;
 }
@@ -23,19 +24,10 @@ void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 look) {
 //    glUseProgram(m_shader);
 
     //set uniforms
-    glm::mat4 view = getViewMatrix(eye, look);
-    glm::mat4 proj = getProjectionMatrix();
-    glm::mat4 model = glm:: mat4(); //can customize this later
-
-    glUniformMatrix4fv(glGetUniformLocation(m_shader,"v"),1,GL_FALSE,glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(m_shader,"p"),1,GL_FALSE,glm::value_ptr(proj));
-    glUniformMatrix4fv(glGetUniformLocation(m_shader,"m"),1,GL_FALSE,glm::value_ptr(model));
-    glUniform3fv(glGetUniformLocation(m_shader,"color"),1,glm::value_ptr(glm::vec3(1.f, 1.f, 1.f)));
-    glUniform1i(glGetUniformLocation(m_shader, "collisionDetection"),0);
+    GLuint shader = m_graphics->getActiveProgram();
+    glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 0);
 
     //set noise texture
-
-
 
     //draw faces of cube
     drawFace(TOP, eye, look);
@@ -61,8 +53,9 @@ void PlanetManager::drawFace(int face, glm::vec3 eye, glm::vec3 look) {
 
 void PlanetManager::drawQuad(int face, int depth, int x, int y) {
 
+    GLuint shader = m_graphics->getActiveProgram();
     glm::mat4 model = getQuadModel(face, depth, x, y);
-    glUniformMatrix4fv(glGetUniformLocation(m_shader,"cube_m"),1,GL_FALSE,glm::value_ptr(model));
+    glUniformMatrix4fv(glGetUniformLocation(shader,"cube_m"),1,GL_FALSE,glm::value_ptr(model));
     m_tile->draw();
 
 }
@@ -112,8 +105,9 @@ glm::vec3 PlanetManager::getNoise(glm::vec3 loc) {
     model = glm::translate(model,glm::vec3(-1.f, 0.f, -1.f));
     model = glm::scale(model,glm::vec3(2.f, 2.f, 2.f));
 
-    glUniformMatrix4fv(glGetUniformLocation(m_shader,"m"),1,GL_FALSE,glm::value_ptr(model));
-    glUniform1i(glGetUniformLocation(m_shader, "collisionDetection"),1);
+    GLuint shader = m_graphics->getActiveProgram();
+    glUniformMatrix4fv(glGetUniformLocation(shader,"m"),1,GL_FALSE,glm::value_ptr(model));
+    glUniform1i(glGetUniformLocation(shader, "collisionDetection"),1);
     TileShape(1).draw();
     //-------------------------
     GLfloat pixels[4];

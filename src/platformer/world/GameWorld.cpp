@@ -19,8 +19,8 @@
 #include "platformer/manager/CollisionManager.h"
 
 #include <QKeyEvent>
-
 #include <queue>
+#include <glm/gtx/rotate_vector.hpp>
 
 /* TODO:
  * 1) Collision manager
@@ -34,8 +34,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     addEntity(m_player);
 
     /* Enemies */
-    addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 0, -5), glm::vec3(1, 1, 1), 3.0));
-    addEntity(new Enemy(this, 20, glm::vec3(0, 1, 0), glm::vec3(0, 0, -10), glm::vec3(1, 1, 1), 3.0));
+    //addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 0, -5), glm::vec3(1, 1, 1), 3.0));
+    //addEntity(new Enemy(this, 20, glm::vec3(0, 1, 0), glm::vec3(0, 0, -10), glm::vec3(1, 1, 1), 3.0));
 
     /* Add managers */
     addManager(new CollisionManager(this, m_entities));
@@ -60,9 +60,9 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
     addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
 
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01)));
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(1.0, 1.0, 1.0)));
 
-    m_planet = new PlanetManager();
+    m_planet = new PlanetManager(graphics);
 }
 
 GameWorld::~GameWorld()
@@ -77,10 +77,26 @@ Player *GameWorld::getPlayer()
 void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
                                int startY)
 {
-    int dx = event->x() - startX;
-    int dy = event->y() - startY;
+    float yaw = -(event->x() - startX) / 300.f;
+    float pitch = -(event->y() - startY) / 300.f;
 
-    m_player->rotate(dx / 100.f, -dy / 100.f);
+    glm::vec3 look = glm::normalize(m_camera->getLook());
+    glm::vec3 up = glm::normalize(m_camera->getUp());
+
+    float pitchToUp = glm::acos(glm::dot(look, up));
+
+    if(pitch < 0 && pitch < LOOK_ANGLE_EPS - (M_PI - pitchToUp))
+    {
+        pitch = (LOOK_ANGLE_EPS - (M_PI - pitchToUp));
+    }
+    else if(pitch > 0 && pitch > pitchToUp - LOOK_ANGLE_EPS)
+    {
+        pitch = pitchToUp - LOOK_ANGLE_EPS;
+    }
+
+    glm::vec3 newLook = glm::rotate(look, yaw, up);
+    newLook = glm::rotate(newLook, pitch, glm::cross(look, up));
+    m_camera->setLook(newLook);
 }
 
 void GameWorld::mousePressEvent(QMouseEvent *event)
@@ -154,22 +170,17 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
 
 void GameWorld::onTick(float seconds)
 {
+    m_camera->setUp(glm::normalize(m_camera->getEye()));
+
     World::onTick(seconds);
 }
 
 void GameWorld::drawGeometry(Graphics *graphics)
 {
-    /* Draw mesh */
-    glm::mat4x4 model = glm::scale(glm::mat4x4(), glm::vec3(2000, 1, 2000));
-
-    graphics->sendUseTextureUniform(0);
-    graphics->sendModelUniform(model);
-    graphics->sendColorUniform(glm::vec4(1));
-    graphics->drawShape("quad");
-
     World::drawGeometry(graphics);
 
-//    m_planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
+    graphics->sendModelUniform(glm::mat4());
+    m_planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
 }
 
 void GameWorld::drawLightGeometry(Graphics *graphics)

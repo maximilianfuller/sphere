@@ -23,8 +23,8 @@ public:
     void updateShape();
 
     /* Intersect methods */
-    virtual void onIntersect(MinecraftPlayer *ent, glm::vec3 mtv);
-    virtual void onIntersect(MinecraftEnemy *ent, glm::vec3 mtv);
+    //virtual void onIntersect(MinecraftPlayer *ent, glm::vec3 mtv);
+    //virtual void onIntersect(MinecraftEnemy *ent, glm::vec3 mtv);
 
 protected:
     AABoundingBox *m_aabb;

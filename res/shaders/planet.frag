@@ -103,25 +103,10 @@ void main(){
             base_color = tan;
         }
 
-
-        //add diffuse component
-        vec4 vertexToLight = normalize(vec4(1,1,1,0));
-        float diffuseIntensity = max(0.0, dot(vertexToLight, normal));
-        fragColor += vec4(max(vec3(0), vec3(1,1,1) * base_color * diffuseIntensity),0.f);
-
-        // Add specular component
-        vec4 lightReflection = normalize(-reflect(vertexToLight, normal));
-        vec4 eyeDirection = normalize(eye_worldSpace - position_worldSpace);
-        float specIntensity = pow(max(0.0, dot(eyeDirection, lightReflection)), 150);
-        fragColor += vec4(max(vec3(0), vec3(1,1,1) * base_color * specIntensity),0.f);
-
-        //addambient component
-        fragColor += vec4(base_color*.5,0.f);
-
         //set out uniforms
         fragPosition = position_worldSpace/position_worldSpace.w;
         fragNormal = normal;
-        fragColorSpecular = vec4(vec3(fragColor), .1);
+        fragColorSpecular = vec4(vec3(base_color * 0.5), .1);
 
     }
 }

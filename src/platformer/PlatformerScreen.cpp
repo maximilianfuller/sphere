@@ -29,8 +29,7 @@ void PlatformerScreen::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_Escape)
     {
-        m_graphics->loadTexture("welcome", 0);
-        m_app->moveScreen(this, 0);
+        QApplication::exit(0);
     }
 
     Screen::keyPressEvent(event);

@@ -5,7 +5,7 @@
 
 class Graphics;
 
-const static float nearPlane = 0.1;
+const static float nearPlane = 0.00001;
 const static float farPlane = 200.0;
 
 class Camera
@@ -13,7 +13,7 @@ class Camera
 public:
     Camera(glm::vec2 size = glm::vec2(1.0, 1.0),
            glm::vec3 eye = glm::vec3(0, 1.0, 0), float yaw = 0,
-           float pitch = 0, float fov = 60.f);
+           float pitch = 0, float fov = 45.f);
     virtual ~Camera();
 
     glm::vec3 getEye();
@@ -35,6 +35,7 @@ public:
     void setLook(glm::vec3 look);
 
     glm::vec3 getUp();
+    void setUp(glm::vec3 up);
 
     glm::mat4x4 getView();
     glm::mat4x4 getPerspective();

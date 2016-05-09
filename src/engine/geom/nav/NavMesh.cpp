@@ -91,7 +91,7 @@ void NavMesh::createGraph()
         for(int j = i + 1; j < triangles.size(); j++)
         {
             Triangle *t2 = triangles[j];
-            Node n1, n2;
+            TriangleNode n1, n2;
 
             n1.value = t1;
             n2.value = t2;
@@ -173,7 +173,7 @@ void NavMesh::addTriangleFloats(Triangle *tri)
 
 void NavMesh::resetVisited()
 {
-    foreach(const Node n, m_graph)
+    foreach(const TriangleNode n, m_graph)
     {
         n.value->visited = false;
     }
@@ -269,23 +269,23 @@ bool NavMesh::getPath(glm::vec3 startPos, glm::vec3 endPos, Triangle *start, Tri
 bool NavMesh::getPortals(Triangle *start, Triangle *end, PortalPath &portals)
 {
     /* Create start node and path */
-    Node startNode = m_graph[start];
+    TriangleNode startTriangleNode = m_graph[start];
 
     PortalPath startPortalPath;
-    QPair<Node, PortalPath> startPair = QPair<Node, PortalPath>(startNode, startPortalPath);
+    QPair<TriangleNode, PortalPath> startPair = QPair<TriangleNode, PortalPath>(startTriangleNode, startPortalPath);
 
     /* Call helper */
-    QQueue<QPair<Node, PortalPath> > toVisit;
+    QQueue<QPair<TriangleNode, PortalPath> > toVisit;
     bool ret = getPortalsHelper(startPair, end, portals, toVisit);
 
     return ret;
 }
 
-bool NavMesh::getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
+bool NavMesh::getPortalsHelper(QPair<TriangleNode, PortalPath> curPair, Triangle *goal,
                                PortalPath &portals,
-                               QQueue<QPair<Node, PortalPath> > &toVisit)
+                               QQueue<QPair<TriangleNode, PortalPath> > &toVisit)
 {
-    Node cur = curPair.first;
+    TriangleNode cur = curPair.first;
 
     if(cur.value == goal)
     {
@@ -306,13 +306,13 @@ bool NavMesh::getPortalsHelper(QPair<Node, PortalPath> curPair, Triangle *goal,
         {
             PortalPath nextPortalPath = curPair.second;
             nextPortalPath.append(cur.edges[i]);
-            QPair<Node, PortalPath> nextPair(m_graph[cur.neighbors[i]], nextPortalPath);
+            QPair<TriangleNode, PortalPath> nextPair(m_graph[cur.neighbors[i]], nextPortalPath);
             toVisit.enqueue(nextPair);
         }
     }
 
     /* Visit next */
-    QPair<Node, PortalPath> next = toVisit.dequeue();
+    QPair<TriangleNode, PortalPath> next = toVisit.dequeue();
     return getPortalsHelper(next, goal, portals, toVisit);
 }
 

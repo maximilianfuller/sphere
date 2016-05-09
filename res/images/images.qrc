@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/images">
-        <file>grass.png</file>
         <file>welcome.jpg</file>
         <file>terrain.png</file>
         <file>plat_instructions.png</file>
