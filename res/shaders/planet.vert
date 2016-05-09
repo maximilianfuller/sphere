@@ -8,7 +8,10 @@ uniform mat4 m;
 uniform mat4 v;
 uniform mat4 p;
 uniform mat4 cube_m; //model that maps quad to cube
+
+//collision uniforms
 uniform int collisionDetection;
+uniform vec3 collisionLoc;
 
 out vec4 position_worldSpace;
 out vec4 eye_worldSpace;
@@ -78,11 +81,11 @@ void main(){
 
     if(collisionDetection != 0) {
         //RENDER QUAD FOR COLLISION DETECTION
-        vec3 loc = vec3(m*vec4(0,0,0,1));
-        float h = noise(loc.x, loc.y, loc.z);
+        float h = noise(collisionLoc.x, collisionLoc.y, collisionLoc.z);
 
         //set uniforms
         gl_Position = m*vec4(position,1);
+        eye_worldSpace = vec4(.335,0,0,0);
 
 
     } else {

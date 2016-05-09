@@ -171,6 +171,9 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
 void GameWorld::onTick(float seconds)
 {
     m_camera->setUp(glm::normalize(m_camera->getEye()));
+    float noise = m_planet->getNoise(glm::normalize(m_player->getPosition()));
+
+    std::cout << noise << std::endl;
 
     World::onTick(seconds);
 }

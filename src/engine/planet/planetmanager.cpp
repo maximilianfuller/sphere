@@ -5,6 +5,7 @@
 #include "quadtree.h"
 
 #include "engine/graphics/Graphics.h"
+#include "engine/graphics/FrameBuffer.h"
 
 PlanetManager::PlanetManager(Graphics *graphics)
 {
@@ -13,6 +14,12 @@ PlanetManager::PlanetManager(Graphics *graphics)
     m_graphics = graphics;
     m_ratio = glm::vec2(16.f, 9.f);
     m_fov = 45.f;
+
+    GLint internalFormats[1] = {GL_RGBA};
+    GLenum formats[1] = {GL_RGBA};
+    GLenum types[1] = {GL_UNSIGNED_BYTE};
+
+    m_fb = new Framebuffer(1, 1, 1, internalFormats, formats, types);
 }
 
 void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 look) {
@@ -60,69 +67,27 @@ void PlanetManager::drawQuad(int face, int depth, int x, int y) {
 
 }
 
-glm::vec3 PlanetManager::getNoise(glm::vec3 loc) {
+float PlanetManager::getNoise(glm::vec3 loc) {
 
-    GLuint color_tex;
-    GLuint fb;
-
-
-    //-------------------------
-    glGenFramebuffers(1, &fb);
-    glBindFramebuffer(GL_FRAMEBUFFER, fb);
-
-    //RGBA8 2D texture, 24 bit depth texture, 256x256
-    glGenTextures(1, &color_tex);
-    glBindTexture(GL_TEXTURE_2D, color_tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    //NULL means reserve texture memory, but texels are undefined
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 256, 256, 0, GL_RGB16F, GL_FLOAT, NULL);
-
-
-    //Attach 2D texture to this FBO
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_tex, 0);
-    //-------------------------
-    //Does the GPU support current FBO configuration?
-//       assert(GL_FRAMEBUFFER_COMPLETE == glCheckFramebufferStatus(GL_FRAMEBUFFER));
-    //assert(GL_FRAMEBUFFER_COMPLETE == glCheckFramebufferStatus(GL_FRAMEBUFFER));
-
-    //and now you can render to GL_TEXTURE_2D
-    glBindFramebuffer(GL_FRAMEBUFFER, fb);
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClearDepth(1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //-------------------------
-    glViewport(0, 0, 256, 256);
-    glDisable(GL_TEXTURE_2D);
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);
-    //-------------------------
-    //**************************
-    glm::mat4 model = glm::mat4();
-    model = model * glm::rotate(glm::radians(90.f), glm::vec3(1.f,0.f,0.f));
-    model = glm::translate(model,glm::vec3(-1.f, 0.f, -1.f));
-    model = glm::scale(model,glm::vec3(2.f, 2.f, 2.f));
-
+    /* Remake framebuffers */
+    m_graphics->setActiveProgram("pre");
+    m_fb->bind();
     GLuint shader = m_graphics->getActiveProgram();
-    glUniformMatrix4fv(glGetUniformLocation(shader,"m"),1,GL_FALSE,glm::value_ptr(model));
-    glUniform1i(glGetUniformLocation(shader, "collisionDetection"),1);
-    TileShape(1).draw();
-    //-------------------------
-    GLfloat pixels[4];
-    glReadPixels(0, 0, 1, 1, GL_RGB16F, GL_FLOAT, pixels);
 
-    float h = pixels[3];
+    glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 2);
+    glUniform3fv(glGetUniformLocation(shader,"collisionLoc"),1,glm::value_ptr(loc));
 
-    //std::cout << "height value!  " << glm::to_string(h) << std::endl;
-    //pixels 0, 1, 2 should be white
-    //pixel 4 should be black
-    //----------------
-    //Bind 0, which means render to back buffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    m_graphics->sendEmptyMatrices();
+    m_graphics->drawShape("fullscreenQuad");
 
 
+
+    GLubyte pixels[4];
+    glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    m_fb->unbind();
+
+    std::cout << pixels[0] << std::endl;
+    return float(pixels[0]);
 }
 
 /**

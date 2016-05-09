@@ -5,6 +5,7 @@
 
 class TileShape;
 class Graphics;
+class Framebuffer;
 
 class PlanetManager
 {
@@ -16,7 +17,7 @@ public:
     glm::mat4 getProjectionMatrix();
     glm::mat4 getViewMatrix(glm::vec3 eye, glm::vec3 look);
     void drawQuad(int face, int depth, int x, int y);
-    glm::vec3 getNoise(glm::vec3 loc);
+    float getNoise(glm::vec3 loc);
     const static float TILE_MAX_HEIGHT = .2f; //these are used to determin tile volume frustum culling
     const static float TILE_MIN_HEIGHT = 0.f;
     const static float DOT_PRODUCT_EPSILON = .1f; //used to determin dot product threshold of sphere normal and dir vector
@@ -49,6 +50,7 @@ private:
     void initializeNoiseTexture();
     TileShape *m_tile;
     Graphics *m_graphics;
+    Framebuffer *m_fb;
 };
 
 

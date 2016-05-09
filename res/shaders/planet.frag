@@ -1,6 +1,4 @@
 #version 330 core
-out vec4 fragColor;
-
 layout (location = 0) out vec4 fragPosition;
 layout (location = 1) out vec4 fragNormal;
 layout (location = 2) out vec4 fragColorSpecular;
@@ -70,13 +68,12 @@ vec3 cartesianToPolar(vec3 v){
 
 void main(){
 
-    //outColor = vec3(.5, .5, .5);
-
     if(cd != 0) {
-        //collision detection TODO
+        //collision
+        fragPosition = eye_worldSpace;
+        fragPosition = vec4(.2555,.2555,.2555,.2555);
     } else {
         //rendering planet
-        fragColor = vec4(0);
         vec3 base_color = vec3(0,0,0);
         vec3 pos = vec3(position_worldSpace);
 
