@@ -7,5 +7,7 @@
         <file>lights.frag</file>
         <file>combine.frag</file>
         <file>lightGeometry.frag</file>
+        <file>planet.frag</file>
+        <file>planet.vert</file>
     </qresource>
 </RCC>

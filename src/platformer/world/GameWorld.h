@@ -8,7 +8,7 @@ class Graphics;
 class Camera;
 class Player;
 class GameEntity;
-class Planet;
+class PlanetManager;
 
 class GameWorld : public World
 {
@@ -34,7 +34,7 @@ public:
 
 private:
     Player *m_player;
-    Planet *m_planet;
+    PlanetManager *m_planet;
 
     QList<Triangle *> m_triangles;
 };

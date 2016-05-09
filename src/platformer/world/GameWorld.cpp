@@ -8,6 +8,7 @@
 #include "engine/light/DirectionalLight.h"
 #include "engine/particle/ParticleSystem.h"
 #include "engine/particle/ParticleStreamSystem.h"
+#include "engine/planet/planetmanager.h"
 
 #include "engine/geom/nav/NavMesh.h"
 
@@ -60,6 +61,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
 
     addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.01, 0.01, 0.01)));
+
+    m_planet = new PlanetManager();
 }
 
 GameWorld::~GameWorld()
@@ -165,6 +168,8 @@ void GameWorld::drawGeometry(Graphics *graphics)
     graphics->drawShape("quad");
 
     World::drawGeometry(graphics);
+
+//    m_planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
 }
 
 void GameWorld::drawLightGeometry(Graphics *graphics)

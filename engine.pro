@@ -68,7 +68,12 @@ SOURCES += \
     src/platformer/manager/CollisionManager.cpp \
     src/platformer/entity/VultureEnemy.cpp \
     src/platformer/entity/AgroEnemy.cpp \
-    src/platformer/entity/PassiveEnemy.cpp
+    src/platformer/entity/PassiveEnemy.cpp \
+    src/engine/planet/node.cpp \
+    src/engine/planet/planetmanager.cpp \
+    src/engine/planet/planetshape.cpp \
+    src/engine/planet/quadtree.cpp \
+    src/engine/planet/tileshape.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -133,7 +138,13 @@ HEADERS += \
     src/platformer/manager/CollisionManager.h \
     src/platformer/entity/VultureEnemy.h \
     src/platformer/entity/AgroEnemy.h \
-    src/platformer/entity/PassiveEnemy.h
+    src/platformer/entity/PassiveEnemy.h \
+    src/engine/planet/node.h \
+    src/engine/planet/noise.h \
+    src/engine/planet/planetmanager.h \
+    src/engine/planet/planetshape.h \
+    src/engine/planet/quadtree.h \
+    src/engine/planet/tileshape.h
 
 
 FORMS += src/mainwindow.ui

@@ -24,9 +24,9 @@ Graphics::Graphics()
     /* Default Shaders */
     createProgram(":/shaders/shader.vert", ":/shaders/particles.frag", "particles");
     createProgram(":/shaders/shader.vert", ":/shaders/combine.frag", "combine");
-    createProgram(":/shaders/shader.vert", ":/shaders/pre.frag", "pre");
+    createProgram(":/shaders/planet.vert", ":/shaders/planet.frag", "pre");
     createProgram(":/shaders/shader.vert", ":/shaders/lights.frag", "lights");
-    createProgram(":/shaders/shader.vert", ":/shaders/post.frag", "post");
+    createProgram(":/shaders/planet.vert", ":/shaders/post.frag", "post");
     createProgram(":/shaders/shader.vert", ":/shaders/lightGeometry.frag", "lightGeometry");
 }
 
