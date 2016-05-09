@@ -53,6 +53,7 @@ protected:
     /* Deferred lighting pipeline */
     Framebuffer *m_geometryFramebuffer;
     Framebuffer *m_lightFramebuffer;
+    Framebuffer *m_psFramebuffer;
 };
 
 #endif // SCREEN_H

@@ -67,6 +67,7 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
 
 GameWorld::~GameWorld()
 {
+    delete m_planet;
 }
 
 Player *GameWorld::getPlayer()

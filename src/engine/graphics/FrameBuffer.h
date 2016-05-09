@@ -16,8 +16,9 @@ public:
     void useTextures();
     void blitDepthBuffer(GLuint dest);
 
+    GLuint fbo;
+
 private:
-    GLuint m_fbo;
     GLuint m_depthBuffer;
     GLuint *m_textures;
 

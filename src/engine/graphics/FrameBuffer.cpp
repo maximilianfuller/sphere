@@ -8,11 +8,11 @@ Framebuffer::Framebuffer(int width, int height, int numTextures,
     m_height(height)
 {
     /* Generate OGL objects */
-    glGenFramebuffers(1, &m_fbo);
+    glGenFramebuffers(1, &fbo);
     glGenTextures(numTextures, m_textures);
     glGenRenderbuffers(1, &m_depthBuffer);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
 
     GLenum attachments[3];
 
@@ -46,7 +46,7 @@ Framebuffer::Framebuffer(int width, int height, int numTextures,
 
 Framebuffer::~Framebuffer()
 {
-    glDeleteFramebuffers(1, &m_fbo);
+    glDeleteFramebuffers(1, &fbo);
     glDeleteTextures(m_numTextures, m_textures);
     glDeleteRenderbuffers(1, &m_depthBuffer);
 
@@ -55,7 +55,7 @@ Framebuffer::~Framebuffer()
 
 void Framebuffer::bind()
 {
-    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+    glBindFramebuffer(GL_FRAMEBUFFER, fbo);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.f, 0.f, 0.f, 1.f);
 }
@@ -76,7 +76,7 @@ void Framebuffer::useTextures()
 
 void Framebuffer::blitDepthBuffer(GLuint dest)
 {
-    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_fbo);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest);
 
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
