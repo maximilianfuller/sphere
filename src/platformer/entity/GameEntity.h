@@ -24,7 +24,6 @@ public:
 
     /* Light and shape */
     float getRadius();
-    void setRadius(float radius);
 
     float getLightRadius();
     glm::vec3 getLightPosition();

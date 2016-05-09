@@ -52,8 +52,8 @@ void Screen::onResize(int w, int h)
     m_camera->setRatio(size);
 
     /* Remake framebuffers */
-    GLint internalFormatsObject[3] = {GL_RGB16F, GL_RGB16F, GL_RGBA};
-    GLenum formatsObject[3] = {GL_RGB, GL_RGB, GL_RGBA};
+    GLint internalFormatsObject[3] = {GL_RGBA32F, GL_RGB32F, GL_RGBA};
+    GLenum formatsObject[3] = {GL_RGBA, GL_RGBA, GL_RGBA};
     GLenum typesObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
 
     GLint internalFormatsLight[1] = {GL_RGBA};
@@ -135,9 +135,7 @@ void Screen::drawDeferred(Graphics *graphics)
     graphics->sendTexturePosition("data", 0);
 
     graphics->sendEmptyMatrices();
-    glDepthMask(GL_FALSE);
     graphics->drawShape("fullscreenQuad");
-    glDepthMask(GL_TRUE);
 
     /* Light geometry pass */
     graphics->setActiveProgram("lightGeometry");

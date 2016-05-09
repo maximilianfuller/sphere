@@ -31,7 +31,7 @@ void main()
     vec3 curFragPos = vec3(position_worldSpace);
     vec3 lastFragPos = vec3(texture(position, gl_FragCoord.xy / res));
     float depth = length(curFragPos - lastFragPos);
-    float fadeDepth = smoothstep(0.2, 1.0, depth);
+    float fadeDepth = smoothstep(0, 0.0005, depth);
 
     // Fade out on the edges of the light
     float d = length((vec2(position_screenSpace) - vec2(lightPos)) * ratio);

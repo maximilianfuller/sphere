@@ -34,7 +34,7 @@ private:
     const static int NUM_FACES = 6;
     const static int QUAD_WIDTH = 128;
     const static int MAX_DEPTH = 12;
-    const static float SPLITTING_DISTANCE = 0.0f;
+    const static float SPLITTING_DISTANCE = 0.5f;
 
 
     void drawFace(int face, glm::vec3 eye, glm::vec3 look);

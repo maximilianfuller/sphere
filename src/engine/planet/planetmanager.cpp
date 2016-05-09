@@ -14,8 +14,9 @@ PlanetManager::PlanetManager(Graphics *graphics)
     m_graphics = graphics;
 
     GLint internalFormats[1] = {GL_RGBA32F};
-    GLenum formats[1] = {GL_RGBA32F};
+    GLenum formats[1] = {GL_RGBA};
     GLenum types[1] = {GL_FLOAT};
+
 
     m_fb = new Framebuffer(1, 1, 1, internalFormats, formats, types);
 }
@@ -81,10 +82,10 @@ float PlanetManager::getNoise(glm::vec3 loc) {
 
 
     GLfloat pixels[4];
-    glReadPixels(0, 0, 1, 1, GL_RGBA32F, GL_FLOAT, pixels);
+    glReadPixels(0, 0, 1, 1, GL_RGBA, GL_FLOAT, pixels);
+
     m_fb->unbind();
 
-    std::cout << pixels[3] << std::endl;
     return float(pixels[0]);
 }
 

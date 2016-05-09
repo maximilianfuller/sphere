@@ -62,7 +62,6 @@ void ParticleStreamSystem::start()
         }
 
         m_started = true;
-        std::cout << "start" << std::endl;
     }
     else if(!m_started)
     {

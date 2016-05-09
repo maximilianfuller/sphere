@@ -25,7 +25,7 @@ flat out int cd;
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 14;
+int octaves = 12;
 float alpha = .50;
 float amp = .03;
 float freq = 10.0;
@@ -46,20 +46,19 @@ float noiseF( in vec3 x )
 
 float noise(float x, float y, float z) {
     float noise = 0.0;
-    float frequency = 1.0;
+    float frequency = freq;
     for(int i = 0; i < octaves; i++) {
         float amplitude = pow(alpha, i);
         noise += amplitude*noiseF(vec3(x*frequency, y*frequency, z*frequency));
         frequency *= 2.0;
     }
-    return noise;
+    return amp*clamp(1.0-noise,0.0, 1.0);
 }
 
 vec3 sNoise(vec3 sphereLoc) {
     vec3 s = normalize(sphereLoc);
-    float h = noise(freq*s.x, freq*s.y, freq*s.z)-1.0;
-    h = clamp(h, 0.0, 1.0);
-    return  s + s*(h*amp);
+    float h = noise(s.x, s.y, s.z);
+    return  s*(h+1.0);
 }
 
 ///////////////////////////////
@@ -81,11 +80,12 @@ void main(){
 
     if(collisionDetection != 0) {
         //RENDER QUAD FOR COLLISION DETECTION
+        octaves = octaves -4;
         float h = noise(collisionLoc.x, collisionLoc.y, collisionLoc.z);
 
         //set uniforms
         gl_Position = m*vec4(position,1);
-        eye_worldSpace = vec4(.335,0,0,0);
+        eye_worldSpace = vec4(h,0,0,0);
 
 
     } else {

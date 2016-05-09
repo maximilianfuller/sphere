@@ -26,7 +26,7 @@ GameEntity::GameEntity(World *world,
     m_shape = new Ellipsoid(m_pos, m_dims);
 
     /* Create light */
-    m_light = new PointLight(m_pos + glm::vec3(0, 1, 0), color);
+    m_light = new PointLight(m_pos, color);
 }
 
 GameEntity::~GameEntity()
@@ -36,17 +36,12 @@ GameEntity::~GameEntity()
 
 float GameEntity::getRadius()
 {
-    return glm::pow(m_power * 5.f, 0.333f);
-}
-
-void GameEntity::setRadius(float radius)
-{
-    m_power = radius * 5;
+    return glm::pow(m_power * .0000005f, 0.333f);
 }
 
 float GameEntity::getLightRadius()
 {
-    return m_power;
+    return getRadius() * 100.0;
 }
 
 glm::vec3 GameEntity::getLightPosition()
@@ -151,9 +146,11 @@ void GameEntity::onTick(float seconds)
     }
 
     /* Update light */
-    m_shape->setPosition(m_pos + glm::vec3(0, 1, 0));
-    m_light->setPosition(m_pos + glm::vec3(0, 1, 0));
-    m_light->setRadius(m_power);
+    float radius = getRadius();
+    m_shape->setPosition(m_pos);
+    m_shape->setDimensions(glm::vec3(radius, radius, radius));
+    m_light->setPosition(m_pos);
+    m_light->setRadius(getLightRadius());
 
     /* Transfer matter */
     m_delta = 0;

@@ -245,7 +245,6 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
     glm::vec3 dims = aabb->getDimensions();
     glm::vec3 vel = ent->getVelocity();
 
-    //std::cout << glm::to_string(pos) << std::endl;
 
     glm::vec3 chunkPos = chunk->getPosition();
 
@@ -259,7 +258,6 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
     bool intersected = false;
     int x, y, z;
 
-    std::cout << "start"<< std::endl;
 
     if(vel.y < 0)
     {

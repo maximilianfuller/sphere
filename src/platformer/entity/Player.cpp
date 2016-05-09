@@ -18,7 +18,7 @@ Player::Player(World *world, Camera *camera) :
     m_nitro(false),
     m_attackTimer(0),
     m_camera(camera),
-    GameEntity(world, 0.1, glm::vec3(0.8, 0.8, 1.0), glm::vec3(0, 3, 0), glm::vec3(1, 1, 1), 7)
+    GameEntity(world, 0.002, glm::vec3(1, 1, 1), glm::vec3(1.0001, 0, 0), glm::vec3(0.0003, 0.0003, .0003), 7)
 {
 }
 
@@ -104,12 +104,8 @@ glm::vec3 Player::getDirection()
 void Player::jump()
 {
     m_grounded = false;
-    m_vel.y = JUMP_SPEED;
-
-    if(m_nitro)
-    {
-        m_vel.y *= 2.2;
-    }
+    glm::vec3 jump = glm::normalize(m_pos) * JUMP_SPEED;
+    m_vel += jump;
 }
 
 void Player::attack()
@@ -191,7 +187,7 @@ void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
-    m_speed = 2.f*(glm::length(m_pos) - 1.f);
+    m_speed = .004f;
 
     /* Set jump velocity */
     if(m_jump && m_grounded)

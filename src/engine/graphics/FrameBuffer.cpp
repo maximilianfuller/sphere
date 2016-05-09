@@ -82,5 +82,5 @@ void Framebuffer::blitDepthBuffer(GLuint dest)
     glBlitFramebuffer(0, 0, m_width, m_height, 0, 0, m_width, m_height,
                       GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, dest);
 }

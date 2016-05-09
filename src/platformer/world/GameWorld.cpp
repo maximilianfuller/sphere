@@ -23,8 +23,10 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 /* TODO:
- * 1) Collision manager
- * 2) Add a planet object to the game world
+ * - Entity goal velocity change
+ * - Subtract velocity component in up direction.
+ * - Change particle size
+ * - Add enemies
  */
 GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     World(camera)
@@ -174,7 +176,15 @@ void GameWorld::onTick(float seconds)
     m_camera->setUp(glm::normalize(m_camera->getEye()));
     float noise = m_planet->getNoise(glm::normalize(m_player->getPosition()));
 
-    std::cout << noise << std::endl;
+    if(glm::length(m_player->getPosition()) - 1.f - m_player->getDimensions().x < noise)
+    {
+        m_player->setPosition(glm::normalize(m_player->getPosition())*(1.f + noise + m_player->getDimensions().x));
+        m_player->setGrounded(true);
+    }
+    else
+    {
+        m_player->setGrounded(false);
+    }
 
     World::onTick(seconds);
 }

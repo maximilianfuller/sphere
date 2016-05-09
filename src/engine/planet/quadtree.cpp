@@ -2,7 +2,7 @@
 #include "planetmanager.h"
 #include <QList>
 #include <util/ResourceLoader.h>
-
+#include "engine/graphics/Graphics.h"
 QuadTree::QuadTree(PlanetManager *pm, int quadWidth, glm::mat4 transform, glm::vec3 eye,
                    glm::vec3 look, int maxDepth, int face, float splittingDistance)
 {

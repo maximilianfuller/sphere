@@ -13,7 +13,7 @@ flat in int cd;
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 14;
+int octaves = 12;
 float alpha = .50;
 float normalDelta = .00005;
 float amp = .03;
@@ -41,13 +41,12 @@ float noise(float x, float y, float z) {
         noise += amplitude*noiseF(vec3(x*frequency, y*frequency, z*frequency));
         frequency *= 2.0;
     }
-    return noise;
+    return clamp(1.0-noise,0.0, 1.0);
 }
 
 vec3 sNoise(vec3 sphereLoc) {
     vec3 s = normalize(sphereLoc);
-    float h = noise(freq*s.x, freq*s.y, freq*s.z)-1.0;
-    h = clamp(h, 0.0, 1.0);
+    float h = noise(freq*s.x, freq*s.y, freq*s.z);
     return  s + s*(h*amp);
 }
 
@@ -71,7 +70,6 @@ void main(){
     if(cd != 0) {
         //collision
         fragPosition = eye_worldSpace;
-        fragPosition = vec4(.2555,.2555,.2555,.2555);
     } else {
         //rendering planet
         vec3 base_color = vec3(0,0,0);
@@ -104,6 +102,5 @@ void main(){
         fragPosition = position_worldSpace/position_worldSpace.w;
         fragNormal = normal;
         fragColorSpecular = vec4(vec3(base_color * 0.5), .1);
-
     }
 }

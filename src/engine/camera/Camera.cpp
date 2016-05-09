@@ -27,8 +27,6 @@ glm::vec2 Camera::getRatio()
 
 void Camera::setRatio(glm::vec2 size)
 {
-    m_update |= m_ratio != size;
-
     m_ratio = size;
 }
 
@@ -39,8 +37,6 @@ float Camera::getYaw()
 
 void Camera::setYaw(float yaw)
 {
-    m_update |= m_yaw != yaw;
-
     m_yaw = yaw;
 }
 
@@ -51,8 +47,6 @@ float Camera::getPitch()
 
 void Camera::setPitch(float pitch)
 {
-    m_update |= m_pitch != pitch;
-
     m_pitch = pitch;
 }
 
@@ -63,8 +57,6 @@ float Camera::getFov()
 
 void Camera::setFov(float fov)
 {
-    m_update |= m_fov != fov;
-
     m_fov = fov;
 }
 
@@ -72,7 +64,7 @@ glm::vec3 Camera::getEye()
 {
     if(m_thirdPerson)
     {
-        return m_eye - 8.f * m_look;
+        return m_eye - .006f * m_look;
     }
     else
     {
@@ -82,8 +74,6 @@ glm::vec3 Camera::getEye()
 
 void Camera::setEye(glm::vec3 eye)
 {
-    m_update |= m_eye != eye;
-
     m_eye = eye;
 }
 
@@ -104,8 +94,6 @@ glm::vec3 Camera::getUp()
 
 void Camera::setUp(glm::vec3 up)
 {
-    m_update |= m_up != up;
-
     m_up = up;
 }
 
@@ -126,22 +114,16 @@ bool Camera::getThirdPerson()
 
 void Camera::toggleThirdPerson()
 {
-    m_update = true;
-
     m_thirdPerson = !m_thirdPerson;
 }
 
 void Camera::translate(glm::vec3 vec)
 {
-    m_update = true;
-
     m_eye += vec;
 }
 
 void Camera::rotate(float yaw, float pitch)
 {
-    m_update = true;
-
     m_yaw += yaw;
     m_pitch += pitch;
     m_pitch = glm::clamp(static_cast<double>(m_pitch), -M_PI / 2.0 + 0.01, M_PI / 2.0 - 0.01);
@@ -149,9 +131,6 @@ void Camera::rotate(float yaw, float pitch)
 
 void Camera::updateTransforms()
 {
-    /* Update look */
-    //std::cout << glm::to_string(m_look) << std::endl;
-
     /* Set eye */
     glm::vec3 eye = getEye();
 
