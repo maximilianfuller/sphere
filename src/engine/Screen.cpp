@@ -19,6 +19,7 @@ Screen::Screen(Application *app, float opacity, int width, int height) :
 {
     m_geometryFramebuffer = NULL;
     m_lightFramebuffer = NULL;
+    m_psFramebuffer = NULL;
 }
 
 Screen::~Screen()
@@ -27,6 +28,7 @@ Screen::~Screen()
     delete m_world;
     delete m_geometryFramebuffer;
     delete m_lightFramebuffer;
+    delete m_psFramebuffer;
 }
 
 float Screen::getOpacity()
@@ -65,6 +67,8 @@ void Screen::onResize(int w, int h)
                                             internalFormatsObject, formatsObject, typesObject);
     m_lightFramebuffer = new Framebuffer(w, h, 1,
                                          internalFormatsLight, formatsLight, typesLight);
+    m_psFramebuffer = new Framebuffer(w, h, 1,
+                                      internalFormatsLight, formatsLight, typesLight);
 }
 
 void Screen::onTick(float seconds)
@@ -97,96 +101,80 @@ bool Screen::onDraw(float &currentOpacity, Graphics *graphics)
 void Screen::drawDeferred(Graphics *graphics)
 {
     /* Object data pass */
-
-    // Set pre pass shader
     graphics->setActiveProgram("pre");
-
-    // Bind geometry framebuffer
     m_geometryFramebuffer->bind();
 
-    // Draw geometry
     m_world->drawGeometry(graphics);
 
-    // Cleanup
     m_geometryFramebuffer->unbind();
 
     /* Light pass */
-
-    // Set light pass shader
     graphics->setActiveProgram("lights");
-
-    // Bind light framebuffer
     m_lightFramebuffer->bind();
 
-    // Bind g buffer textures
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
     graphics->sendTexturePosition("normal", 1);
     graphics->sendTexturePosition("colorSpecular", 2);
 
-    // Enable light blending
     graphics->enableBlend();
     graphics->enableStencilTest();
 
-    // Draw lights
     m_world->drawLights(graphics);
 
-    // Cleanup
     graphics->disableStencilTest();
     graphics->disableBlend();
 
     m_lightFramebuffer->unbind();
 
     /* Post pass */
-
-    // Set post pass shader
     graphics->setActiveProgram("post");
+    m_psFramebuffer->bind();
 
-    // Bind light data textures
     m_lightFramebuffer->useTextures();
     graphics->sendTexturePosition("data", 0);
 
-    // Draw geometry
-    m_world->drawGeometry(graphics);
+    graphics->sendEmptyMatrices();
+    glDepthMask(GL_FALSE);
+    graphics->drawShape("fullscreenQuad");
+    glDepthMask(GL_TRUE);
 
     /* Light geometry pass */
-
-    // Set light geometry shader
     graphics->setActiveProgram("lightGeometry");
+    m_geometryFramebuffer->blitDepthBuffer(m_psFramebuffer->fbo);
 
-    // Bind g buffer position texture for environment blending
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
-
-    // Send time uniform
     graphics->sendTimeUniform(m_time);
 
-    // Enable alpha blending
     graphics->enableBlendAlpha();
 
-    // Draw light geometry
     m_world->drawLightGeometry(graphics);
 
-    // Cleanup
     graphics->disableBlend();
 
     /* Particle pass */
-
-    // Set particle shader
     graphics->setActiveProgram("particles");
 
-    // Bind g buffer position texture for environment blending
     m_geometryFramebuffer->useTextures();
     graphics->sendTexturePosition("position", 0);
 
-    // Enable particle blending
     graphics->enableBlend();
 
-    // Draw particles
     m_world->drawParticles(graphics);
 
-    // Cleanup
     graphics->disableBlend();
+
+    m_psFramebuffer->unbind();
+
+    /* Last pass */
+    graphics->setActiveProgram("post");
+
+    m_psFramebuffer->useTextures();
+    graphics->sendTexturePosition("data", 0);
+
+    graphics->sendEmptyMatrices();
+    graphics->drawShape("fullscreenQuad");
 }
 
 void Screen::mousePressEvent(QMouseEvent *event)

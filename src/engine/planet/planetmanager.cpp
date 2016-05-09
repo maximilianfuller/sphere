@@ -12,12 +12,10 @@ PlanetManager::PlanetManager(Graphics *graphics)
     initializeQuad(QUAD_WIDTH);
     initializeNoiseTexture();
     m_graphics = graphics;
-    m_ratio = glm::vec2(16.f, 9.f);
-    m_fov = 45.f;
 
-    GLint internalFormats[1] = {GL_RGBA};
-    GLenum formats[1] = {GL_RGBA};
-    GLenum types[1] = {GL_UNSIGNED_BYTE};
+    GLint internalFormats[1] = {GL_RGBA32F};
+    GLenum formats[1] = {GL_RGBA32F};
+    GLenum types[1] = {GL_FLOAT};
 
     m_fb = new Framebuffer(1, 1, 1, internalFormats, formats, types);
 }
@@ -74,7 +72,7 @@ float PlanetManager::getNoise(glm::vec3 loc) {
     m_fb->bind();
     GLuint shader = m_graphics->getActiveProgram();
 
-    glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 2);
+    glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 1);
     glUniform3fv(glGetUniformLocation(shader,"collisionLoc"),1,glm::value_ptr(loc));
 
     m_graphics->sendEmptyMatrices();
@@ -82,11 +80,11 @@ float PlanetManager::getNoise(glm::vec3 loc) {
 
 
 
-    GLubyte pixels[4];
-    glReadPixels(0, 0, 1, 1, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    GLfloat pixels[4];
+    glReadPixels(0, 0, 1, 1, GL_RGBA32F, GL_FLOAT, pixels);
     m_fb->unbind();
 
-    std::cout << pixels[0] << std::endl;
+    std::cout << pixels[3] << std::endl;
     return float(pixels[0]);
 }
 
@@ -138,21 +136,11 @@ glm::mat4 PlanetManager::getQuadModel(int face, int depth, int x, int y) {
     return model;
 }
 
-glm::mat4 PlanetManager::getProjectionMatrix() {
-    float fov = glm::radians(m_fov);
-    float aspect = m_ratio.x/m_ratio.y;
-    float near = NEAR_CLIPPING_PLANE;
-    float far = FAR_CLIPPING_PLANE;
-
-    return glm::perspective(fov, aspect, near, far);
+Graphics *PlanetManager::getGraphics() {
+    return m_graphics;
 }
 
-glm::mat4 PlanetManager::getViewMatrix(glm::vec3 eye, glm::vec3 look) {
-    glm::vec3 center = eye + look;
-    glm::vec3 up(0,1,0);
 
-    return glm::lookAt(eye, center, up);
-}
 
 void PlanetManager::initializeQuad(int width) {
     m_tile = new TileShape(width);
@@ -176,8 +164,3 @@ void PlanetManager::initializeNoiseTexture() {
 //    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
 //    glBindTexture(GL_TEXTURE_2D, 0);
 }
-
-void PlanetManager::setRatio(glm::vec2 ratio) {
-    m_ratio = ratio;
-}
-

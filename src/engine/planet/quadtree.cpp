@@ -15,7 +15,6 @@ QuadTree::QuadTree(PlanetManager *pm, int quadWidth, glm::mat4 transform, glm::v
     m_face = face;
     m_pm = pm;
     m_splittingDistance = splittingDistance;
-    m_pvMatrix = pm->getProjectionMatrix()*pm->getViewMatrix(eye, look);
 
     generateTree(m_root, 0, 0, 0);
 
@@ -96,15 +95,7 @@ bool QuadTree::shouldCull(int x, int y, int depth) {
         return true;
     }
 
-
-    glm::mat4 t = glm::transpose(m_pvMatrix);
-    QList<glm::vec4> planes;
-    planes.append(t[3] - t[0]);
-    planes.append(t[3] + t[0]);
-    planes.append(t[3] - t[2]);
-    planes.append(t[3] + t[2]);
-    planes.append(t[3] - t[1]);
-    planes.append(t[3] + t[1]);
+    Graphics *g = m_pm->getGraphics();
 
     QList<glm::vec3> points;
     points.append(x1);
@@ -116,18 +107,15 @@ bool QuadTree::shouldCull(int x, int y, int depth) {
     points.append(x7);
     points.append(x8);
 
-    for(int i = 0; i < planes.size(); i++) {
-        glm::vec4 p = planes.at(i);
-        bool allCornersOutside = true;
-        for(int j = 0; j < points.size(); j++) {
-            if(glm::dot(p, glm::vec4(points.at(j), 1.f)) > 0) {
-                allCornersOutside = false;
-                break;
-            }
+    bool allCornersOutside = true;
+    for(int j = 0; j < points.size(); j++) {
+        if(g->inFrustum(points.value(j))) {
+            allCornersOutside = false;
+            break;
         }
-        if (allCornersOutside) {
-            return true;
-        }
+    }
+    if (allCornersOutside) {
+        return true;
     }
 
     return false;

@@ -44,7 +44,7 @@ public:
     void setFrustumPlanes(glm::vec4 frustumNX, glm::vec4 frustumX,
                           glm::vec4 frustumNY, glm::vec4 frustumY,
                           glm::vec4 frustumNZ, glm::vec4 frustumZ);
-    bool inFrustum(AABoundingBox *aabb);
+    bool inFrustum(glm::vec3 pos);
 
     void enableBlend();
     void enableBlendAlpha();

@@ -9,5 +9,6 @@
         <file>lightGeometry.frag</file>
         <file>planet.frag</file>
         <file>planet.vert</file>
+        <file>passthrough.frag</file>
     </qresource>
 </RCC>

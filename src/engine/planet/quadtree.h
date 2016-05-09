@@ -49,7 +49,6 @@ private:
     int m_quadWidth;
     int m_maxDepth;
     glm::mat4 m_transform;
-    glm::mat4 m_pvMatrix;
     glm::vec3 m_eye;
     glm::vec3 m_look;
     int m_face;

@@ -22,12 +22,12 @@ Graphics::Graphics()
                 "sphere");
 
     /* Default Shaders */
-    createProgram(":/shaders/shader.vert", ":/shaders/particles.frag", "particles");
-    createProgram(":/shaders/shader.vert", ":/shaders/combine.frag", "combine");
     createProgram(":/shaders/planet.vert", ":/shaders/planet.frag", "pre");
     createProgram(":/shaders/shader.vert", ":/shaders/lights.frag", "lights");
-    createProgram(":/shaders/planet.vert", ":/shaders/post.frag", "post");
+    createProgram(":/shaders/shader.vert", ":/shaders/post.frag", "post");
+    createProgram(":/shaders/shader.vert", ":/shaders/particles.frag", "particles");
     createProgram(":/shaders/shader.vert", ":/shaders/lightGeometry.frag", "lightGeometry");
+    createProgram(":/shaders/shader.vert", ":/shaders/passthrough.frag", "passthrough");
 }
 
 Graphics::~Graphics()
@@ -235,34 +235,19 @@ void Graphics::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
     m_frustumPlanes[5] = fz;
 }
 
-bool Graphics::inFrustum(AABoundingBox *aabb)
+bool Graphics::inFrustum(glm::vec3 pos)
 {
-    glm::vec3 boxPos = aabb->getPosition();
-    glm::vec3 boxDims = aabb->getDimensions();
+    bool allBehind = true;
 
     for(int i = 0; i < 6; i++)
     {
-        bool allBehind = true;
+        allBehind &= glm::dot(m_frustumPlanes[i], glm::vec4(pos, 1)) < 0;
+    }
 
-        for(int x = 0; x <= 1; x++)
-        {
-            for(int y = 0; y <= 1; y++)
-            {
-                for(int z = 0; z <= 1; z++)
-                {
-                    glm::vec4 pos = glm::vec4(boxPos.x + x * boxDims.x,
-                                              boxPos.y + y * boxDims.y,
-                                              boxPos.z + z * boxDims.z, 1);
 
-                    allBehind &= glm::dot(m_frustumPlanes[i], pos) < 0;
-                }
-            }
-        }
-
-        if(allBehind)
-        {
-            return false;
-        }
+    if(allBehind)
+    {
+        return false;
     }
 
     return true;
