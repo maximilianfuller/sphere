@@ -33,11 +33,13 @@ public:
     void drawLightGeometry(Graphics *graphics);
 
     const float LOOK_ANGLE_EPS = 0.001;
-    PlanetManager *planet;
+
+    /*allow access to terrain data*/
+    float getTerrainHeight(glm::vec3 loc); //returns terrain height at given location (length of ray from orign to terran defined by loc)
 
 private:
     Player *m_player;
-
+    PlanetManager *m_planet;
     QList<Triangle *> m_triangles;
 };
 

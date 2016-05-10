@@ -210,9 +210,9 @@ void Player::updateCamera()
     glm::vec3 eye = m_camera->getEye();
 
     GameWorld *world = dynamic_cast<GameWorld *>(m_world);
-    float noise = world->planet->getNoise(eye);
+    float noise = world->getTerrainHeight(eye);
 
-    if(glm::length(eye) - 1.f - 0.0005f < noise)
+    if(glm::length(eye) - 0.0005f < noise)
     {
         m_camera->setEye(glm::normalize(eye) * (1.f + noise + 0.0005f));
     }

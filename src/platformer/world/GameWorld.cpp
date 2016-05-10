@@ -42,12 +42,12 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     /* Lights */
     addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)));
 
-    planet = new PlanetManager(graphics);
+    m_planet = new PlanetManager(graphics);
 }
 
 GameWorld::~GameWorld()
 {
-    delete planet;
+    delete m_planet;
 }
 
 Player *GameWorld::getPlayer()
@@ -163,11 +163,11 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
 void GameWorld::onTick(float seconds)
 {
     m_camera->setUp(glm::normalize(m_camera->getEye()));
-    float noise = planet->getNoise(glm::normalize(m_player->getPosition()));
+    float noise = getTerrainHeight(m_player->getPosition());
 
-    if(glm::length(m_player->getPosition()) - 1.f - m_player->getDimensions().x < noise)
+    if(glm::length(m_player->getPosition()) - m_player->getDimensions().x < noise)
     {
-        m_player->setPosition(glm::normalize(m_player->getPosition())*(1.f + noise + m_player->getDimensions().x));
+        m_player->setPosition(glm::normalize(m_player->getPosition())*(noise + m_player->getDimensions().x));
         m_player->setGrounded(true);
     }
     else
@@ -183,7 +183,7 @@ void GameWorld::drawGeometry(Graphics *graphics)
     World::drawGeometry(graphics);
 
     graphics->sendModelUniform(glm::mat4());
-    planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
+    m_planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
 }
 
 void GameWorld::drawLightGeometry(Graphics *graphics)
@@ -215,4 +215,8 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
         (depthQueue.top()).first->drawLightGeometry(graphics);
         depthQueue.pop();
     }
+}
+
+float GameWorld::getTerrainHeight(glm::vec3 loc) {
+    return 1.f + m_planet->getNoise(glm::normalize(loc));
 }

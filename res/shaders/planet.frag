@@ -13,7 +13,7 @@ flat in int cd;
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 12;
+int octaves = 10;
 float alpha = .50;
 float normalDelta = .00005;
 float amp = .03;
