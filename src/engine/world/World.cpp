@@ -78,8 +78,6 @@ void World::removeEntity(Entity *ent)
 
 void World::removeEntities()
 {
-    QList<int> removeIndices;
-
     foreach(Entity *e, m_entities)
     {
         if(m_toRemove.contains(e))

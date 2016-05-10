@@ -197,7 +197,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
                 continue;
             }
 
-            std::cout << totalDistance << std::endl;
+//            std::cout << totalDistance << std::endl;
 
             /* Set particle velocity */
             float maxVel = (0.003f / (totalDistance)) * (1 - totalDistance / maxDistance);

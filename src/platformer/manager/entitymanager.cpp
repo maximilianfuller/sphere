@@ -19,7 +19,7 @@ void EntityManager::onTick(float seconds) {
         if(e != m_player) {
             float f = glm::length(e->getPosition()-m_player->getPosition());
             if(glm::length(e->getPosition()-m_player->getPosition()) > SPAWN_RADIUS) {
-                toRemove.append(e);
+               //toRemove.append(e);
             }
         }
     }
@@ -28,13 +28,12 @@ void EntityManager::onTick(float seconds) {
         m_world->removeEntity(e);
     }
 
-//    spawnEnemy(3);
-
     if(m_entities.length()-1 < MAX_ENEMIES) {
         for(int level = 1; level <= NUM_LEVELS; level++) {
             float dieRoll = rand()/(float)RAND_MAX;
-            if (dieRoll < getEntitySpawnProbability(level)*seconds) {
-                //spawnEnemy(level);
+            float prob = getEntitySpawnProbability(level)*seconds;
+            if (dieRoll < prob) {
+                spawnEnemy(level);
             }
         }
     }
@@ -51,17 +50,25 @@ glm::vec3 EntityManager::getColor(int level) {
 
     switch(level) {
     case 1:
-        color = glm::vec3(37,0,255);
+        color = glm::vec3(128,0,255);
+        break;
     case 2:
         color = glm::vec3(0,0,255);
+        break;
     case 3:
         color = glm::vec3(0,255,175);
+        break;
     case 4:
         color = glm::vec3(0,255,0);
+        break;
     case 5:
-        color = glm::vec3(255,234,0);
+        color = glm::vec3(255,255,0);
+        break;
     case 6:
         color = glm::vec3(255,0,0);
+        break;
+    default:
+        color = glm::vec3(1,1,1);
     }
     return color/255.f;
 }
@@ -97,14 +104,17 @@ glm::vec3 EntityManager::getRandomSpawnLoc(float spawnHeight) {
     //get raw position and project onto terrain surface (+ spawnHeight)
     glm::vec3 pos =  m_player->getPosition() + xDir*x*SPAWN_RADIUS + yDir*y*SPAWN_RADIUS;
     float terrainHeight = dynamic_cast<GameWorld *>(m_world)->getTerrainHeight(pos);
-    return (terrainHeight+spawnHeight)*up;
+
+
+    return (terrainHeight+spawnHeight)*glm::normalize(pos);
 }
 
-int EntityManager::getEntitySpawnProbability(int level) {
+float EntityManager::getEntitySpawnProbability(int level) {
     float theta = glm::acos(glm::dot(START_LOC, glm::normalize(m_player->getPosition())));
-    float areaLevel = (theta/(2*M_PI))*NUM_LEVELS;
+    float areaLevel = (theta/(M_PI))*NUM_LEVELS;
     float distToAreaLevel = glm::abs(level - areaLevel);
-    return glm::max(ENTITY_SPREAD - distToAreaLevel, 0.f)*SPAWN_RATE_COEFF;
+    float prob = glm::max(ENTITY_SPREAD - distToAreaLevel, 0.f)*SPAWN_RATE_COEFF;
+    return prob;
 
 }
 

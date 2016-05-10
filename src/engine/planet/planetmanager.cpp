@@ -23,8 +23,6 @@ PlanetManager::PlanetManager(Graphics *graphics)
 
 void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 look) {
 
-//    std::cout << glm::to_string(look) << std::endl;
-
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 //    glUseProgram(m_shader);
