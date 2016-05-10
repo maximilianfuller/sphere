@@ -33,10 +33,10 @@ public:
     void drawLightGeometry(Graphics *graphics);
 
     const float LOOK_ANGLE_EPS = 0.001;
+    PlanetManager *planet;
 
 private:
     Player *m_player;
-    PlanetManager *m_planet;
 
     QList<Triangle *> m_triangles;
 };

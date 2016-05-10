@@ -132,9 +132,6 @@ void Entity::updateGoalVelocity()
 
 void Entity::updateAcceleration()
 {
-    glm::vec3 diff = m_goal - m_vel;
-
-    m_acc += m_friction * diff;
 }
 
 void Entity::updateVelocity(float seconds)
@@ -174,8 +171,6 @@ void Entity::onIntersect(Entity *ent, glm::vec3 mtv)
 void Entity::onTick(float seconds)
 {
     seconds = glm::min(1.f / 30.f, seconds);
-
-    m_acc = glm::normalize(m_pos) * G;
 
     /* Update state */
     updateFriction();

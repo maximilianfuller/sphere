@@ -29,10 +29,14 @@ public:
     bool getJump();
     void setJump(bool val);
 
-    bool getNitro();
-    void setNitro(bool val);
+    bool getZoomIn();
+    void setZoomIn(bool val);
 
-    float getHeight();
+    bool getZoomOut();
+    void setZoomOut(bool val);
+
+    float getZoom();
+    void setZoom(float zoom);
 
     /* Camera direction */
     glm::vec3 getDirection();
@@ -47,6 +51,8 @@ public:
 
     /* Game loop */
     void onTick(float seconds);
+    void drawGeometry(Graphics *graphics);
+    void drawLightGeometry(Graphics *graphics);
 
 private:
     /* Movement */
@@ -55,7 +61,10 @@ private:
     bool m_moveLeft;
     bool m_moveRight;
     bool m_jump;
-    bool m_nitro;
+    bool m_zoomIn;
+    bool m_zoomOut;
+
+    float m_zoom;
 
     /* Attack */
     int m_attackTimer;

@@ -6,8 +6,10 @@
 #include "engine/light/PointLight.h"
 #include "engine/intersect/Ray.h"
 #include "engine/shape/Ellipsoid.h"
+#include "engine/planet/planetmanager.h"
 
 #include "engine/particle/ParticleStreamSystem.h"
+#include "platformer/world/GameWorld.h"
 
 Player::Player(World *world, Camera *camera) :
     m_moveForward(false),
@@ -15,7 +17,9 @@ Player::Player(World *world, Camera *camera) :
     m_moveLeft(false),
     m_moveRight(false),
     m_jump(false),
-    m_nitro(false),
+    m_zoomIn(false),
+    m_zoomOut(false),
+    m_zoom(20),
     m_attackTimer(0),
     m_camera(camera),
     GameEntity(world, 0.002, glm::vec3(1, 1, 1), glm::vec3(1.0001, 0, 0), glm::vec3(0.0003, 0.0003, .0003), 7)
@@ -28,11 +32,6 @@ Player::~Player()
 
 float Player::getSpeed()
 {
-    if(m_nitro)
-    {
-        return m_speed * 2.0;
-    }
-
     return m_speed;
 }
 
@@ -86,32 +85,58 @@ void Player::setJump(bool val)
     m_jump = val;
 }
 
-bool Player::getNitro()
+bool Player::getZoomIn()
 {
-    return m_nitro;
+    return m_zoomIn;
 }
 
-void Player::setNitro(bool val)
+void Player::setZoomIn(bool val)
 {
-    m_nitro = val;
+    m_zoomIn = val;
+}
+
+bool Player::getZoomOut()
+{
+    return m_zoomOut;
+}
+
+void Player::setZoomOut(bool val)
+{
+    m_zoomOut = val;
+}
+
+float Player::getZoom()
+{
+    return m_zoom;
+}
+
+void Player::setZoom(float zoom)
+{
+    m_zoom = zoom;
 }
 
 glm::vec3 Player::getDirection()
 {
-    return glm::normalize(m_camera->getLook());
+    glm::vec3 look = glm::normalize(m_camera->getLook());
+    glm::vec3 up = glm::normalize(m_pos);
+
+    return glm::normalize(look - glm::dot(look, up) * up);
 }
 
 void Player::jump()
 {
     m_grounded = false;
-    glm::vec3 jump = glm::normalize(m_pos) * JUMP_SPEED;
-    m_vel += jump;
+    glm::vec3 up = glm::normalize(m_pos);
+    glm::vec3 jump = up * JUMP_SPEED;
+    m_vel = m_vel - glm::dot(m_vel, up) * up + jump;
 }
 
 void Player::attack()
 {
     if(m_attackTimer > 0)
+    {
         return;
+    }
 
     Ray ray = Ray(m_camera->getEye(), m_camera->getLook());
     CollisionData data;
@@ -142,7 +167,8 @@ void Player::updateGoalVelocity()
 {
     /* Player direction */
     glm::vec3 dir = getDirection();
-    glm::vec3 perp = glm::normalize(glm::cross(m_camera->getUp(), dir));
+    glm::vec3 up = glm::normalize(m_pos);
+    glm::vec3 perp = glm::normalize(glm::cross(up, dir));
 
     glm::vec3 inputVel = glm::vec3(0, 0, 0);
 
@@ -180,7 +206,16 @@ void Player::updateGoalVelocity()
 
 void Player::updateCamera()
 {
-    m_camera->setEye(m_pos);
+    m_camera->setEye(m_pos - m_zoom * m_dims.x * m_camera->getLook());
+    glm::vec3 eye = m_camera->getEye();
+
+    GameWorld *world = dynamic_cast<GameWorld *>(m_world);
+    float noise = world->planet->getNoise(eye);
+
+    if(glm::length(eye) - 1.f - 0.0005f < noise)
+    {
+        m_camera->setEye(glm::normalize(eye) * (1.f + noise + 0.0005f));
+    }
 }
 
 void Player::onTick(float seconds)
@@ -195,6 +230,17 @@ void Player::onTick(float seconds)
         jump();
     }
 
+    /* Set zoom */
+    if(m_zoomIn)
+    {
+        m_zoom -= 0.03 * m_zoom;
+    }
+
+    if(m_zoomOut)
+    {
+        m_zoom += 0.03 * m_zoom;
+    }
+
     /* Update attack timer */
     if(m_attackTimer > 0)
     {
@@ -203,4 +249,14 @@ void Player::onTick(float seconds)
 
     /* Update camera */
     updateCamera();
+}
+
+void Player::drawGeometry(Graphics *graphics)
+{
+    GameEntity::drawGeometry(graphics);
+}
+
+void Player::drawLightGeometry(Graphics *graphics)
+{
+    GameEntity::drawLightGeometry(graphics);
 }

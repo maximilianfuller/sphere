@@ -85,7 +85,7 @@ float GameEntity::getTransferRate(GameEntity *target)
     if(!m_stun)
     {
         float dist = glm::length(target->getPosition() - m_pos);
-        return (4 * m_power / m_targets.length()) / glm::max(dist, 1.f);
+        return (4 * m_power / glm::max(dist, 1.f));
     }
     else
     {
@@ -117,9 +117,39 @@ void GameEntity::clearTargets()
     m_targets.clear();
 }
 
-void GameEntity::onIntersect(Entity *ent, glm::vec3 mtv)
+void GameEntity::updateAcceleration()
 {
-    return;
+    glm::vec3 up = glm::normalize(m_pos);
+    glm::vec3 perpVel = m_vel - glm::dot(up, m_vel) * up;
+    glm::vec3 diff = m_goal - perpVel;
+
+    m_acc = glm::normalize(m_pos) * G;
+    m_acc += m_friction * diff;
+}
+
+void GameEntity::updateVelocity(float seconds)
+{
+    glm::vec3 up = glm::normalize(m_pos);
+
+    if(m_grounded && glm::dot(m_vel, up) < 0)
+    {
+        m_vel = m_vel - glm::dot(up, m_vel) * up;
+    }
+
+    m_vel += m_acc * seconds;
+}
+
+void GameEntity::updatePosition(float seconds)
+{
+    if(!m_moved)
+    {
+        glm::vec3 up = glm::normalize(m_pos);
+        glm::vec3 downVel = glm::dot(up, m_vel) * up;
+
+        m_pos += (m_speed * (m_vel - downVel) + downVel) * seconds;
+    }
+
+    m_moved = false;
 }
 
 void GameEntity::onTick(float seconds)
@@ -155,7 +185,6 @@ void GameEntity::onTick(float seconds)
     /* Transfer matter */
     m_delta = 0;
 
-    // Absorb
     foreach(GameEntity *target, m_targets)
     {
         float amount = getTransferRate(target) * 0.002;
@@ -163,7 +192,6 @@ void GameEntity::onTick(float seconds)
         m_delta += amount;
     }
 
-    // Give
     foreach(GameEntity *target, m_targets)
     {
         float amount = target->getTransferRate(this) * 0.002;
@@ -228,6 +256,7 @@ void GameEntity::drawLightGeometry(Graphics *graphics)
 
         /* Model matrix */
         float radius = getRadius();
+
         glm::vec3 scale = glm::vec3(radius, radius, radius);
         glm::mat4x4 model = glm::translate(glm::mat4x4(), pos) * glm::scale(glm::mat4x4(), scale);
 

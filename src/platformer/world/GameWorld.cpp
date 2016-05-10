@@ -35,41 +35,19 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     m_player = new Player(this, camera);
     addEntity(m_player);
 
-    /* Enemies */
-    //addEntity(new Enemy(this, 10, glm::vec3(1, 0, 0), glm::vec3(0, 0, -5), glm::vec3(1, 1, 1), 3.0));
-    //addEntity(new Enemy(this, 20, glm::vec3(0, 1, 0), glm::vec3(0, 0, -10), glm::vec3(1, 1, 1), 3.0));
-
     /* Add managers */
     addManager(new CollisionManager(this, m_entities));
     addManager(new InteractionManager(this, m_entities));
 
     /* Lights */
-    addPointLight(new PointLight(glm::vec3(10, 4, 0), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(-10, 4, 0), glm::vec3(1, 1, 1), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(-5, 4, 0), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(0, 4, 0), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(5, 4, 0), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)));
 
-    addPointLight(new PointLight(glm::vec3(10, 4, 4), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(-10, 4, 4), glm::vec3(1, 1, 1), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(-5, 4, 4), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(0, 4, 4), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(5, 4, 4), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
-
-    addPointLight(new PointLight(glm::vec3(10, 4, -4), glm::vec3(1, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(-10, 4, -4), glm::vec3(1, 1, 1), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(-5, 4, -4), glm::vec3(1, 0, 0), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(0, 4, -4), glm::vec3(0, 1, 0), glm::vec3(0.1, 0.2, 0.2)));
-    addPointLight(new PointLight(glm::vec3(5, 4, -4), glm::vec3(0, 0, 1), glm::vec3(0.1, 0.2, 0.2)));
-
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(1.0, 1.0, 1.0)));
-
-    m_planet = new PlanetManager(graphics);
+    planet = new PlanetManager(graphics);
 }
 
 GameWorld::~GameWorld()
 {
-    delete m_planet;
+    delete planet;
 }
 
 Player *GameWorld::getPlayer()
@@ -100,6 +78,9 @@ void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
     glm::vec3 newLook = glm::rotate(look, yaw, up);
     newLook = glm::rotate(newLook, pitch, glm::cross(look, up));
     m_camera->setLook(newLook);
+
+    /* Update matrices */
+    m_player->updateCamera();
 }
 
 void GameWorld::mousePressEvent(QMouseEvent *event)
@@ -133,9 +114,13 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
     {
         m_player->setJump(true);
     }
-    else if(event->key() == Qt::Key_Shift)
+    else if(event->key() == Qt::Key_Q)
     {
-        m_player->setNitro(true);
+        m_player->setZoomOut(true);
+    }
+    else if(event->key() == Qt::Key_E)
+    {
+        m_player->setZoomIn(true);
     }
     else if(event->key() == Qt::Key_F1)
     {
@@ -165,16 +150,20 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
     {
         m_player->setJump(false);
     }
-    else if(event->key() == Qt::Key_Shift && m_player->getNitro())
+    else if(event->key() == Qt::Key_Q && m_player->getZoomOut())
     {
-        m_player->setNitro(false);
+        m_player->setZoomOut(false);
+    }
+    else if(event->key() == Qt::Key_E && m_player->getZoomIn())
+    {
+        m_player->setZoomIn(false);
     }
 }
 
 void GameWorld::onTick(float seconds)
 {
     m_camera->setUp(glm::normalize(m_camera->getEye()));
-    float noise = m_planet->getNoise(glm::normalize(m_player->getPosition()));
+    float noise = planet->getNoise(glm::normalize(m_player->getPosition()));
 
     if(glm::length(m_player->getPosition()) - 1.f - m_player->getDimensions().x < noise)
     {
@@ -194,7 +183,7 @@ void GameWorld::drawGeometry(Graphics *graphics)
     World::drawGeometry(graphics);
 
     graphics->sendModelUniform(glm::mat4());
-    m_planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
+    planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
 }
 
 void GameWorld::drawLightGeometry(Graphics *graphics)

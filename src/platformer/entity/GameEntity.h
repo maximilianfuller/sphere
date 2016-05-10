@@ -50,12 +50,14 @@ public:
     void clearTargets();
 
     /* Game loop */
-    void onIntersect(Entity *ent, glm::vec3 mtv);
-    void onTick(float seconds);
-    void drawGeometry(Graphics *graphics);
-    void drawLights(Graphics *graphics);
-    void drawParticles(Graphics *graphics);
-    void drawLightGeometry(Graphics *graphics);
+    virtual void updateAcceleration();
+    virtual void updateVelocity(float seconds);
+    virtual void updatePosition(float seconds);
+    virtual void onTick(float seconds);
+    virtual void drawGeometry(Graphics *graphics);
+    virtual void drawLights(Graphics *graphics);
+    virtual void drawParticles(Graphics *graphics);
+    virtual void drawLightGeometry(Graphics *graphics);
 
 protected:
     PointLight *m_light;
