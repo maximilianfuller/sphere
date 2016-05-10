@@ -41,7 +41,7 @@ class QuadTree
 {
 public:
     QuadTree(PlanetManager *pm, int quadWidth, glm::mat4 transform, glm::vec3 eye,
-             glm::vec3 look, int maxDepth, int face, float splittingDistance);
+             glm::vec3 playerLoc, int maxDepth, int face, float splittingDistance);
     ~QuadTree();
     void draw();
 private:
@@ -50,7 +50,7 @@ private:
     int m_maxDepth;
     glm::mat4 m_transform;
     glm::vec3 m_eye;
-    glm::vec3 m_look;
+    glm::vec3 m_playerLoc;
     int m_face;
     PlanetManager *m_pm;
     float m_splittingDistance;

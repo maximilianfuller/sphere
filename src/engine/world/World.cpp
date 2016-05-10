@@ -73,7 +73,8 @@ void World::addEntity(Entity *ent)
 
 void World::removeEntity(Entity *ent)
 {
-    m_toRemove.append(ent);
+    delete ent;
+    m_entities.removeAll(ent);
 }
 
 void World::removeEntities()
@@ -239,6 +240,7 @@ void World::drawLightGeometry(Graphics *graphics)
 void World::mousePressEvent(QMouseEvent *event)
 {
 }
+
 
 void World::mouseMoveEvent(QMouseEvent *event, int startX,
                            int startY)

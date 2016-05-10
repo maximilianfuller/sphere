@@ -11,13 +11,13 @@ class PlanetManager
 {
 public:
     PlanetManager(Graphics *graphics);
-    void drawPlanet(glm::vec3 eye, glm::vec3 look);
+    void drawPlanet(glm::vec3 eye, glm::vec3 playerLoc);
     void setRatio(glm::vec2 ratio);
     glm::mat4 getQuadModel(int face, int depth, int x, int y);
     Graphics *getGraphics();
     void drawQuad(int face, int depth, int x, int y);
     float getNoise(glm::vec3 loc);
-    const static float TILE_MAX_HEIGHT = .2f; //these are used to determin tile volume frustum culling
+    const static float TILE_MAX_HEIGHT = 0.f; //these are used to determin tile volume frustum culling
     const static float TILE_MIN_HEIGHT = 0.f;
     const static float DOT_PRODUCT_EPSILON = .1f; //used to determin dot product threshold of sphere normal and dir vector
                                                   //when considering tile for backface culling
@@ -32,15 +32,16 @@ private:
     const static int FRONT = 4;
     const static int BACK = 5;
     const static int NUM_FACES = 6;
-    const static int QUAD_WIDTH = 128;
-    const static int MAX_DEPTH = 12;
-    const static float SPLITTING_DISTANCE = 0.5f;
+
+    //MAIN PLANET PARAMETERS
+    const static int QUAD_WIDTH = 33;
+    const static int MAX_DEPTH = 9;
+    const static float SPLITTING_DISTANCE = 1.3f;
 
 
-    void drawFace(int face, glm::vec3 eye, glm::vec3 look);
+    void drawFace(int face, glm::vec3 eye, glm::vec3 playerLoc);
 
     void initializeQuad(int width);
-    void initializeNoiseTexture();
     TileShape *m_tile;
     Graphics *m_graphics;
     Framebuffer *m_fb;

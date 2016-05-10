@@ -19,7 +19,7 @@ void EntityManager::onTick(float seconds) {
         if(e != m_player) {
             float f = glm::length(e->getPosition()-m_player->getPosition());
             if(glm::length(e->getPosition()-m_player->getPosition()) > SPAWN_RADIUS) {
-               //toRemove.append(e);
+               toRemove.append(e);
             }
         }
     }
@@ -33,7 +33,7 @@ void EntityManager::onTick(float seconds) {
             float dieRoll = rand()/(float)RAND_MAX;
             float prob = getEntitySpawnProbability(level)*seconds;
             if (dieRoll < prob) {
-                spawnEnemy(level);
+//                spawnEnemy(level);
             }
         }
     }

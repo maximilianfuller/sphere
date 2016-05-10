@@ -10,7 +10,6 @@
 PlanetManager::PlanetManager(Graphics *graphics)
 {
     initializeQuad(QUAD_WIDTH);
-    initializeNoiseTexture();
     m_graphics = graphics;
 
     GLint internalFormats[1] = {GL_RGBA32F};
@@ -21,7 +20,9 @@ PlanetManager::PlanetManager(Graphics *graphics)
     m_fb = new Framebuffer(1, 1, 1, internalFormats, formats, types);
 }
 
-void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 look) {
+void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 playerLoc) {
+
+    std::cout << glm::to_string(playerLoc) << std::endl;
 
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -31,25 +32,26 @@ void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 look) {
     GLuint shader = m_graphics->getActiveProgram();
     glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 0);
 
+
     //set noise texture
 
     //draw faces of cube
-    drawFace(TOP, eye, look);
-    drawFace(BOTTOM, eye, look);
-    drawFace(LEFT, eye, look);
-    drawFace(RIGHT, eye, look);
-    drawFace(FRONT, eye, look);
-    drawFace(BACK, eye, look);
+    drawFace(TOP, eye, playerLoc);
+    drawFace(BOTTOM, eye, playerLoc);
+    drawFace(LEFT, eye, playerLoc);
+    drawFace(RIGHT, eye, playerLoc);
+    drawFace(FRONT, eye, playerLoc);
+    drawFace(BACK, eye, playerLoc);
 
 //    getNoise(glm::normalize(eye));
 
 }
 
-void PlanetManager::drawFace(int face, glm::vec3 eye, glm::vec3 look) {
+void PlanetManager::drawFace(int face, glm::vec3 eye, glm::vec3 playerLoc) {
     glm::mat4 transform = getQuadModel(face,0,0,0);
 
 
-    QuadTree *t = new QuadTree(this, QUAD_WIDTH,transform, eye,look,MAX_DEPTH,face, SPLITTING_DISTANCE);
+    QuadTree *t = new QuadTree(this, QUAD_WIDTH,transform, eye, playerLoc,MAX_DEPTH,face, SPLITTING_DISTANCE);
     t->draw();
     delete t;
 }
@@ -65,7 +67,6 @@ void PlanetManager::drawQuad(int face, int depth, int x, int y) {
 }
 
 float PlanetManager::getNoise(glm::vec3 loc) {
-
     /* Remake framebuffers */
     m_graphics->setActiveProgram("pre");
     m_fb->bind();
@@ -84,6 +85,7 @@ float PlanetManager::getNoise(glm::vec3 loc) {
 
     m_fb->unbind();
 
+    std::cout << float(pixels[0]) << std::endl;
     return float(pixels[0]);
 }
 
@@ -145,21 +147,3 @@ void PlanetManager::initializeQuad(int width) {
     m_tile = new TileShape(width);
 }
 
-void PlanetManager::initializeNoiseTexture() {
-//    QImage img(path);
-//    if(img.isNull()) {
-//        return;
-//    }
-//    img = QGLWidget::convertToGLFormat(img);
-
-//    GLuint imageID;
-//    glGenTextures(1, &imageID);
-
-//    m_textures->insert(path, imageID);
-
-//    glBindTexture(GL_TEXTURE_2D, imageID);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width(), img.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, img.bits());
-//    glBindTexture(GL_TEXTURE_2D, 0);
-}

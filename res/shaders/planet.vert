@@ -14,6 +14,7 @@ uniform int collisionDetection;
 uniform vec3 collisionLoc;
 
 out vec4 position_worldSpace;
+out vec4 normal_worldSpace;
 out vec4 eye_worldSpace;
 out vec2 texc;
 flat out int cd;
@@ -27,6 +28,7 @@ float PI = 3.141592;
 int seed = 0;
 int octaves = 10;
 float alpha = .50;
+float normalDelta = .0001;
 float amp = .03;
 float freq = 10.0;
 
@@ -88,6 +90,8 @@ void main(){
         eye_worldSpace = vec4(h,0,0,0);
 
 
+
+
     } else {
         //RENDER PLANET
         //calculate sphere position
@@ -95,12 +99,25 @@ void main(){
         pos = normalize(pos);
         pos = sNoise(pos); //with noise added
 
+//        for(int i = 0; i < 10; i++) {
+//            pos = sNoise(pos);
+//        }
+
+//        vec3 polar = cartesianToPolar(pos);
+//        vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
+//        vec3 p2 = sNoise(polarToCartesian(vec3(polar.x - normalDelta, polar.y, polar.z)));
+//        vec3 p3 = sNoise(polarToCartesian(vec3(polar.x, polar.y + normalDelta, polar.z)));
+//        vec3 p4 = sNoise(polarToCartesian(vec3(polar.x, polar.y - normalDelta, polar.z)));
+//        vec4 normal = vec4(normalize(cross(p1-p2, p3-p4)), 0.0);
+        //vec4 normal = vec4(normalize(cross(p1-pos, p3-pos)), 0.0);
+
+
         //adjust normalDelta
         vec3 eyeLoc = vec3(inverse(v)*vec4(0,0,0,1));
-//        normalDelta *= max(length(pos-(eyeLoc)),.005);//multiply eyeloc by small scalar to avoid this coming out to zero with floating point errors
 
         //set uniforms
         position_worldSpace = vec4(pos, 1.0);
+        //normal_worldSpace = normal;
         gl_Position = p * v * position_worldSpace;
         eye_worldSpace = vec4(eyeLoc, 1.0);
         texc = texCoord;
