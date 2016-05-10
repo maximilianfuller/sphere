@@ -16,27 +16,32 @@ void EntityManager::onTick(float seconds) {
     //remove entities outside of range
     for(int i = 0; i < m_entities.length(); i++) {
         Entity *e = m_entities.value(i);
-        if(glm::length(e->getPosition()-m_player->getPosition()) < SPAWN_RADIUS) {
-            toRemove.append(e);
+        if(e != m_player) {
+            float f = glm::length(e->getPosition()-m_player->getPosition());
+            if(glm::length(e->getPosition()-m_player->getPosition()) > SPAWN_RADIUS) {
+                toRemove.append(e);
+            }
         }
     }
-    for(int i = 0; i < m_entities.length(); i++) {
-        Entity *e = m_entities.value(i);
+    for(int i = 0; i < toRemove.length(); i++) {
+        Entity *e = toRemove.value(i);
         m_world->removeEntity(e);
     }
+
+//    spawnEnemy(3);
 
     if(m_entities.length()-1 < MAX_ENEMIES) {
         for(int level = 1; level <= NUM_LEVELS; level++) {
             float dieRoll = rand()/(float)RAND_MAX;
             if (dieRoll < getEntitySpawnProbability(level)*seconds) {
-                spawnEnemy(level);
+                //spawnEnemy(level);
             }
         }
     }
 }
 
 void EntityManager::spawnEnemy(int level) {
-    Enemy *e = new Enemy(m_world, getPower(level), getColor(level),getRandomSpawnLoc(.001f), glm::vec3(), getSpeed(level));
+    Enemy *e = new Enemy(m_world, getPower(level), getColor(level),getRandomSpawnLoc(.001f), getSpeed(level));
     m_world->addEntity(e);
 }
 
@@ -62,7 +67,7 @@ glm::vec3 EntityManager::getColor(int level) {
 }
 
 float EntityManager::getPower(int level) {
-    return glm::pow(8.f, level-1.f);
+    return glm::pow(8.f, level-1.f)*POWER_COEFF;
 }
 
 float EntityManager::getSpeed(int level) {

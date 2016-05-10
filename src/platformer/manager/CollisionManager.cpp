@@ -1,24 +1,37 @@
 #include "CollisionManager.h"
 
 #include "engine/entity/Entity.h"
+#include "engine/planet/planetmanager.h"
+
+#include "platformer/world/GameWorld.h"
+#include "platformer/entity/GameEntity.h"
 
 CollisionManager::CollisionManager(World *world, QList<Entity *> &entities) :
     Manager(world, entities)
 {
 }
 
-/* TODO:
- * Set uniforms for each entity
- * Run the shader program for each entity
- * Get the output
- * Set the location of the player
- * Set the acceleration of the player
- */
 void CollisionManager::onTick(float seconds)
 {
-    foreach(Entity *ent, m_entities)
+    GameWorld *world = dynamic_cast<GameWorld *>(m_world);
+
+    foreach(Entity *entity, m_entities)
     {
-        ent->setAcceleration(glm::vec3(0, 0, 0));
+        GameEntity *ent = dynamic_cast<GameEntity *>(entity);
+
+        float noise = world->getTerrainHeight(ent->getPosition());
+
+        if(glm::length(ent->getPosition()) - ent->getRadius() * 0.25 < noise)
+        {
+            ent->setPosition(glm::normalize(ent->getPosition())
+                             * (noise + ent->getRadius() * 0.25f));
+            ent->setGrounded(true);
+        }
+        else
+        {
+            ent->setGrounded(false);
+        }
+
         ent->onTick(seconds);
     }
 }

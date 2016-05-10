@@ -20,7 +20,8 @@ private:
     glm::vec3 START_LOC = glm::normalize(glm::vec3(1.f, 1.f, 1.f));
     int NUM_LEVELS = 6;
     float ENTITY_SPREAD = 3.f; //how far each band of enemies continues past its "level boundary"
-    float SPAWN_RATE_COEFF = .1f;
+    float SPAWN_RATE_COEFF = 10.f;
+    float POWER_COEFF = .001;
 
     Player *m_player;
     int getEntitySpawnProbability(int level);

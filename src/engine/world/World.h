@@ -32,7 +32,6 @@ public:
     QList<Entity *> getEntities();
     void addEntity(Entity *ent);
     void removeEntity(Entity *ent);
-    void removeEntities();
 
     /* Manager management */
     void addManager(Manager *manager);
@@ -80,6 +79,10 @@ protected:
     int m_particleIndex = 0;
 
     Camera *m_camera;
+
+private:
+    void removeEntities();
+
 };
 
 #endif // SCENE_H

@@ -14,7 +14,6 @@ public:
     GameEntity(World *world,
                float power, glm::vec3 color,
                glm::vec3 pos = glm::vec3(0, 0, 0),
-               glm::vec3 dims = glm::vec3(1, 1, 1),
                float speed = 1,
                glm::vec3 vel = glm::vec3(0, 0, 0),
                glm::vec3 acc = glm::vec3(0, G, 0),

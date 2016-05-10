@@ -58,7 +58,8 @@ void ParticleStreamSystem::start()
         for(int i = 0; i < 50; i++)
         {
             createParticle(true);
-            m_particles[i]->age = -m_particles[i]->pos.z;
+            int index = m_particleIndex - 1;
+            m_particles[index]->age = -m_particles[index]->pos.z;
         }
 
         m_started = true;
@@ -111,7 +112,7 @@ void ParticleStreamSystem::createParticle(bool start)
     /* Create particle */
     delete m_particles[m_particleIndex];
     Particle *particle = new Particle(pos, vel, radius, theta, m_textureKey);
-    m_particles[m_particleIndex++]  = particle;
+    m_particles[m_particleIndex++] = particle;
     m_particleIndex %= MAX_PARTICLES;
 
     /* Move particles to middle of stream */
@@ -136,7 +137,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
 
         if(source->getTransferRate(target) - target->getTransferRate(source) != 0)
         {
-            m_particleTimeout = int(glm::min(0.2f / glm::abs(source->getTransferRate(target) - target->getTransferRate(source)), 120.f));
+            m_particleTimeout = int(glm::min(0.005f / glm::abs(source->getTransferRate(target) - target->getTransferRate(source)), 120.f));
         }
         else
         {
@@ -152,15 +153,15 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
     graphics->sendColorUniform(glm::vec4(m_color, 1.0));
 
     /* Update existing particles */
-    glm::vec3 sourcePos = m_source->getPosition() + glm::vec3(0, 1, 0);
-    glm::vec3 targetPos = m_target->getPosition() + glm::vec3(0, 1, 0);
+    glm::vec3 sourcePos = m_source->getPosition();
+    glm::vec3 targetPos = m_target->getPosition();
 
-    float totalDistance = glm::length(targetPos - sourcePos);
+    float totalDistance = glm::max(glm::length(targetPos - sourcePos), 0.0001f);
     float maxDistance = target->getLightRadius() + source->getLightRadius();
     glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(1, 1, totalDistance));
 
     /* Align particle stream */
-    glm::mat4x4 view = glm::lookAt(sourcePos, targetPos, glm::vec3(0, 1, 0));
+    glm::mat4x4 view = glm::lookAt(sourcePos, targetPos, glm::normalize(sourcePos));
     glm::mat4x4 model = glm::inverse(view) * scale;
 
     for(int i = 0; i < MAX_PARTICLES; i++)
@@ -169,7 +170,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
         {
             float distance;
 
-            // Adjust distance based on relative size
+            /* Adjust distance based on relative size */
             if(target->getTransferRate(source) < source->getTransferRate(target))
             {
                 distance = m_particles[i]->pos.z + 1;
@@ -179,7 +180,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
                 distance = glm::abs(m_particles[i]->pos.z);
             }
 
-            // Particle expire by position
+            /* Particle expire by position */
             if(distance >= 1)
             {
                 delete(m_particles[i]);
@@ -187,7 +188,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
                 continue;
             }
 
-            // Particle expire by age
+            /* Particle expire by age */
             if(m_particles[i]->age >= MAX_AGE)
             {
                 delete(m_particles[i]);
@@ -196,14 +197,15 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
                 continue;
             }
 
-            // Set particle velocity
-            float maxVel = (5.f / totalDistance) * (1 - (totalDistance / maxDistance));
-            float transVel = glm::clamp(source->getTransferRate(target) - target->getTransferRate(source),
-                                       -maxVel, maxVel);
-            float absVel = glm::abs(transVel);
+            std::cout << totalDistance << std::endl;
+
+            /* Set particle velocity */
+            float maxVel = (0.003f / (totalDistance)) * (1 - totalDistance / maxDistance);
+            float diff = (source->getTransferRate(target) - target->getTransferRate(source)) / totalDistance * (1 - totalDistance / maxDistance);
+            float transVel = glm::clamp(diff * 50.f, -maxVel, maxVel);
 
             m_particles[i]->vel.z += transVel * 0.1;
-            m_particles[i]->vel.z = glm::clamp(-absVel, m_particles[i]->vel.z, absVel);
+            m_particles[i]->vel.z = glm::clamp(-maxVel, m_particles[i]->vel.z, maxVel);
 
             // Tick and draw particle
             m_particles[i]->tick(1.0 / 60.0);

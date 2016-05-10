@@ -59,13 +59,16 @@ void main()
 
     /* Diffuse component */
     float diffuseFactor = max(dot(fragNormal, vertexToLight), 0.0);
-    lightData += vec4(max(vec3(0), fragColor * lightInt * diffuseFactor), 0.0);
+    lightData += vec4(fragColor * lightInt * diffuseFactor, 0.0);
 
     /* Specular component */
-    vec3 lightReflection = normalize(-reflect(vertexToLight, fragNormal));
-    vec3 eyeDirection = normalize(vec3(eye_worldSpace) - fragPos);
-    float specFactor = pow(max(0.0, dot(eyeDirection, lightReflection)), fragSpecular * 256);
-    lightData += vec4(max(vec3(0), fragColor * lightInt * specFactor), 0.0);
+    if(diffuseFactor != 0)
+    {
+        vec3 lightReflection = normalize(-reflect(vertexToLight, fragNormal));
+        vec3 eyeDirection = normalize(vec3(eye_worldSpace) - fragPos);
+        float specFactor = pow(max(0.0, dot(eyeDirection, lightReflection)), fragSpecular * 256);
+        lightData += vec4(fragColor * lightInt * specFactor, 0.0);
+    }
 
     /* Attenuation for point light */
     if(lightType == 0)

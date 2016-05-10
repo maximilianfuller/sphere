@@ -5,10 +5,10 @@
 #include "engine/particle/ParticleStreamSystem.h"
 
 Enemy::Enemy(World *world, float power, glm::vec3 color,
-             glm::vec3 pos, glm::vec3 dims,
+             glm::vec3 pos,
              float speed, glm::vec3 vel, glm::vec3 acc,
              glm::vec3 goal, float friction) :
-    GameEntity(world, power, color, pos, dims, speed, vel, acc, goal, friction)
+    GameEntity(world, power, color, pos, speed, vel, acc, goal, friction)
 {
 }
 

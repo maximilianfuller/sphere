@@ -78,23 +78,15 @@ void World::removeEntity(Entity *ent)
 
 void World::removeEntities()
 {
-    int i = 0;
     QList<int> removeIndices;
 
     foreach(Entity *e, m_entities)
     {
         if(m_toRemove.contains(e))
         {
-            removeIndices.append(i);
+            m_entities.removeOne(e);
+            delete e;
         }
-
-        i++;
-    }
-
-    foreach(int j, removeIndices)
-    {
-        delete m_entities[j];
-        m_entities.removeAt(j);
     }
 
     m_toRemove.clear();
@@ -178,8 +170,9 @@ void World::onTick(float seconds)
     foreach(Manager *manager, m_managers)
     {
         manager->onTick(seconds);
-        removeEntities();
     }
+    removeEntities();
+
 }
 
 void World::drawGeometry(Graphics *graphics)
