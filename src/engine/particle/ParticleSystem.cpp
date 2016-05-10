@@ -4,6 +4,7 @@
 #include "engine/graphics/Graphics.h"
 
 ParticleSystem::ParticleSystem(QString textureKey) :
+    m_particleIndex(0),
     m_textureKey(textureKey)
 {
     for(int i = 0; i < MAX_PARTICLES; i++)

@@ -4,10 +4,10 @@
 #include "engine/entity/Entity.h"
 
 VultureEnemy::VultureEnemy(World *world, float power, glm::vec3 color,
-                           glm::vec3 pos, glm::vec3 dims,
+                           glm::vec3 pos,
                            float speed, glm::vec3 vel, glm::vec3 acc,
                            glm::vec3 goal, float friction) :
-    Enemy(world, power, color, pos, dims, speed, vel, acc, goal, friction)
+    Enemy(world, power, color, pos, speed, vel, acc, goal, friction)
 {
 }
 

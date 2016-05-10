@@ -20,7 +20,7 @@ public:
 
 protected:
     Particle* m_particles[MAX_PARTICLES];
-    int m_particleIndex = 0;
+    int m_particleIndex;
 
     QString m_textureKey;
 };

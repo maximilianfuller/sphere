@@ -4,13 +4,11 @@
 #include "engine/shape/Shape.h"
 #include "engine/world/World.h"
 #include "engine/camera/Camera.h"
-#include "engine/shape/Ellipsoid.h"
 
 #include "engine/light/PointLight.h"
 
 GameEntity::GameEntity(World *world,
-                       float power, glm::vec3 color,
-                       glm::vec3 pos, glm::vec3 dims,
+                       float power, glm::vec3 color, glm::vec3 pos,
                        float speed, glm::vec3 vel, glm::vec3 acc,
                        glm::vec3 goal, float friction) :
     m_power(power),
@@ -20,10 +18,10 @@ GameEntity::GameEntity(World *world,
     m_warning(false),
     m_stun(false),
     m_stunTimer(0),
-    Entity(world, pos, dims, speed, vel, acc, goal, friction)
+    Entity(world, pos, glm::vec3(0, 0, 0), speed, vel, acc, goal, friction)
 {
     /* Create shape */
-    m_shape = new Ellipsoid(m_pos, m_dims);
+    m_shape = NULL;
 
     /* Create light */
     m_light = new PointLight(m_pos, color);
@@ -176,9 +174,6 @@ void GameEntity::onTick(float seconds)
     }
 
     /* Update light */
-    float radius = getRadius();
-    m_shape->setPosition(m_pos);
-    m_shape->setDimensions(glm::vec3(radius, radius, radius));
     m_light->setPosition(m_pos);
     m_light->setRadius(getLightRadius());
 
@@ -187,14 +182,14 @@ void GameEntity::onTick(float seconds)
 
     foreach(GameEntity *target, m_targets)
     {
-        float amount = getTransferRate(target) * 0.002;
+        float amount = getTransferRate(target) * 0.00000;
 
         m_delta += amount;
     }
 
     foreach(GameEntity *target, m_targets)
     {
-        float amount = target->getTransferRate(this) * 0.002;
+        float amount = target->getTransferRate(this) * 0.00000;
 
         m_delta -= amount;
     }

@@ -22,18 +22,13 @@
 #include <queue>
 #include <glm/gtx/rotate_vector.hpp>
 
-/* TODO:
- * - Entity goal velocity change
- * - Subtract velocity component in up direction.
- * - Change particle size
- * - Add enemies
- */
 GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     World(camera)
 {
     /* Player */
     m_player = new Player(this, camera);
     addEntity(m_player);
+    addEntity(new Enemy(this, 0.0015, glm::vec3(1, 0, 0), glm::vec3(1.002, 0, 0), 1));
 
     /* Add managers */
     addManager(new CollisionManager(this, m_entities));
@@ -162,18 +157,8 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
 
 void GameWorld::onTick(float seconds)
 {
+    /* Set camera up vector */
     m_camera->setUp(glm::normalize(m_camera->getEye()));
-    float noise = planet->getNoise(glm::normalize(m_player->getPosition()));
-
-    if(glm::length(m_player->getPosition()) - 1.f - m_player->getDimensions().x < noise)
-    {
-        m_player->setPosition(glm::normalize(m_player->getPosition())*(1.f + noise + m_player->getDimensions().x));
-        m_player->setGrounded(true);
-    }
-    else
-    {
-        m_player->setGrounded(false);
-    }
 
     World::onTick(seconds);
 }

@@ -27,11 +27,11 @@ void main()
     vec3 particlePos = vec3(position_worldSpace);
     vec3 fragPos = vec3(texture(position, gl_FragCoord.xy / res));
     float depth = length(particlePos - fragPos);
-    float depthFactor1 = smoothstep(0, 0.5, depth);
+    float depthFactor1 = smoothstep(0, 0.00005, depth);
 
     // Fade based on age
-    float ageFactor1 = smoothstep(0, 0.1, age);
-    float ageFactor2 = smoothstep(0, 0.2, 1 - age);
+    float ageFactor1 = smoothstep(0, 0.02, age);
+    float ageFactor2 = smoothstep(0, 0.1, 1 - age);
 
     fragColor = depthFactor1 * ageFactor1 * ageFactor2 * particleColor;
 }

@@ -19,10 +19,10 @@ Player::Player(World *world, Camera *camera) :
     m_jump(false),
     m_zoomIn(false),
     m_zoomOut(false),
-    m_zoom(20),
+    m_zoom(5),
     m_attackTimer(0),
     m_camera(camera),
-    GameEntity(world, 0.002, glm::vec3(1, 1, 1), glm::vec3(1.0001, 0, 0), glm::vec3(0.0003, 0.0003, .0003), 7)
+    GameEntity(world, 0.002, glm::vec3(1, 1, 1), glm::vec3(1.0001, 0, 0), 7)
 {
 }
 
@@ -206,7 +206,11 @@ void Player::updateGoalVelocity()
 
 void Player::updateCamera()
 {
-    m_camera->setEye(m_pos - m_zoom * m_dims.x * m_camera->getLook());
+    float radius = getRadius();
+
+    m_camera->setEye(m_pos - m_zoom * radius * m_camera->getLook());
+
+    /*
     glm::vec3 eye = m_camera->getEye();
 
     GameWorld *world = dynamic_cast<GameWorld *>(m_world);
@@ -216,6 +220,7 @@ void Player::updateCamera()
     {
         m_camera->setEye(glm::normalize(eye) * (1.f + noise + 0.0005f));
     }
+    */
 }
 
 void Player::onTick(float seconds)
