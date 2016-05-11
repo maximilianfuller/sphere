@@ -76,7 +76,6 @@ bool QuadTree::shouldSplit(int x, int y, int depth) {
  * @return whether or not the given tile should be drawn
  */
 bool QuadTree::shouldCull(int x, int y, int depth) {
-    return false;
 
     Graphics *g = m_pm->getGraphics();
 
@@ -96,18 +95,18 @@ bool QuadTree::shouldCull(int x, int y, int depth) {
             glm::dot(x4-m_eye, x4) > PlanetManager::DOT_PRODUCT_EPSILON;
 
     if(facingAway) {
-//        return true;
+        return true;
     }
 
     QList<glm::vec3> points;
     points.append(x1);
-//    points.append(x2);
-//    points.append(x3);
-//    points.append(x4);
-//    points.append(x5);
-//    points.append(x6);
-//    points.append(x7);
-//    points.append(x8);
+    points.append(x2);
+    points.append(x3);
+    points.append(x4);
+    points.append(x5);
+    points.append(x6);
+    points.append(x7);
+    points.append(x8);
 
     for(int j = 0; j < points.size(); j++) {
         if(g->inFrustum(points.value(j))) {

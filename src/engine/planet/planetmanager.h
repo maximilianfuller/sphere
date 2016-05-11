@@ -33,8 +33,8 @@ private:
     const static int NUM_FACES = 6;
 
     //MAIN PLANET PARAMETERS
-    const static int QUAD_WIDTH = 16;
-    const static int MAX_DEPTH = 8;
+    const static int QUAD_WIDTH = 23;
+    const static int MAX_DEPTH = 11;
     const static float SPLITTING_DISTANCE = 1.3f;
 
 
