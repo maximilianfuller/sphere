@@ -136,37 +136,13 @@ void Camera::updateTransforms()
 
 void Camera::updateFrustumPlanes(Graphics *controller)
 {
-    glm::vec4 nx = glm::vec4(m_persp[0][3] - m_persp[0][0],
-            m_persp[1][3] - m_persp[1][0],
-            m_persp[2][3] - m_persp[2][0],
-            m_persp[3][3] - m_persp[3][0]);
+//    glm::mat4 view = glm::lookAt(m_eye, m_eye + m_look, m_up);
+//    glm::mat4 proj = glm::perspective(glm::radians(m_fov), m_ratio.x / m_ratio.y,
+//                              nearPlane, farPlane);
+//    glm::mat4 t = proj * view;
+    glm::mat4 t = m_persp;
 
-    glm::vec4 x = glm::vec4(m_persp[0][3] + m_persp[0][0],
-            m_persp[1][3] + m_persp[1][0],
-            m_persp[2][3] + m_persp[2][0],
-            m_persp[3][3] + m_persp[3][0]);
-
-    glm::vec4 ny = glm::vec4(m_persp[0][3] - m_persp[0][1],
-            m_persp[1][3] - m_persp[1][1],
-            m_persp[2][3] - m_persp[2][1],
-            m_persp[3][3] - m_persp[3][1]);
-
-    glm::vec4 y = glm::vec4(m_persp[0][3] + m_persp[0][1],
-            m_persp[1][3] + m_persp[1][1],
-            m_persp[2][3] + m_persp[2][1],
-            m_persp[3][3] + m_persp[3][1]);
-
-    glm::vec4 nz = glm::vec4(m_persp[0][3] - m_persp[0][2],
-            m_persp[1][3] - m_persp[1][2],
-            m_persp[2][3] - m_persp[2][2],
-            m_persp[3][3] - m_persp[3][2]);
-
-    glm::vec4 z = glm::vec4(m_persp[0][3] + m_persp[0][2],
-            m_persp[1][3] + m_persp[1][2],
-            m_persp[2][3] + m_persp[2][2],
-            m_persp[3][3] + m_persp[3][2]);
-
-    controller->setFrustumPlanes(nx, x, ny, y, nz, z);
+    controller->setFrustumPlanes(t[3] - t[0], t[3] + t[0], t[3] - t[1], t[3] + t[1], t[3] - t[2], t[3] + t[2]);
 }
 
 void Camera::setTransforms(Graphics *graphics)

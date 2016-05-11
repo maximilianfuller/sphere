@@ -43,7 +43,7 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     addManager(new InteractionManager(this, m_entities));
 
     /* Lights */
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)));
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)*5.f));
 
     m_planet = new PlanetManager(graphics);
 }
@@ -175,7 +175,7 @@ void GameWorld::drawGeometry(Graphics *graphics)
     World::drawGeometry(graphics);
 
     graphics->sendModelUniform(glm::mat4());
-    m_planet->drawPlanet(m_camera->getEye(), m_camera->getLook());
+    m_planet->drawPlanet(m_camera->getEye(), m_player->getPosition());
 }
 
 void GameWorld::drawLightGeometry(Graphics *graphics)

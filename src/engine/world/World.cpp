@@ -239,6 +239,7 @@ void World::mousePressEvent(QMouseEvent *event)
 {
 }
 
+
 void World::mouseMoveEvent(QMouseEvent *event, int startX,
                            int startY)
 {

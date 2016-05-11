@@ -4,8 +4,14 @@ layout (location = 1) out vec4 fragNormal;
 layout (location = 2) out vec4 fragColorSpecular;
 
 in vec4 position_worldSpace;
+in vec4 normal_worldSpace;
+in vec4 position_normal;
 in vec4 eye_worldSpace;
 flat in int cd;
+
+vec3 tan = vec3(194/255.0, 178/255.0, 128/255.0);
+vec3 white = vec3(1.0,1.0,1.0);
+
 
 ///////////////////////////////
 //VALUE NOISE
@@ -15,7 +21,7 @@ float PI = 3.141592;
 int seed = 0;
 int octaves = 10;
 float alpha = .50;
-float normalDelta = .00005;
+float normalDelta = .0003;
 float amp = .03;
 float freq = 10.0;
 
@@ -72,34 +78,36 @@ void main(){
         fragPosition = eye_worldSpace;
     } else {
         //rendering planet
-        vec3 base_color = vec3(0,0,0);
+        vec3 base_color = white;
+        float spec;
         vec3 pos = vec3(position_worldSpace);
+//        pos = sNoise(pos);
 
-        float h = (length(vec3(position_worldSpace))-1.0)/.03;
-
-        vec3 blue = vec3(28/255.0, 107/255.0, 160/255.0);
-        vec3 tan = vec3(194/255.0, 178/255.0, 128/255.0);
-        vec3 green = vec3(0/255.0, 123/255.0, 12/255.0);
-        vec3 gray = vec3(139/255.0, 140/255.0, 122/255.0);
-        vec3 white = vec3(1.0,1.0,1.0);
 
         vec3 polar = cartesianToPolar(pos);
         vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
-        vec3 p2 = sNoise(polarToCartesian(vec3(polar.x - normalDelta, polar.y, polar.z)));
+//        vec3 p2 = sNoise(polarToCartesian(vec3(polar.x - normalDelta, polar.y, polar.z)));
         vec3 p3 = sNoise(polarToCartesian(vec3(polar.x, polar.y + normalDelta, polar.z)));
-        vec3 p4 = sNoise(polarToCartesian(vec3(polar.x, polar.y - normalDelta, polar.z)));
-        vec4 normal = vec4(normalize(cross(p1-p2, p3-p4)), 0.0);
+//        vec3 p4 = sNoise(polarToCartesian(vec3(polar.x, polar.y - normalDelta, polar.z)));
+//        vec4 normal = vec4(normalize(cross(p1-p2, p3-p4)), 0.0);
+      vec4 normal = vec4(normalize(cross(p1-pos, p3-pos)), 0.0);
 
 
-        if (dot(vec3(normal), normalize(pos)) > .850) {
+//      vec4 normal = normal_worldSpace;
+//      vec4 normal = vec4(pos, 0);
+
+
+        if (dot(vec3(normal), normalize(pos)) > .900) {
             base_color = white;
+            spec = .3;
         } else {
             base_color = tan;
+            spec = .15;
         }
 
         //set out uniforms
         fragPosition = position_worldSpace/position_worldSpace.w;
         fragNormal = normal;
-        fragColorSpecular = vec4(vec3(base_color * 0.5), .1);
+        fragColorSpecular = vec4(vec3(base_color * spec), .1);
     }
 }
