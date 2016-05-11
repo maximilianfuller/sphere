@@ -8,6 +8,7 @@ uniform mat4 m;
 uniform mat4 v;
 uniform mat4 p;
 uniform mat4 cube_m; //model that maps quad to cube
+uniform sampler2D tex;
 
 //collision uniforms
 uniform int collisionDetection;
@@ -35,15 +36,27 @@ float freq = 10.0;
 float hash( float n ) { return fract(sin(n)*753.5453123); }
 float noiseF( in vec3 x )
 {
-    vec3 p = floor(x);
-    vec3 f = fract(x);
-    f = f*f*(3.0-2.0*f);
 
-    float n = p.x + p.y*157.0 + 113.0*p.z;
-    return mix(mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),
-                   mix( hash(n+157.0), hash(n+158.0),f.x),f.y),
-               mix(mix( hash(n+113.0), hash(n+114.0),f.x),
-                   mix( hash(n+270.0), hash(n+271.0),f.x),f.y),f.z);
+    return 0.0;
+        vec3 p = floor(x);
+        vec3 f = fract(x);
+        f = f*f*(3.0-2.0*f);
+
+        float n = p.x + p.y*157.0 + 113.0*p.z;
+        return mix(mix(mix( hash(n+  0.0), hash(n+  1.0),f.x),
+                       mix( hash(n+157.0), hash(n+158.0),f.x),f.y),
+                   mix(mix( hash(n+113.0), hash(n+114.0),f.x),
+                       mix( hash(n+270.0), hash(n+271.0),f.x),f.y),f.z);
+
+//    vec3 p = floor(x);
+//    vec3 f = fract(x);
+//    f = f*f*(3.0-2.0*f);
+
+//    vec2 uv = (p.xy+vec2(37.0,17.0)*p.z)+ f.xy;
+//    uv = (uv+0.5)/256.0;
+//    uv.y = -uv.y;
+//    vec2 rg = texture2D( tex, uv).yx;
+//    return mix( rg.x, rg.y, f.z);
 }
 
 float noise(float x, float y, float z) {
@@ -82,7 +95,7 @@ void main(){
 
     if(collisionDetection != 0) {
         //RENDER QUAD FOR COLLISION DETECTION
-        octaves = octaves -4;
+        //        octaves = octaves -4;
         float h = noise(collisionLoc.x, collisionLoc.y, collisionLoc.z);
 
         //set uniforms
@@ -99,17 +112,17 @@ void main(){
         pos = normalize(pos);
         pos = sNoise(pos); //with noise added
 
-//        for(int i = 0; i < 10; i++) {
-//            pos = sNoise(pos);
-//        }
+        for(int i = 0; i < 10; i++) {
+            pos = sNoise(pos);
+        }
 
-//        vec3 polar = cartesianToPolar(pos);
-//        vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
+        vec3 polar = cartesianToPolar(pos);
+        vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
 //        vec3 p2 = sNoise(polarToCartesian(vec3(polar.x - normalDelta, polar.y, polar.z)));
-//        vec3 p3 = sNoise(polarToCartesian(vec3(polar.x, polar.y + normalDelta, polar.z)));
+        vec3 p3 = sNoise(polarToCartesian(vec3(polar.x, polar.y + normalDelta, polar.z)));
 //        vec3 p4 = sNoise(polarToCartesian(vec3(polar.x, polar.y - normalDelta, polar.z)));
 //        vec4 normal = vec4(normalize(cross(p1-p2, p3-p4)), 0.0);
-        //vec4 normal = vec4(normalize(cross(p1-pos, p3-pos)), 0.0);
+        vec4 normal = vec4(normalize(cross(p1-pos, p3-pos)), 0.0);
 
 
         //adjust normalDelta
@@ -117,7 +130,7 @@ void main(){
 
         //set uniforms
         position_worldSpace = vec4(pos, 1.0);
-        //normal_worldSpace = normal;
+        normal_worldSpace = normal;
         gl_Position = p * v * position_worldSpace;
         eye_worldSpace = vec4(eyeLoc, 1.0);
         texc = texCoord;

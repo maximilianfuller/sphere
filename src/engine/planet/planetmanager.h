@@ -19,9 +19,8 @@ public:
     float getNoise(glm::vec3 loc);
     const static float TILE_MAX_HEIGHT = 0.f; //these are used to determin tile volume frustum culling
     const static float TILE_MIN_HEIGHT = 0.f;
-    const static float DOT_PRODUCT_EPSILON = .1f; //used to determin dot product threshold of sphere normal and dir vector
+    const static float DOT_PRODUCT_EPSILON = .1f; //used to determine dot product threshold of sphere normal and dir vector
                                                   //when considering tile for backface culling
-
 
 private:
 
@@ -34,17 +33,19 @@ private:
     const static int NUM_FACES = 6;
 
     //MAIN PLANET PARAMETERS
-    const static int QUAD_WIDTH = 33;
-    const static int MAX_DEPTH = 9;
+    const static int QUAD_WIDTH = 1;
+    const static int MAX_DEPTH = 11;
     const static float SPLITTING_DISTANCE = 1.3f;
 
 
     void drawFace(int face, glm::vec3 eye, glm::vec3 playerLoc);
-
+    void initializeNoiseTexture();
+    void loadNoiseTexture(GLuint shader);
     void initializeQuad(int width);
     TileShape *m_tile;
     Graphics *m_graphics;
     Framebuffer *m_fb;
+    GLuint m_texture;
 };
 
 

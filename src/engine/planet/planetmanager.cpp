@@ -9,8 +9,10 @@
 
 PlanetManager::PlanetManager(Graphics *graphics)
 {
-    initializeQuad(QUAD_WIDTH);
     m_graphics = graphics;
+    initializeQuad(QUAD_WIDTH);
+    initializeNoiseTexture();
+
 
     GLint internalFormats[1] = {GL_RGBA32F};
     GLenum formats[1] = {GL_RGBA};
@@ -22,16 +24,12 @@ PlanetManager::PlanetManager(Graphics *graphics)
 
 void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 playerLoc) {
 
-    std::cout << glm::to_string(playerLoc) << std::endl;
-
 //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-//    glUseProgram(m_shader);
 
     //set uniforms
     GLuint shader = m_graphics->getActiveProgram();
     glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 0);
-
+    loadNoiseTexture(shader);
 
     //set noise texture
 
@@ -74,6 +72,7 @@ float PlanetManager::getNoise(glm::vec3 loc) {
 
     glUniform1i(glGetUniformLocation(shader, "collisionDetection"), 1);
     glUniform3fv(glGetUniformLocation(shader,"collisionLoc"),1,glm::value_ptr(loc));
+    loadNoiseTexture(shader);
 
     m_graphics->sendEmptyMatrices();
     m_graphics->drawShape("fullscreenQuad");
@@ -85,7 +84,6 @@ float PlanetManager::getNoise(glm::vec3 loc) {
 
     m_fb->unbind();
 
-    std::cout << float(pixels[0]) << std::endl;
     return float(pixels[0]);
 }
 
@@ -145,5 +143,34 @@ Graphics *PlanetManager::getGraphics() {
 
 void PlanetManager::initializeQuad(int width) {
     m_tile = new TileShape(width);
+}
+
+void PlanetManager::initializeNoiseTexture() {
+    /* Open image file */
+    QImage image(":/images/noise.png");
+    image = QGLWidget::convertToGLFormat(image);
+
+    /* Generate texture */
+    glGenTextures(1, &m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image.width(), image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image.bits());
+//    glGenerateMipmap(GL_TEXTURE_2D);
+
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+}
+
+void PlanetManager::loadNoiseTexture(GLuint shader){
+    /* Bind texture */
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
+    glUniform1i(glGetUniformLocation(shader, "tex"), GL_TEXTURE0);
+
 }
 

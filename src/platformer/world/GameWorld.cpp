@@ -26,10 +26,17 @@
 GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     World(camera)
 {
+    /* Planet */
+    m_planet = new PlanetManager(graphics);
+
     /* Player */
     m_player = new Player(this, camera);
     addEntity(m_player);
-    addEntity(new Enemy(this, 0.0015, glm::vec3(1, 0, 0), glm::vec3(1.002, 0, 0), 1));
+    glm::vec3 southPole = glm::normalize(glm::vec3(1.f, 1.f,1.f));
+    glm::vec3 startPos = (getTerrainHeight(southPole) + .01f)*southPole;
+    m_player->setPosition(startPos);
+
+    addEntity(new Enemy(this, 0.0015, startPos, glm::vec3(1.002, 0, 0), 1));
 
     /* Add managers */
     addManager(new CollisionManager(this, m_entities));
@@ -39,7 +46,6 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     /* Lights */
     addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)*5.f));
 
-    m_planet = new PlanetManager(graphics);
 }
 
 GameWorld::~GameWorld()
@@ -159,6 +165,7 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
 
 void GameWorld::onTick(float seconds)
 {
+
     /* Set camera up vector */
     m_camera->setUp(glm::normalize(m_camera->getEye()));
     World::onTick(seconds);

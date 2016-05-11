@@ -136,11 +136,11 @@ void Camera::updateTransforms()
 
 void Camera::updateFrustumPlanes(Graphics *controller)
 {
-//    glm::mat4 view = glm::lookAt(m_eye, m_eye + m_look, m_up);
-//    glm::mat4 proj = glm::perspective(glm::radians(m_fov), m_ratio.x / m_ratio.y,
-//                              nearPlane, farPlane);
-//    glm::mat4 t = proj * view;
-    glm::mat4 t = m_persp;
+    glm::mat4 view = glm::lookAt(m_eye, m_eye + m_look, m_up);
+    glm::mat4 proj = glm::perspective(glm::radians(m_fov), m_ratio.x / m_ratio.y,
+                              nearPlane, farPlane);
+    glm::mat4 t = glm::transpose(proj * view);
+//    glm::mat4 t = m_persp;
 
     controller->setFrustumPlanes(t[3] - t[0], t[3] + t[0], t[3] - t[1], t[3] + t[1], t[3] - t[2], t[3] + t[2]);
 }

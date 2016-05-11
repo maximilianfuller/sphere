@@ -237,20 +237,15 @@ void Graphics::setFrustumPlanes(glm::vec4 fnx, glm::vec4 fx,
 
 bool Graphics::inFrustum(glm::vec3 pos)
 {
-    bool allBehind = true;
 
     for(int i = 0; i < 6; i++)
     {
-        allBehind &= glm::dot(m_frustumPlanes[i], glm::vec4(pos, 1)) < 0;
+       if(glm::dot(m_frustumPlanes[i], glm::vec4(pos, 1)) < 0) {
+           return false;
+       }
     }
 
-
-    if(allBehind)
-    {
-        return false;
-    }
-
-    return true;
+   return true;
 }
 
 void Graphics::enableBlend()
