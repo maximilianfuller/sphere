@@ -19,14 +19,14 @@ void Particle::tick(float seconds)
     age += seconds;
 }
 
-void Particle::draw(Graphics *graphics, glm::mat4x4 look, glm::mat4x4 model)
+void Particle::draw(Graphics *graphics, glm::mat4x4 look, glm::mat4x4 model, float particleSize)
 {
     glm::vec3 newPos = glm::vec3(model * glm::vec4(pos, 1.0));
     glm::mat4x4 rotate = look * glm::rotate(glm::mat4x4(), -float(M_PI) / 2.f, glm::vec3(1, 0, 0));
-    glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(0.00015, 0.00015, 0.00015));
+    glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(particleSize, particleSize, particleSize));
     glm::mat4x4 translate = glm::translate(glm::mat4x4(), newPos);
 
-    graphics->sendModelUniform(translate * scale * rotate);
+    graphics->sendModelUniform(translate * rotate * scale);
     graphics->sendParticleAgeUniform(age / MAX_AGE);
     graphics->loadTexture(textureKey, 1);
     graphics->sendTexturePosition("tex", 1);

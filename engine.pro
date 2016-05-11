@@ -73,7 +73,8 @@ SOURCES += \
     src/engine/planet/planetshape.cpp \
     src/engine/planet/quadtree.cpp \
     src/engine/planet/tileshape.cpp \
-    src/platformer/manager/entitymanager.cpp
+    src/platformer/manager/entitymanager.cpp \
+    src/engine/particle/ParticleTube.cpp
 
 HEADERS += \
     libs/glew-1.10.0/include/GL/glew.h \
@@ -144,7 +145,8 @@ HEADERS += \
     src/engine/planet/planetshape.h \
     src/engine/planet/quadtree.h \
     src/engine/planet/tileshape.h \
-    src/platformer/manager/entitymanager.h
+    src/platformer/manager/entitymanager.h \
+    src/engine/particle/ParticleTube.h
 
 
 FORMS += src/mainwindow.ui

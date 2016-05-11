@@ -28,7 +28,7 @@ void ParticleSystem::draw(Graphics *graphics, glm::mat4x4 model)
         if(m_particles[i])
         {
             m_particles[i]->tick(1.0 / 60.0);
-            m_particles[i]->draw(graphics, model, glm::mat4x4());
+            m_particles[i]->draw(graphics, model, glm::mat4x4(), 1);
         }
     }
 }

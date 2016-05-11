@@ -33,7 +33,7 @@ void InteractionManager::connect(GameEntity *e1, GameEntity *e2, QList<std::pair
             ParticleStreamSystem *stream = new ParticleStreamSystem(
                         "particle", e1, e2,
                         glm::mix(e1->getColor(), e2->getColor(), 0.5),
-                        7.f);
+                        0.05 * (e1->getRadius() + e2->getRadius()));
 
             m_streams.append(stream);
 

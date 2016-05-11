@@ -19,7 +19,7 @@ class ParticleStreamSystem : public ParticleSystem
 public:
     ParticleStreamSystem(QString textureKey,
                          Entity *source, Entity *target, glm::vec3 color,
-                         float startVel);
+                         float particleSize = 1);
 
     /* Access attributes */
     Entity *getSource();
@@ -43,6 +43,8 @@ private:
     Entity *m_source;
     Entity *m_target;
     glm::vec3 m_color;
+
+    float m_particleSize;
 
     bool m_started;
     int m_startTimer;
