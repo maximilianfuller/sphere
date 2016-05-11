@@ -90,7 +90,7 @@ float GameEntity::getTransferRate(GameEntity *target)
     if(!m_stun)
     {
         float dist = glm::length(target->getPosition() - m_pos);
-        float transfer = (glm::pow(m_power, 0.333f)) / glm::max(dist, 1.f);
+        float transfer = 1.5f*(glm::pow(m_power, 0.333f)) / glm::max(dist, 1.f);
 
         if(target->getPower() < m_power && target->getPower() >= 0.002)
         {
@@ -202,7 +202,9 @@ void GameEntity::onTick(float seconds)
     foreach(GameEntity *target, m_targets)
     {
         float amount = getTransferRate(target) * TRANSFER_RATE;
-        lightInt += target->getLightIntensity() * getTransferRate(target) * 0.05f;
+
+//        if(getTransferRate(target) > target->getTransferRate(this))
+//            lightInt += target->getLightIntensity() * getTransferRate(target) * 0.05f;
 
         m_delta += amount;
     }
@@ -210,7 +212,7 @@ void GameEntity::onTick(float seconds)
     foreach(GameEntity *target, m_targets)
     {
         float amount = target->getTransferRate(this) * TRANSFER_RATE;
-        lightInt -= target->getLightIntensity() * target->getTransferRate(this) * 0.05f;
+        //lightInt -= target->getLightIntensity() * target->getTransferRate(this) * 0.05f; TODO: fix this
 
         m_delta -= amount;
     }

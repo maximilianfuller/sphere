@@ -17,8 +17,8 @@ void EntityManager::onTick(float seconds) {
     for(int i = 0; i < m_entities.length(); i++) {
         Entity *e = m_entities.value(i);
         if(e != m_player) {
-            float f = glm::length(e->getPosition()-m_player->getPosition());
-            if(glm::length(e->getPosition()-m_player->getPosition()) > SPAWN_RADIUS) {
+            float dist = glm::length(e->getPosition()-m_player->getPosition());
+            if(dist > getSpawnRadius()) {
                toRemove.append(e);
             }
         }
@@ -88,7 +88,7 @@ glm::vec3 EntityManager::getRandomSpawnLoc(float spawnHeight) {
     do {
         x = 2*(rand()/(float)RAND_MAX)-1.f;
         y = 2*(rand()/(float)RAND_MAX)-1.f;
-    } while (x*x + y*y > 1.f && sqrt(x*x + y*y) < SPAWN_RADIUS/NO_SPAWN_RADIUS);
+    } while (x*x + y*y > 1.f && sqrt(x*x + y*y) < getSpawnRadius()/getNoSpawnRadius());
 
     //get perpindicular vector;
     glm::vec3 up = glm::normalize(m_player->getPosition());
@@ -102,7 +102,7 @@ glm::vec3 EntityManager::getRandomSpawnLoc(float spawnHeight) {
     glm::vec3 yDir = glm::normalize(glm::cross(perp, up));
 
     //get raw position and project onto terrain surface (+ spawnHeight)
-    glm::vec3 pos =  m_player->getPosition() + xDir*x*SPAWN_RADIUS + yDir*y*SPAWN_RADIUS;
+    glm::vec3 pos =  m_player->getPosition() + xDir*x*getSpawnRadius() + yDir*y*getSpawnRadius();
     float terrainHeight = dynamic_cast<GameWorld *>(m_world)->getTerrainHeight(pos);
 
 
@@ -115,6 +115,15 @@ float EntityManager::getEntitySpawnProbability(int level) {
     float distToAreaLevel = glm::abs(level - areaLevel);
     float prob = glm::max(ENTITY_SPREAD - distToAreaLevel, 0.f)*SPAWN_RATE_COEFF;
     return prob;
+
+}
+
+float EntityManager::getSpawnRadius() {
+    return SPAWN_RADIUS*m_player->getRadius();
+}
+
+float EntityManager::getNoSpawnRadius() {
+    return NO_SPAWN_RADIUS*m_player->getRadius();
 
 }
 

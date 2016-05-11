@@ -14,12 +14,12 @@ public:
     virtual void onTick(float seconds);
 
 private:
-    const float SPAWN_RADIUS = .05f;
-    const float NO_SPAWN_RADIUS = 0.025f;
-    const float MAX_ENEMIES = 20;
+    const float SPAWN_RADIUS = 60.f;
+    const float NO_SPAWN_RADIUS = 30.f;
+    const float MAX_ENEMIES = 15;
     const glm::vec3 START_LOC = glm::normalize(glm::vec3(1.f, 1.f, 1.f));
     const int NUM_LEVELS = 6;
-    const float ENTITY_SPREAD = 1.5f; //how far each band of enemies continues past its "level boundary"
+    const float ENTITY_SPREAD = 2.1f; //how far each band of enemies continues past its "level boundary"
     const float SPAWN_RATE_COEFF = 1.5f;
     const float POWER_COEFF = .001;
 
@@ -30,6 +30,8 @@ private:
     float getPower(int level);
     float getSpeed(int level);
     glm::vec3 getRandomSpawnLoc(float spawnHeight);
+    float getSpawnRadius();
+    float getNoSpawnRadius();
 
 
 
