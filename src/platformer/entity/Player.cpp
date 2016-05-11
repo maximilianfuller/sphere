@@ -120,14 +120,17 @@ glm::vec3 Player::getDirection()
     glm::vec3 look = glm::normalize(m_camera->getLook());
     glm::vec3 up = glm::normalize(m_pos);
 
-    return glm::normalize(look - glm::dot(look, up) * up);
+    glm::vec3 dir = glm::normalize(look - glm::dot(look, up) * up);
+
+    std::cout << glm::dot(dir, up) << std::endl;
+    return dir - glm::dot(dir, up) * up;
 }
 
 void Player::jump()
 {
     m_grounded = false;
     glm::vec3 up = glm::normalize(m_pos);
-    glm::vec3 jump = up * JUMP_SPEED;
+    glm::vec3 jump = up * JUMP_SPEED * 100.f;
     m_vel = m_vel - glm::dot(m_vel, up) * up + jump;
 }
 
@@ -228,7 +231,7 @@ void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
-    m_speed = .006f;
+    m_speed = .01f;
 
     /* Set jump velocity */
     if(m_jump && m_grounded)

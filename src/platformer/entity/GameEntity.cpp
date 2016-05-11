@@ -141,7 +141,7 @@ void GameEntity::updateAcceleration()
     glm::vec3 perpVel = m_vel - glm::dot(up, m_vel) * up;
     glm::vec3 diff = m_goal - perpVel;
 
-    m_acc = glm::normalize(m_pos) * G;
+    m_acc = glm::normalize(m_pos) * G / m_speed;
     m_acc += m_friction * diff;
 }
 
@@ -161,10 +161,7 @@ void GameEntity::updatePosition(float seconds)
 {
     if(!m_moved)
     {
-        glm::vec3 up = glm::normalize(m_pos);
-        glm::vec3 downVel = glm::dot(up, m_vel) * up;
-
-        m_pos += (m_speed * (m_vel - downVel) + downVel) * seconds;
+        m_pos += m_speed * m_vel * seconds;
     }
 
     m_moved = false;

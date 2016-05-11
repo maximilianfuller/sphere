@@ -6,17 +6,13 @@
 
 #include "platformer/entity/GameEntity.h"
 
-/* TODO:
- * 0) Cleanup
- * 1) Global particles
- */
 ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
                                            Entity *source, Entity *target, glm::vec3 color,
-                                           float startVel) :
+                                           float particleSize) :
     m_source(source),
     m_target(target),
     m_color(color),
-    m_startVel(startVel),
+    m_particleSize(particleSize),
     m_particleTimer(0),
     m_particleTimeout(0),
     m_started(false),
@@ -208,7 +204,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
 
             // Tick and draw particle
             m_particles[i]->tick(1.0 / 60.0);
-            m_particles[i]->draw(graphics, look, model);
+            m_particles[i]->draw(graphics, look, model, m_particleSize);
         }
     }
 }

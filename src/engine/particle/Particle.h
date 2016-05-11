@@ -17,7 +17,7 @@ public:
              QString textureKey = QString(""));
 
     virtual void tick(float seconds);
-    virtual void draw(Graphics *graphics, glm::mat4x4 look, glm::mat4x4 model);
+    virtual void draw(Graphics *graphics, glm::mat4x4 look, glm::mat4x4 model, float particleSize);
 
     glm::vec3 pos;
     glm::vec3 vel;
