@@ -39,7 +39,7 @@ float GameEntity::getRadius()
 
 float GameEntity::getLightRadius()
 {
-    return getRadius() * 100.0;
+    return getRadius() * 75.0;
 }
 
 glm::vec3 GameEntity::getLightPosition()
@@ -83,7 +83,7 @@ float GameEntity::getTransferRate(GameEntity *target)
     if(!m_stun)
     {
         float dist = glm::length(target->getPosition() - m_pos);
-        return (4 * m_power / glm::max(dist, 1.f));
+        return glm::max((glm::pow(m_power, 0.333f)) / glm::max(dist, 1.f), 0.f);
     }
     else
     {
@@ -182,14 +182,14 @@ void GameEntity::onTick(float seconds)
 
     foreach(GameEntity *target, m_targets)
     {
-        float amount = getTransferRate(target) * 0.00000;
+        float amount = getTransferRate(target) * 0.000;
 
         m_delta += amount;
     }
 
     foreach(GameEntity *target, m_targets)
     {
-        float amount = target->getTransferRate(this) * 0.00000;
+        float amount = target->getTransferRate(this) * 0.000;
 
         m_delta -= amount;
     }

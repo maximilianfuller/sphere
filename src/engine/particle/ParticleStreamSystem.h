@@ -28,9 +28,10 @@ public:
 
     /* Create particles */
     void start();
+    void stop();
     bool getStarted();
 
-    void createParticle(bool start);
+    void createParticle();
 
     void draw(Graphics *graphics, glm::mat4x4 look);
 

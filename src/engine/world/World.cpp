@@ -73,8 +73,8 @@ void World::addEntity(Entity *ent)
 
 void World::removeEntity(Entity *ent)
 {
-    delete ent;
     m_entities.removeAll(ent);
+    delete ent;
 }
 
 void World::removeEntities()
@@ -170,8 +170,6 @@ void World::onTick(float seconds)
     {
         manager->onTick(seconds);
     }
-    removeEntities();
-
 }
 
 void World::drawGeometry(Graphics *graphics)

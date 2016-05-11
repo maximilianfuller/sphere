@@ -5,6 +5,8 @@
 
 class Camera;
 
+const float MIN_ZOOM = 0.005f;
+
 class Player : public GameEntity
 {
 public:

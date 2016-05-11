@@ -8,7 +8,7 @@ class GameEntity;
 class World;
 class ParticleStreamSystem;
 
-const int MAX_STREAMS = 5;
+const int MAX_STREAMS = 10;
 
 class InteractionManager : public Manager
 {

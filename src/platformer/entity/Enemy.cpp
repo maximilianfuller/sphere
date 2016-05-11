@@ -18,10 +18,14 @@ Enemy::~Enemy()
 
 void Enemy::idle()
 {
+
+    m_goal = glm::vec3();
 }
 
 void Enemy::updateGoalVelocity()
 {
+    glm::vec3 up = glm::normalize(m_pos);
+
     /* Run from strongest enemy */
     if(m_delta < 0)
     {
@@ -42,40 +46,51 @@ void Enemy::updateGoalVelocity()
         if(maxEnemy)
         {
             glm::vec3 diff = m_pos - maxEnemy->getPosition();
+            diff = diff - glm::dot(diff, up) * up;
 
             if(glm::length2(diff) > 0)
-
             {
                 m_goal = glm::normalize(diff);
             }
         }
     }
     /* Approach weakest enemy */
-    else if(m_delta > 0)
+    else if(m_delta >= 0)
     {
         GameEntity *minEnemy = NULL;
-        float minTransfer = -1;
+        float minDist = -1;
 
-        foreach(GameEntity *target, m_targets)
+        foreach(Entity *entity, m_world->getEntities())
         {
-            float transfer;
+            GameEntity *target = dynamic_cast<GameEntity *>(entity);
 
-            if(minTransfer < 0 || (transfer = target->getTransferRate(this)) < minTransfer)
+            float range = (target->getLightRadius() + getLightRadius()) * 0.5f;
+            float dist = glm::length(target->getPosition() - m_pos);
+
+            if(dist < range)
             {
-                minTransfer = transfer;
-                minEnemy = target;
+                float transfer = target->getTransferRate(this);
+
+                if(minDist < 0 || dist < minDist && transfer < getTransferRate(target))
+                {
+                    minDist = dist;
+                    minEnemy = target;
+                }
             }
         }
 
         if(minEnemy)
         {
             glm::vec3 diff = minEnemy->getPosition() - m_pos;
+            diff = diff - glm::dot(diff, up) * up;
+            diff = 0.9f * diff;
 
-            if(glm::length2(diff) > 0)
-
+            if(glm::length2(diff) == 0)
             {
-                m_goal = glm::normalize(diff);
+                diff = glm::normalize(glm::vec3(0.1, 0.1, 0.1));
             }
+
+            m_goal = glm::normalize(diff);
         }
     }
     /* Random direction */
@@ -83,6 +98,8 @@ void Enemy::updateGoalVelocity()
     {
         idle();
     }
+
+    m_goal = m_goal - glm::dot(m_goal, up) * up;
 }
 
 void Enemy::onTick(float seconds)

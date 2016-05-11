@@ -22,10 +22,9 @@ InteractionManager::~InteractionManager()
     }
 }
 
-void InteractionManager::connect(GameEntity *e1, GameEntity *e2,
-                                 QList<std::pair<GameEntity *, GameEntity *> > &connections)
+void InteractionManager::connect(GameEntity *e1, GameEntity *e2, QList<std::pair<GameEntity *, GameEntity *> > &connections)
 {
-    float minDist = e1->getLightRadius() + e2->getLightRadius();
+    float minDist = (e1->getRadius() + e2->getRadius()) * 1.5;
 
     if(glm::length2(e1->getPosition() - e2->getPosition()) < minDist * minDist)
     {
@@ -78,6 +77,7 @@ void InteractionManager::onTick(float seconds)
 
     /* Prune streams */
     QMutableListIterator<ParticleStreamSystem *> i(m_streams);
+    int numStreams = 0;
 
     while(i.hasNext())
     {
@@ -101,9 +101,18 @@ void InteractionManager::onTick(float seconds)
             continue;
         }
 
-        if(m_streams.length() < MAX_STREAMS && !stream->getStarted())
+        if(numStreams < MAX_STREAMS && !stream->getStarted())
         {
             stream->start();
+        }
+        else if(numStreams > MAX_STREAMS)
+        {
+            stream->stop();
+        }
+
+        if(stream->getStarted())
+        {
+            numStreams++;
         }
     }
 }

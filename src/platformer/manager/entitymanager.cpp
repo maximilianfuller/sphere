@@ -78,7 +78,7 @@ float EntityManager::getPower(int level) {
 }
 
 float EntityManager::getSpeed(int level) {
-    return glm::pow(2.f, level-1.f);
+    return 0.0005f * glm::pow(2.f, level-1.f);
 }
 
 glm::vec3 EntityManager::getRandomSpawnLoc(float spawnHeight) {

@@ -30,7 +30,7 @@ void main()
     float depthFactor1 = smoothstep(0, 0.00005, depth);
 
     // Fade based on age
-    float ageFactor1 = smoothstep(0, 0.02, age);
+    float ageFactor1 = smoothstep(0, 0.01, age);
     float ageFactor2 = smoothstep(0, 0.1, 1 - age);
 
     fragColor = depthFactor1 * ageFactor1 * ageFactor2 * particleColor;
