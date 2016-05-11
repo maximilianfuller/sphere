@@ -10,6 +10,10 @@
 
 class Entity;
 
+const float VEL_SCALE = 100.f;
+const float MAX_VEL = 0.01f;
+const float MIN_VEL = 0.003f;
+
 class ParticleStreamSystem : public ParticleSystem
 {
 public:

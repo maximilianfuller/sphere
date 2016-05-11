@@ -155,7 +155,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
     glm::vec3 targetPos = m_target->getPosition();
 
     float totalDistance = glm::max(glm::length(targetPos - sourcePos), 0.0001f);
-    float maxDistance = (target->getRadius() + source->getRadius()) * 1.5;
+    float maxDistance = (target->getRadius() + source->getRadius()) * TRANSFER_SCALE;
     glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(1, 1, totalDistance));
 
     /* Align particle stream */
@@ -199,9 +199,9 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
             }
 
             /* Set particle velocity */
-            float maxVel = (0.003f / (totalDistance)) * (1 - totalDistance / maxDistance);
+            float maxVel = glm::max((MAX_VEL / (totalDistance)) * (1 - totalDistance / maxDistance), MIN_VEL);
             float diff = (source->getTransferRate(target) - target->getTransferRate(source)) / totalDistance * (1 - totalDistance / maxDistance);
-            float transVel = glm::clamp(diff * 50.f, -maxVel, maxVel);
+            float transVel = glm::clamp(diff * VEL_SCALE, -maxVel, maxVel);
 
             m_particles[i]->vel.z += transVel * 0.1;
             m_particles[i]->vel.z = glm::clamp(-maxVel, m_particles[i]->vel.z, maxVel);

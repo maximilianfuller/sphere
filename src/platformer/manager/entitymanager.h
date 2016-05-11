@@ -16,7 +16,7 @@ public:
 private:
     float SPAWN_RADIUS = .05f;
     float NO_SPAWN_RADIUS = 0.01f;
-    float MAX_ENEMIES = 5;
+    float MAX_ENEMIES = 30;
     glm::vec3 START_LOC = glm::normalize(glm::vec3(1.f, 1.f, 1.f));
     int NUM_LEVELS = 6;
     float ENTITY_SPREAD = 3.f; //how far each band of enemies continues past its "level boundary"

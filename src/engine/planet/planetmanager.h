@@ -42,10 +42,13 @@ private:
     void initializeNoiseTexture();
     void loadNoiseTexture(GLuint shader);
     void initializeQuad(int width);
+
     TileShape *m_tile;
     Graphics *m_graphics;
     Framebuffer *m_fb;
     GLuint m_texture;
+
+    float m_planetRadius = 1000.f;
 };
 
 

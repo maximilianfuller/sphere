@@ -27,7 +27,7 @@ flat out int cd;
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 3;
+int octaves = 12;
 float alpha = .50;
 float normalDelta = .0001;
 float amp = .03;

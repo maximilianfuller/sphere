@@ -26,7 +26,6 @@
 /* TODO
  * fix lighting
  * fix game balance
- * fix sorting
  */
 
 GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
@@ -200,8 +199,7 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
         GameEntity *ent = dynamic_cast<GameEntity *>(entity);
 
         float radius = ent->getRadius();
-        float dist = glm::max(glm::length(ent->getPosition() + glm::vec3(0, 1, 0)
-                                          - m_camera->getEye())
+        float dist = glm::max(glm::length(ent->getPosition() - m_camera->getEye())
                 - radius, 0.f);
 
         std::pair<GameEntity *, float> p(ent, dist);

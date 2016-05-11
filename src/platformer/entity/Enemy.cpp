@@ -4,12 +4,19 @@
 #include "engine/light/PointLight.h"
 #include "engine/particle/ParticleStreamSystem.h"
 
+#include <glm/gtx/rotate_vector.hpp>
+
 Enemy::Enemy(World *world, float power, glm::vec3 color,
              glm::vec3 pos,
              float speed, glm::vec3 vel, glm::vec3 acc,
              glm::vec3 goal, float friction) :
-    GameEntity(world, power, color, pos, speed, vel, acc, goal, friction)
+    GameEntity(world, power, color, pos, speed, vel, acc, goal, friction * 0.5)
 {
+    float rand1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float rand2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float rand3 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+
+    m_goal = glm::normalize(glm::vec3(rand1, rand2, rand3));
 }
 
 Enemy::~Enemy()
@@ -18,82 +25,84 @@ Enemy::~Enemy()
 
 void Enemy::idle()
 {
+    glm::vec3 up = glm::normalize(m_pos);
+    float yaw = (M_PI / 6) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
-    m_goal = glm::vec3();
+    m_goal = glm::rotate(m_goal, yaw, up);
 }
 
 void Enemy::updateGoalVelocity()
 {
     glm::vec3 up = glm::normalize(m_pos);
+    GameEntity *maxEnemy = NULL;
+    GameEntity *minEnemy = NULL;
 
-    /* Run from strongest enemy */
-    if(m_delta < 0)
+    /* Get closest larger */
+    float minDist = -1;
+
+    foreach(Entity *entity, m_world->getEntities())
     {
-        GameEntity *maxEnemy = NULL;
-        float maxTransfer = 0;
+        GameEntity *target = dynamic_cast<GameEntity *>(entity);
 
-        foreach(GameEntity *target, m_targets)
+        float range = (target->getLightRadius() + getLightRadius()) * 0.5f;
+        float dist = glm::length(target->getPosition() - m_pos);
+
+        if(dist < range)
         {
-            float transfer;
+            float transfer = target->getTransferRate(this);
 
-            if((transfer = target->getTransferRate(this)) > maxTransfer)
+            if(minDist < 0 || dist < minDist && transfer > getTransferRate(target))
             {
-                maxTransfer = transfer;
+                minDist = dist;
                 maxEnemy = target;
             }
         }
+    }
 
-        if(maxEnemy)
+    /* Get closest smaller */
+    minDist = -1;
+
+    foreach(Entity *entity, m_world->getEntities())
+    {
+        GameEntity *target = dynamic_cast<GameEntity *>(entity);
+
+        float range = (target->getLightRadius() + getLightRadius()) * 0.5f;
+        float dist = glm::length(target->getPosition() - m_pos);
+
+        if(dist < range)
         {
-            glm::vec3 diff = m_pos - maxEnemy->getPosition();
-            diff = diff - glm::dot(diff, up) * up;
+            float transfer = target->getTransferRate(this);
 
-            if(glm::length2(diff) > 0)
+            if(minDist < 0 || dist < minDist && transfer < getTransferRate(target))
             {
-                m_goal = glm::normalize(diff);
+                minDist = dist;
+                minEnemy = target;
             }
         }
     }
-    /* Approach weakest enemy */
-    else if(m_delta >= 0)
+
+
+    if(maxEnemy && m_delta < 0)
     {
-        GameEntity *minEnemy = NULL;
-        float minDist = -1;
+        glm::vec3 diff = m_pos - maxEnemy->getPosition();
+        diff = diff - glm::dot(diff, up) * up;
 
-        foreach(Entity *entity, m_world->getEntities())
+        if(glm::length2(diff) > 0)
         {
-            GameEntity *target = dynamic_cast<GameEntity *>(entity);
-
-            float range = (target->getLightRadius() + getLightRadius()) * 0.5f;
-            float dist = glm::length(target->getPosition() - m_pos);
-
-            if(dist < range)
-            {
-                float transfer = target->getTransferRate(this);
-
-                if(minDist < 0 || dist < minDist && transfer < getTransferRate(target))
-                {
-                    minDist = dist;
-                    minEnemy = target;
-                }
-            }
-        }
-
-        if(minEnemy)
-        {
-            glm::vec3 diff = minEnemy->getPosition() - m_pos;
-            diff = diff - glm::dot(diff, up) * up;
-            diff = 0.9f * diff;
-
-            if(glm::length2(diff) == 0)
-            {
-                diff = glm::normalize(glm::vec3(0.1, 0.1, 0.1));
-            }
-
             m_goal = glm::normalize(diff);
         }
     }
-    /* Random direction */
+    else if(minEnemy && m_delta >= 0)
+    {
+        glm::vec3 diff = minEnemy->getPosition() - m_pos;
+        diff = diff - glm::dot(diff, up) * up;
+        diff = diff - minEnemy->getRadius() * 3.f * diff;
+
+        if(glm::length2(diff) != 0)
+        {
+            m_goal = glm::normalize(diff);
+        }
+    }
     else
     {
         idle();

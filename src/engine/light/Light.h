@@ -5,6 +5,8 @@
 
 class Graphics;
 
+static int numLights = 0;
+
 class Light
 {
 public:
@@ -17,6 +19,8 @@ public:
 
 protected:
     glm::vec3 m_int;
+
+    int m_id;
 };
 
 #endif // LIGHT_H

@@ -36,7 +36,7 @@ void main()
     // Fade out on the edges of the light
     float d = length((vec2(position_screenSpace) - vec2(lightPos)) * ratio);
     float startFade = lightRadius * 0.2;
-    float endFade = lightRadius * (0.4 + 0 * cos(time));
+    float endFade = lightRadius * 0.4;
     float fadeAtt = 1 - smoothstep(startFade, endFade, d);
 
     fragColor.w *= fadeDepth * fadeAtt;

@@ -21,10 +21,10 @@ void CollisionManager::onTick(float seconds)
 
         float noise = world->getTerrainHeight(ent->getPosition());
 
-        if(glm::length(ent->getPosition()) - ent->getRadius() * 0.25 < noise)
+        if(glm::length(ent->getPosition()) - ent->getRadius() * 0.5f < noise)
         {
             ent->setPosition(glm::normalize(ent->getPosition())
-                             * (noise + ent->getRadius() * 0.25f));
+                             * (noise + ent->getRadius() * 0.5f));
             ent->setGrounded(true);
         }
         else

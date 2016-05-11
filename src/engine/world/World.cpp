@@ -186,7 +186,7 @@ void World::drawGeometry(Graphics *graphics)
 void World::drawLights(Graphics *graphics)
 {
     /* Draw point lights */
-    graphics->sendEmptyMatrices();
+    m_camera->setTransforms(graphics);
     m_camera->setResolution(graphics);
 
     foreach(PointLight *light, m_pointLights)
@@ -198,6 +198,9 @@ void World::drawLights(Graphics *graphics)
     {
         manager->drawLights(graphics);
     }
+
+    graphics->sendEmptyMatrices();
+    m_camera->setResolution(graphics);
 
     /* Draw directional lights */
     foreach(DirectionalLight *light, m_directionalLights)
