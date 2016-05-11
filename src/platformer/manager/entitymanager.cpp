@@ -33,7 +33,7 @@ void EntityManager::onTick(float seconds) {
             float dieRoll = rand()/(float)RAND_MAX;
             float prob = getEntitySpawnProbability(level)*seconds;
             if (dieRoll < prob) {
-//                spawnEnemy(level);
+                spawnEnemy(level);
             }
         }
     }

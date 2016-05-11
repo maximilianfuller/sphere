@@ -217,6 +217,5 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
 }
 
 float GameWorld::getTerrainHeight(glm::vec3 loc) {
-    return 1.f;
-    //return 1.f + m_planet->getNoise(glm::normalize(loc));
+    return 1.f + m_planet->getNoise(glm::normalize(loc));
 }

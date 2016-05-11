@@ -21,7 +21,7 @@ vec3 white = vec3(1.0,1.0,1.0);
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 10;
+int octaves = 3;
 float alpha = .50;
 float normalDelta = .0003;
 float amp = .03;

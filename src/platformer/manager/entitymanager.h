@@ -14,9 +14,9 @@ public:
     virtual void onTick(float seconds);
 
 private:
-    float SPAWN_RADIUS = .1f;
-    float NO_SPAWN_RADIUS = 0.05f;
-    float MAX_ENEMIES = 50;
+    float SPAWN_RADIUS = .05f;
+    float NO_SPAWN_RADIUS = 0.01f;
+    float MAX_ENEMIES = 5;
     glm::vec3 START_LOC = glm::normalize(glm::vec3(1.f, 1.f, 1.f));
     int NUM_LEVELS = 6;
     float ENTITY_SPREAD = 3.f; //how far each band of enemies continues past its "level boundary"

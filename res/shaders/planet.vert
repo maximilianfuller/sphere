@@ -27,7 +27,7 @@ flat out int cd;
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 10;
+int octaves = 3;
 float alpha = .50;
 float normalDelta = .0001;
 float amp = .03;
@@ -36,8 +36,6 @@ float freq = 10.0;
 float hash( float n ) { return fract(sin(n)*753.5453123); }
 float noiseF( in vec3 x )
 {
-
-    return 0.0;
         vec3 p = floor(x);
         vec3 f = fract(x);
         f = f*f*(3.0-2.0*f);

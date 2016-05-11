@@ -76,6 +76,7 @@ bool QuadTree::shouldSplit(int x, int y, int depth) {
  * @return whether or not the given tile should be drawn
  */
 bool QuadTree::shouldCull(int x, int y, int depth) {
+    return false;
 
     Graphics *g = m_pm->getGraphics();
 
