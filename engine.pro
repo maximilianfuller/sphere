@@ -69,7 +69,6 @@ SOURCES += \
     src/platformer/entity/VultureEnemy.cpp \
     src/platformer/entity/AgroEnemy.cpp \
     src/platformer/entity/PassiveEnemy.cpp \
-    src/engine/planet/node.cpp \
     src/engine/planet/planetmanager.cpp \
     src/engine/planet/planetshape.cpp \
     src/engine/planet/quadtree.cpp \
@@ -140,7 +139,6 @@ HEADERS += \
     src/platformer/entity/VultureEnemy.h \
     src/platformer/entity/AgroEnemy.h \
     src/platformer/entity/PassiveEnemy.h \
-    src/engine/planet/node.h \
     src/engine/planet/noise.h \
     src/engine/planet/planetmanager.h \
     src/engine/planet/planetshape.h \
