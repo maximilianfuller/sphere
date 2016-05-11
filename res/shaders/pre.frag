@@ -5,7 +5,7 @@ layout (location = 1) out vec4 fragNormal;
 layout (location = 2) out vec4 fragColorSpecular;
 
 uniform vec4 color;
-uniform float shininess = 0.1;
+uniform float shininess = 0.01;
 
 uniform int useTexture = 0;
 uniform sampler2D tex;

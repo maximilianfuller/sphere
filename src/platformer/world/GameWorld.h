@@ -32,12 +32,12 @@ public:
 
     virtual void keyPressEvent(QKeyEvent *event);
     virtual void keyReleaseEvent(QKeyEvent *event);
+    virtual void wheelEvent(QWheelEvent *event);
 
     /* Game loop */
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
     void drawLightGeometry(Graphics *graphics);
-    //void drawParticles(Graphics *graphics);
 
     const float LOOK_ANGLE_EPS = 0.001;
 

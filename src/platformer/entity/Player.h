@@ -6,6 +6,7 @@
 class Camera;
 
 const float MIN_ZOOM = 0.005f;
+const float MAX_ZOOM = 100.f;
 
 class Player : public GameEntity
 {

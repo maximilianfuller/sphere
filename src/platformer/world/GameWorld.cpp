@@ -20,6 +20,7 @@
 #include "engine/particle/ParticleTube.h"
 
 #include <QKeyEvent>
+#include <QWheelEvent>
 #include <QList>
 #include <QMutableListIterator>
 #include <queue>
@@ -197,7 +198,8 @@ void GameWorld::keyPressEvent(QKeyEvent *event)
     {
         m_camera->toggleThirdPerson();
     }
-    else if(event->key() == Qt::Key_Enter && m_stopped)
+
+    if(m_stopped)
     {
         start();
     }
@@ -235,10 +237,24 @@ void GameWorld::keyReleaseEvent(QKeyEvent *event)
     }
 }
 
+void GameWorld::wheelEvent(QWheelEvent *event)
+{
+    float zoom = m_player->getZoom();
+
+    if(event->delta() > 0 && zoom * m_player->getRadius() > MIN_ZOOM)
+    {
+        zoom -= 0.001 * event->delta() * zoom;
+    }
+    else if(event->delta() <= 0 && zoom * m_player->getRadius() < MAX_ZOOM)
+    {
+        zoom -= 0.001 * event->delta() * zoom;
+    }
+
+    m_player->setZoom(zoom);
+}
+
 void GameWorld::onTick(float seconds)
 {
-    // TODO: delete player
-    // TODO: spawn entities on the surface
     if(m_stopped)
     {
         if(!m_dead)
@@ -318,15 +334,6 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
         depthQueue.pop();
     }
 }
-
-/*
-void GameWorld::drawParticles(Graphics *graphics)
-{
-    glm::mat4x4 look = glm::mat4x4(glm::mat3x3(glm::inverse(m_camera->getView())));
-    m_northSystem->draw(graphics, look);
-    m_southSystem->draw(graphics, look);
-}
-*/
 
 float GameWorld::getTerrainHeight(glm::vec3 loc) {
     return 1.f + m_planet->getNoise(glm::normalize(loc));

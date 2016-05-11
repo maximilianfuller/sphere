@@ -22,7 +22,7 @@ World::~World()
 {
     foreach(Entity *ent, m_entities)
     {
-        delete(ent);
+        //delete(ent);
     }
 
     foreach(Manager *manager, m_managers)
