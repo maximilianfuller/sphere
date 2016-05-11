@@ -136,7 +136,8 @@ void Camera::updateTransforms()
 
 void Camera::updateFrustumPlanes(Graphics *controller)
 {
-    glm::mat4 view = glm::lookAt(m_eye, m_eye + m_look, m_up);
+    //translate eye back by .1. Hack to make frustum culling bug go away
+    glm::mat4 view = glm::lookAt(m_eye-.1f*m_look, m_eye + m_look, m_up);
     glm::mat4 proj = glm::perspective(glm::radians(m_fov), m_ratio.x / m_ratio.y,
                               nearPlane, farPlane);
     glm::mat4 t = glm::transpose(proj * view);

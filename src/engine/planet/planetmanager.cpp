@@ -41,8 +41,6 @@ void PlanetManager::drawPlanet(glm::vec3 eye, glm::vec3 playerLoc) {
     drawFace(FRONT, eye, playerLoc);
     drawFace(BACK, eye, playerLoc);
 
-//    getNoise(glm::normalize(eye));
-
 }
 
 void PlanetManager::drawFace(int face, glm::vec3 eye, glm::vec3 playerLoc) {

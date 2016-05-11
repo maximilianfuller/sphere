@@ -27,7 +27,8 @@ flat out int cd;
 
 float PI = 3.141592;
 int seed = 0;
-int octaves = 12;
+int octaves = 10;
+
 float alpha = .50;
 float normalDelta = .0001;
 float amp = .03;
@@ -109,10 +110,6 @@ void main(){
         vec3 pos = vec3(cube_m * m * vec4(position, 1.0));  //position on spherified cube
         pos = normalize(pos);
         pos = sNoise(pos); //with noise added
-
-        for(int i = 0; i < 10; i++) {
-            pos = sNoise(pos);
-        }
 
         vec3 polar = cartesianToPolar(pos);
         vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));

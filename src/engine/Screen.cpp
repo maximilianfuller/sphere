@@ -52,7 +52,7 @@ void Screen::onResize(int w, int h)
     m_camera->setRatio(size);
 
     /* Remake framebuffers */
-    GLint internalFormatsObject[3] = {GL_RGBA16F, GL_RGB16F, GL_RGBA};
+    GLint internalFormatsObject[3] = {GL_RGBA32F, GL_RGB32F, GL_RGBA};
     GLenum formatsObject[3] = {GL_RGBA, GL_RGBA, GL_RGBA};
     GLenum typesObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
 

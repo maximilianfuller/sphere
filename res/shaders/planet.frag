@@ -14,7 +14,6 @@ flat in int cd;
 vec3 tan = vec3(194/255.0, 178/255.0, 128/255.0);
 vec3 white = vec3(1.0,1.0,1.0);
 
-
 ///////////////////////////////
 //VALUE NOISE
 ///////////////////////////////
@@ -96,8 +95,8 @@ void main(){
         //        pos = sNoise(pos);
 
 
-        vec3 polar = cartesianToPolar(pos);
-        vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
+//        vec3 polar = cartesianToPolar(pos);
+//        vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
 //        vec3 p2 = sNoise(polarToCartesian(vec3(polar.x - normalDelta, polar.y, polar.z)));
 //        vec3 p3 = sNoise(polarToCartesian(vec3(polar.x, polar.y + normalDelta, polar.z)));
 //        vec3 p4 = sNoise(polarToCartesian(vec3(polar.x, polar.y - normalDelta, polar.z)));
@@ -107,16 +106,41 @@ void main(){
 
               vec4 normal = normal_worldSpace;
         //              vec4 normal = vec4(pos, 0);
+          vec3 color;
+
+          int level = int(floor(6*acos(dot(normalize(vec3(1,1,1)), pos))/PI))+1;
+
+          switch(level) {
+          case 1:
+              color = vec3(128,0,255);
+              break;
+          case 2:
+              color = vec3(0,0,255);
+              break;
+          case 3:
+              color = vec3(0,255,175);
+              break;
+          case 4:
+              color = vec3(0,255,0);
+              break;
+          case 5:
+              color = vec3(255,255,0);
+              break;
+          case 6:
+              color = vec3(255,0,0);
+              break;
+          default:
+              color = vec3(1,1,1);
+          }
 
 
         if (dot(vec3(normal), normalize(pos)) > .900) {
-            base_color = white;
+            base_color = white - .0008*(vec3(1,1,1)- color);
             spec = .3;
         } else {
             base_color = tan;
             spec = .15;
         }
-
         //set out uniforms
         fragPosition = position_worldSpace/position_worldSpace.w;
         fragNormal = normal;

@@ -83,9 +83,6 @@ void GameWorld::stop()
 {
     m_stopped = true;
     m_dead = false;
-
-    m_player->setPosition(glm::normalize(glm::vec3(1, 1, 1)));
-    m_camera->setLook(glm::vec3(-1, -1, -1));
 }
 
 bool GameWorld::getStopped()
@@ -99,8 +96,8 @@ void GameWorld::start()
     m_dead = false;
 
     QMutableListIterator<Entity *> i(m_entities);
-    m_player->setPower(0.002);
     m_player->setZoom(5);
+    m_player->setPower(0.002);
     m_player->setVelocity(glm::vec3(0, 0, 0));
     m_player->setGoalVelocity(glm::vec3(0, 0, 0));
 
@@ -121,6 +118,16 @@ void GameWorld::mouseMoveEvent(QMouseEvent *event, int startX,
 {
     float yaw = -(event->x() - startX) / 300.f;
     float pitch = -(event->y() - startY) / 300.f;
+
+    if(yaw > M_PI / 6)
+    {
+        yaw = 0;
+    }
+
+    if(pitch > M_PI / 6)
+    {
+        pitch = 0;
+    }
 
     glm::vec3 look = glm::normalize(m_camera->getLook());
     glm::vec3 up = glm::normalize(m_camera->getUp());
@@ -236,6 +243,10 @@ void GameWorld::onTick(float seconds)
     {
         if(!m_dead)
         {
+            m_player->setPosition(glm::normalize(glm::vec3(1, 1, 1)));
+            m_player->setPower(30.0);
+            m_camera->setLook(glm::vec3(-1, -1, -1));
+
             QMutableListIterator<Entity *> i(m_entities);
 
             while(i.hasNext())
@@ -251,7 +262,7 @@ void GameWorld::onTick(float seconds)
 
             EntityManager *entManager = dynamic_cast<EntityManager *>(m_managers[1]);
 
-            for(int i = 0; i < 20; i++)
+            for(int i = 0; i < 200; i++)
             {
                 entManager->spawnEnemy(rand() % 6 + 1);
             }

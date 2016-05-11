@@ -53,7 +53,7 @@ void ParticleStreamSystem::setColor(glm::vec3 color)
 void ParticleStreamSystem::start()
 {
     /* Create particles and set their age */
-    if(!m_started && m_startTimer > 20)
+    if(!m_started && m_startTimer > 1)
     {
         m_started = true;
     }

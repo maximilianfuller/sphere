@@ -212,24 +212,13 @@ void Player::updateCamera()
     float dist = glm::max(m_zoom * radius, MIN_ZOOM);
 
     m_camera->setEye(m_pos - dist * m_camera->getLook());
-
-    /*
-    glm::vec3 eye = m_camera->getEye();
-
-    GameWorld *world = dynamic_cast<GameWorld *>(m_world);
-    float noise = world->getTerrainHeight(eye);
-
-    if(glm::length(eye) - 0.0005f < noise)
-    {
-        m_camera->setEye(glm::normalize(eye) * (1.f + noise + 0.0005f));
-    }
-    */
 }
 
 void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
+    /* Stop game */
     GameWorld *world = dynamic_cast<GameWorld *>(m_world);
 
     if(m_power <= 0 && !world->getStopped())
@@ -238,7 +227,7 @@ void Player::onTick(float seconds)
         return;
     }
 
-    m_speed = .01f;
+    m_speed = 5.f*getRadius();
 
     /* Set jump velocity */
     if(m_jump && m_grounded)

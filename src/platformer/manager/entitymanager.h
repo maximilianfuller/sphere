@@ -15,14 +15,14 @@ public:
     void spawnEnemy(int level);
 
 private:
-    float SPAWN_RADIUS = .05f;
-    float NO_SPAWN_RADIUS = 0.01f;
-    float MAX_ENEMIES = 30;
-    glm::vec3 START_LOC = glm::normalize(glm::vec3(1.f, 1.f, 1.f));
-    int NUM_LEVELS = 6;
-    float ENTITY_SPREAD = 3.f; //how far each band of enemies continues past its "level boundary"
-    float SPAWN_RATE_COEFF = 0.5f;
-    float POWER_COEFF = .001;
+    const float SPAWN_RADIUS = 60.f;
+    const float NO_SPAWN_RADIUS = 30.f;
+    const float MAX_ENEMIES = 15;
+    const glm::vec3 START_LOC = glm::normalize(glm::vec3(1.f, 1.f, 1.f));
+    const int NUM_LEVELS = 6;
+    const float ENTITY_SPREAD = 2.1f; //how far each band of enemies continues past its "level boundary"
+    const float SPAWN_RATE_COEFF = 1.5f;
+    const float POWER_COEFF = .001;
 
     Player *m_player;
     float getEntitySpawnProbability(int level);
@@ -30,6 +30,8 @@ private:
     float getPower(int level);
     float getSpeed(int level);
     glm::vec3 getRandomSpawnLoc(float spawnHeight);
+    float getSpawnRadius();
+    float getNoSpawnRadius();
 
 
 
