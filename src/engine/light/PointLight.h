@@ -6,14 +6,14 @@
 
 class Graphics;
 
-const float MIN_INTENSITY = 5 / 256.0;
+const float MIN_INTENSITY = 1 / 256.0;
 
 class PointLight : public Light
 {
 public:
     PointLight(glm::vec3 pos = glm::vec3(0, 0, 0),
                glm::vec3 intensity = glm::vec3(1, 1, 1),
-               glm::vec3 att = glm::vec3(0, 0, 0.9));
+               glm::vec3 att = glm::vec3(0, 0, 1.0));
 
     glm::vec3 getPosition();
     void setPosition(glm::vec3 pos);

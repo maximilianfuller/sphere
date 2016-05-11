@@ -228,7 +228,7 @@ void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
-    m_speed = .006f;
+    m_speed = 10.f*getRadius();
 
     /* Set jump velocity */
     if(m_jump && m_grounded)

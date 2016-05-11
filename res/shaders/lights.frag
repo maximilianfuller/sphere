@@ -25,6 +25,8 @@ uniform sampler2D position;
 uniform sampler2D normal;
 uniform sampler2D colorSpecular;
 
+in vec2 texc;
+
 void main()
 {
     /* Geometry data from textures */
@@ -34,48 +36,42 @@ void main()
     vec3 fragColor = vec3(fragColorSpecular) ;
     float fragSpecular = fragColorSpecular.w;
 
-    // Pass if light does not cover this location
-    if(distance(lightPos, fragPos) > lightRadius && lightType == 0)
-    {
-        discard;
-    }
-
-    lightData = vec4(0);
-
-    /* Diffsue component */
-    vec3 vertexToLight;
-
-    // Point light
     if(lightType == 0)
     {
-        vertexToLight = normalize(lightPos - fragPos);
-    }
-    // Directional light
-    else if(lightType == 1)
-    {
-        vertexToLight = normalize(lightDir);
-    }
+        if(length(lightPos - fragPos) > lightRadius)
+        {
+            discard;
+        }
 
-    /* Diffuse component */
-    float diffuseFactor = max(dot(fragNormal, vertexToLight), 0.0);
-    lightData += vec4(fragColor * lightInt * diffuseFactor, 0.0);
+        lightData = vec4(0);
+        vec3 vertexToLight = normalize(lightPos - fragPos);
 
-    /* Specular component */
-    if(diffuseFactor != 0)
+        /* Diffuse component */
+        float diffuseFactor = max(dot(fragNormal, vertexToLight), 0.0);
+        lightData += vec4(fragColor * lightInt * diffuseFactor, 0.0);
+
+        /* Specular component */
+
+        /* Attenuation for point light */
+        float d = length(lightPos - fragPos);
+        float totalAtt = max((lightAtt.x + d * lightAtt.y + d * d * lightAtt.z), 1.0);
+        lightData /= totalAtt;
+
+        lightData.w = 1;
+    }
+    else
     {
+        lightData = vec4(0);
+        vec3 vertexToLight = normalize(lightDir);
+
+        /* Diffuse component */
+        float diffuseFactor = max(dot(fragNormal, vertexToLight), 0.0);
+        lightData += vec4(fragColor * lightInt * diffuseFactor, 0.0);
+
+        /* Specular component */
         vec3 lightReflection = normalize(-reflect(vertexToLight, fragNormal));
         vec3 eyeDirection = normalize(vec3(eye_worldSpace) - fragPos);
         float specFactor = pow(max(0.0, dot(eyeDirection, lightReflection)), fragSpecular * 256);
         lightData += vec4(fragColor * lightInt * specFactor, 0.0);
     }
-
-    /* Attenuation for point light */
-    if(lightType == 0)
-    {
-        float d = length(lightPos - fragPos);
-        float totalAtt = max((lightAtt.x + d * lightAtt.y + d * d * lightAtt.z), 1.0);
-        lightData /= totalAtt;
-    }
-
-    lightData.w = 1.0;
 }

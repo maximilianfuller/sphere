@@ -24,7 +24,7 @@ InteractionManager::~InteractionManager()
 
 void InteractionManager::connect(GameEntity *e1, GameEntity *e2, QList<std::pair<GameEntity *, GameEntity *> > &connections)
 {
-    float minDist = (e1->getRadius() + e2->getRadius()) * 1.5;
+    float minDist = (e1->getRadius() + e2->getRadius()) * TRANSFER_SCALE;
 
     if(glm::length2(e1->getPosition() - e2->getPosition()) < minDist * minDist)
     {
@@ -32,7 +32,7 @@ void InteractionManager::connect(GameEntity *e1, GameEntity *e2, QList<std::pair
         {
             ParticleStreamSystem *stream = new ParticleStreamSystem(
                         "particle", e1, e2,
-                        glm::mix(e1->getLightColor(), e2->getLightColor(), 0.5),
+                        glm::mix(e1->getColor(), e2->getColor(), 0.5),
                         7.f);
 
             m_streams.append(stream);

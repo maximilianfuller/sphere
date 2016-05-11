@@ -37,15 +37,17 @@ private:
     const static int MAX_DEPTH = 11;
     const static float SPLITTING_DISTANCE = 1.3f;
 
-
     void drawFace(int face, glm::vec3 eye, glm::vec3 playerLoc);
     void initializeNoiseTexture();
     void loadNoiseTexture(GLuint shader);
     void initializeQuad(int width);
+
     TileShape *m_tile;
     Graphics *m_graphics;
     Framebuffer *m_fb;
     GLuint m_texture;
+
+    float m_planetRadius = 1000.f;
 };
 
 

@@ -50,6 +50,8 @@ float PointLight::getRadius()
 
 void PointLight::setRadius(float radius)
 {
+    radius = radius;
+
     if(radius != m_radius)
     {
         float maxIntensity = glm::max(m_int.x, glm::max(m_int.y, m_int.z));
@@ -65,10 +67,14 @@ void PointLight::draw(Graphics *graphics)
     Light::draw(graphics);
 
     /* Send light uniforms */
+    glm::mat4 scale = glm::scale(glm::mat4(), glm::vec3(m_radius, m_radius, m_radius) * 2.f);
+    glm::mat4 translate = glm::translate(glm::mat4(), m_pos);
+    graphics->sendModelUniform(translate * scale);
+
     graphics->sendLightTypeUniform(POINT_LIGHT);
     graphics->sendAttenuationUniform(m_att);
     graphics->sendLightPositionUniform(m_pos);
     graphics->sendLightRadiusUniform(m_radius);
 
-    graphics->drawShape("fullscreenQuad");
+    graphics->drawShape("sphere");
 }

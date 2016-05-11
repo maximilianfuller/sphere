@@ -52,23 +52,39 @@ void Screen::onResize(int w, int h)
     m_camera->setRatio(size);
 
     /* Remake framebuffers */
+    GLint internalFormatsObject[3] = {GL_RGBA16F, GL_RGB16F, GL_RGBA};
+    GLenum formatsObject[3] = {GL_RGBA, GL_RGBA, GL_RGBA};
+    GLenum typesObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
+
+    /*
     GLint internalFormatsObject[3] = {GL_RGBA32F, GL_RGB32F, GL_RGBA};
     GLenum formatsObject[3] = {GL_RGBA, GL_RGBA, GL_RGBA};
     GLenum typesObject[3] = {GL_FLOAT, GL_FLOAT, GL_UNSIGNED_BYTE};
 
-    GLint internalFormatsLight[1] = {GL_RGBA};
+    GLint internalFormatsLight[1] = {GL_RGBA32F};
     GLenum formatsLight[1] = {GL_RGBA};
-    GLenum typesLight[1] = {GL_UNSIGNED_BYTE};
+    GLenum typesLight[1] = {GL_FLOAT};
+    */
+
+    GLint internalFormatsPs[1] = {GL_RGBA};
+    GLenum formatsPs[1] = {GL_RGBA};
+    GLenum typesPs[1] = {GL_UNSIGNED_BYTE};
 
     delete m_geometryFramebuffer;
     delete m_lightFramebuffer;
 
+    /*
     m_geometryFramebuffer = new Framebuffer(w, h, 3,
                                             internalFormatsObject, formatsObject, typesObject);
     m_lightFramebuffer = new Framebuffer(w, h, 1,
                                          internalFormatsLight, formatsLight, typesLight);
+                                         */
+    m_geometryFramebuffer = new Framebuffer(w, h, 3,
+                                            internalFormatsObject, formatsObject, typesObject);
+    m_lightFramebuffer = new Framebuffer(w, h, 1,
+                                         internalFormatsPs, formatsPs, typesPs);
     m_psFramebuffer = new Framebuffer(w, h, 1,
-                                      internalFormatsLight, formatsLight, typesLight);
+                                      internalFormatsPs, formatsPs, typesPs);
 }
 
 void Screen::onTick(float seconds)

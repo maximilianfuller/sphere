@@ -5,8 +5,11 @@
 
 class Graphics;
 class World;
-
 class PointLight;
+
+const float TRANSFER_SCALE = 3.f;
+const float TRANSFER_RATE = 0.0002f;
+const float MAX_TRANSFER = 200.f;
 
 class GameEntity : public Entity
 {
@@ -26,7 +29,8 @@ public:
 
     float getLightRadius();
     glm::vec3 getLightPosition();
-    glm::vec3 getLightColor();
+    glm::vec3 getLightIntensity();
+    glm::vec3 getColor();
 
     /* Power */
     float getPower();
@@ -70,6 +74,7 @@ protected:
     bool m_stun;
 
     int m_stunTimer;
+    int m_warningTimer;
 };
 
 #endif // GAMEENTITY_H

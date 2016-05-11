@@ -16,6 +16,7 @@ GameEntity::GameEntity(World *world,
     m_delta(0),
     m_light(NULL),
     m_warning(false),
+    m_warningTimer(0),
     m_stun(false),
     m_stunTimer(0),
     Entity(world, pos, glm::vec3(0, 0, 0), speed, vel, acc, goal, friction)
@@ -25,6 +26,7 @@ GameEntity::GameEntity(World *world,
 
     /* Create light */
     m_light = new PointLight(m_pos, color);
+    m_light->setRadius(getLightRadius());
 }
 
 GameEntity::~GameEntity()
@@ -39,7 +41,7 @@ float GameEntity::getRadius()
 
 float GameEntity::getLightRadius()
 {
-    return getRadius() * 75.0;
+    return getRadius() * 20.0;
 }
 
 glm::vec3 GameEntity::getLightPosition()
@@ -47,7 +49,12 @@ glm::vec3 GameEntity::getLightPosition()
     return m_light->getPosition();
 }
 
-glm::vec3 GameEntity::getLightColor()
+glm::vec3 GameEntity::getLightIntensity()
+{
+    return m_light->getIntensity();
+}
+
+glm::vec3 GameEntity::getColor()
 {
     return m_light->getLightColor();
 }
@@ -83,7 +90,20 @@ float GameEntity::getTransferRate(GameEntity *target)
     if(!m_stun)
     {
         float dist = glm::length(target->getPosition() - m_pos);
-        return glm::max((glm::pow(m_power, 0.333f)) / glm::max(dist, 1.f), 0.f);
+        float transfer = (glm::pow(m_power, 0.333f)) / glm::max(dist, 1.f);
+
+        if(target->getPower() < m_power && target->getPower() >= 0.002)
+        {
+            return glm::clamp(transfer, 0.f, glm::max(target->getPower() * MAX_TRANSFER, 0.f));
+        }
+        else if(target->getPower() > m_power && target->getPower() >= 0.002)
+        {
+            return glm::clamp(transfer, 0.f, glm::max(m_power * MAX_TRANSFER, 0.f));
+        }
+        else if(target->getPower() < m_power)
+        {
+            return glm::clamp(transfer, 0.f, 0.5f);
+        }
     }
     else
     {
@@ -179,39 +199,29 @@ void GameEntity::onTick(float seconds)
 
     /* Transfer matter */
     m_delta = 0;
+    glm::vec3 lightInt = getLightIntensity();
+    float intensity = glm::length(lightInt);
 
     foreach(GameEntity *target, m_targets)
     {
-        float amount = getTransferRate(target) * 0.000;
+        float amount = getTransferRate(target) * TRANSFER_RATE;
+        lightInt += target->getLightIntensity() * getTransferRate(target) * 0.05f;
 
         m_delta += amount;
     }
 
     foreach(GameEntity *target, m_targets)
     {
-        float amount = target->getTransferRate(this) * 0.000;
+        float amount = target->getTransferRate(this) * TRANSFER_RATE;
+        lightInt -= target->getLightIntensity() * target->getTransferRate(this) * 0.05f;
 
         m_delta -= amount;
     }
 
+    m_light->setIntensity(intensity * glm::normalize(lightInt));
+
     m_power += m_delta;
-
-    /* Update warning */
-    if(!m_warning && m_delta < 0)
-    {
-        if(m_time < 0.1 || glm::abs(2 * M_PI - m_time) < 0.1)
-        {
-            m_warning = true;
-        }
-    }
-
-    if(m_warning && m_delta >= 0)
-    {
-        if(m_time < 0.1 || glm::abs(2 * M_PI - m_time) < 0.1)
-        {
-            m_warning = false;
-        }
-    }
+    m_power = glm::max(m_power, 0.f);
 }
 
 void GameEntity::drawGeometry(Graphics *graphics)
@@ -220,23 +230,7 @@ void GameEntity::drawGeometry(Graphics *graphics)
 
 void GameEntity::drawLights(Graphics *graphics)
 {
-    if(m_light)
-    {
-        if(m_warning)
-        {
-            float radius = m_light->getRadius();
-            float newRadius = glm::max(radius * glm::cos(m_time), 0.f);
-
-            m_light->setRadius(newRadius);
-            m_light->draw(graphics);
-
-            m_light->setRadius(radius);
-        }
-        else
-        {
-            m_light->draw(graphics);
-        }
-    }
+    m_light->draw(graphics);
 }
 
 void GameEntity::drawParticles(Graphics *graphics)
@@ -247,9 +241,8 @@ void GameEntity::drawLightGeometry(Graphics *graphics)
 {
     if(m_light)
     {
-        glm::vec3 pos = m_light->getPosition();
-
         /* Model matrix */
+        glm::vec3 pos = m_light->getPosition();
         float radius = getRadius();
 
         glm::vec3 scale = glm::vec3(radius, radius, radius);
@@ -257,12 +250,6 @@ void GameEntity::drawLightGeometry(Graphics *graphics)
 
         /* Updated color */
         glm::vec4 color = glm::vec4(glm::mix(m_light->getIntensity(), glm::vec3(1), 0.5f), 1);
-
-        // Warning color
-        if(m_warning)
-        {
-            color.w = 0.6 + 0.4 * glm::cos(m_time);
-        }
 
         // Stun color
         if(m_stun)
