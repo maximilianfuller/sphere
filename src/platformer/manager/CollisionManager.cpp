@@ -31,7 +31,10 @@ void CollisionManager::onTick(float seconds)
         {
             ent->setGrounded(false);
         }
+    }
 
-        ent->onTick(seconds);
+    foreach(Entity *entity, m_entities)
+    {
+        entity->onTick(seconds);
     }
 }

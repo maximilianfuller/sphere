@@ -6,7 +6,6 @@ Light::Light(glm::vec3 intensity) :
     m_int(intensity)
 {
     m_id = ++numLights;
-    std::cout << glm::to_string(m_int) << std::endl;
 }
 
 glm::vec3 Light::getIntensity()

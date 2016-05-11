@@ -122,7 +122,6 @@ glm::vec3 Player::getDirection()
 
     glm::vec3 dir = glm::normalize(look - glm::dot(look, up) * up);
 
-    std::cout << glm::dot(dir, up) << std::endl;
     return dir - glm::dot(dir, up) * up;
 }
 
@@ -230,6 +229,14 @@ void Player::updateCamera()
 void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
+
+    GameWorld *world = dynamic_cast<GameWorld *>(m_world);
+
+    if(m_power <= 0 && !world->getStopped())
+    {
+        world->stop();
+        return;
+    }
 
     m_speed = .01f;
 

@@ -12,6 +12,7 @@ class EntityManager : public Manager
 public:
     EntityManager(GameWorld *world, QList<Entity *> &entities, Player  *p);
     virtual void onTick(float seconds);
+    void spawnEnemy(int level);
 
 private:
     float SPAWN_RADIUS = .05f;
@@ -25,7 +26,6 @@ private:
 
     Player *m_player;
     float getEntitySpawnProbability(int level);
-    void spawnEnemy(int level);
     glm::vec3 getColor(int level);
     float getPower(int level);
     float getSpeed(int level);

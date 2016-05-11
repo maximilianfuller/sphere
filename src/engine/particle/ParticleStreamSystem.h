@@ -49,8 +49,6 @@ private:
     bool m_started;
     int m_startTimer;
 
-    float m_startVel;
-
     int m_particleTimer;
     int m_particleTimeout;
 };

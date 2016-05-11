@@ -202,7 +202,7 @@ void GameEntity::onTick(float seconds)
     foreach(GameEntity *target, m_targets)
     {
         float amount = getTransferRate(target) * TRANSFER_RATE;
-        lightInt += target->getLightIntensity() * getTransferRate(target) * 0.05f;
+        //lightInt += target->getLightIntensity() * getTransferRate(target) * 0.05f;
 
         m_delta += amount;
     }
@@ -210,7 +210,7 @@ void GameEntity::onTick(float seconds)
     foreach(GameEntity *target, m_targets)
     {
         float amount = target->getTransferRate(this) * TRANSFER_RATE;
-        lightInt -= target->getLightIntensity() * target->getTransferRate(this) * 0.05f;
+        //lightInt -= target->getLightIntensity() * target->getTransferRate(this) * 0.05f;
 
         m_delta -= amount;
     }

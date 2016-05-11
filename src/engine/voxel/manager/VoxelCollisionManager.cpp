@@ -264,7 +264,6 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
         /* Get target y value */
         int startY = int(glm::floor(pos.y - dims.y - chunkPos.y));
         int endY = int(glm::round(pos.y - dims.y / 2 + vel.y * seconds - chunkPos.y));
-        //std::cout << "start: " << startY << std::endl;
 
         /* Loop over x, z, y values until target value, checking intersections */
         for(y = startY; y >= endY; y--)
@@ -354,8 +353,6 @@ void VoxelCollisionManager::ySweep(Chunk *chunk, VoxelEntity *ent, float seconds
 
 void VoxelCollisionManager::onTick(float seconds)
 {
-    std::cout << "manager tick" << std::endl;
-
     foreach(Entity *aEnt, m_entities)
     {
         VoxelEntity *ent = dynamic_cast<VoxelEntity* >(aEnt);

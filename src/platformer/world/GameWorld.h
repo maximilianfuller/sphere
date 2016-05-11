@@ -9,6 +9,7 @@ class Camera;
 class Player;
 class GameEntity;
 class PlanetManager;
+class ParticleTube;
 
 class GameWorld : public World
 {
@@ -17,6 +18,11 @@ public:
     ~GameWorld();
 
     Player *getPlayer();
+
+    void stop();
+    void start();
+
+    bool getStopped();
 
     /* Events */
     virtual void mouseMoveEvent(QMouseEvent *event, int startX,
@@ -31,6 +37,7 @@ public:
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
     void drawLightGeometry(Graphics *graphics);
+    //void drawParticles(Graphics *graphics);
 
     const float LOOK_ANGLE_EPS = 0.001;
 
@@ -41,6 +48,12 @@ private:
     Player *m_player;
     PlanetManager *m_planet;
     QList<Triangle *> m_triangles;
+
+    ParticleTube *m_northSystem;
+    ParticleTube *m_southSystem;
+
+    bool m_stopped;
+    bool m_dead;
 };
 
 class CompareDepth
