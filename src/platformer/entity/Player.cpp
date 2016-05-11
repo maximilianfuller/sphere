@@ -207,8 +207,9 @@ void Player::updateGoalVelocity()
 void Player::updateCamera()
 {
     float radius = getRadius();
+    float dist = glm::max(m_zoom * radius, MIN_ZOOM);
 
-    m_camera->setEye(m_pos - m_zoom * radius * m_camera->getLook());
+    m_camera->setEye(m_pos - dist * m_camera->getLook());
 
     /*
     glm::vec3 eye = m_camera->getEye();
@@ -227,7 +228,7 @@ void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
-    m_speed = .004f;
+    m_speed = .006f;
 
     /* Set jump velocity */
     if(m_jump && m_grounded)
@@ -236,7 +237,7 @@ void Player::onTick(float seconds)
     }
 
     /* Set zoom */
-    if(m_zoomIn)
+    if(m_zoomIn && m_zoom * getRadius() > MIN_ZOOM)
     {
         m_zoom -= 0.03 * m_zoom;
     }

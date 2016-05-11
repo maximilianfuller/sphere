@@ -37,8 +37,7 @@ void main()
     // Pass if light does not cover this location
     if(distance(lightPos, fragPos) > lightRadius && lightType == 0)
     {
-        lightData = vec4(0, 0, 0, 1);
-        return;
+        discard;
     }
 
     lightData = vec4(0);

@@ -23,18 +23,24 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <platformer/manager/entitymanager.h>
 
+/* TODO
+ * fix lighting
+ * fix game balance
+ * fix sorting
+ */
+
 GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     World(camera)
 {
     /* Player */
     m_player = new Player(this, camera);
     addEntity(m_player);
-    addEntity(new Enemy(this, 0.0015, glm::vec3(1, 0, 0), glm::vec3(1.002, 0, 0), 1));
+    addEntity(new Enemy(this, 0.0015, glm::vec3(1, 0, 0), glm::vec3(1.002, 0, 0), 0.001));
 
     /* Add managers */
     addManager(new CollisionManager(this, m_entities));
-    addManager(new InteractionManager(this, m_entities));
     addManager(new EntityManager(this, m_entities, m_player));
+    addManager(new InteractionManager(this, m_entities));
 
     /* Lights */
     addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)));
@@ -204,5 +210,6 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
 }
 
 float GameWorld::getTerrainHeight(glm::vec3 loc) {
-    return 1.f + m_planet->getNoise(glm::normalize(loc));
+    return 1.f;
+    //return 1.f + m_planet->getNoise(glm::normalize(loc));
 }

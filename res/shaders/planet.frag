@@ -83,7 +83,6 @@ void main(){
         vec3 gray = vec3(139/255.0, 140/255.0, 122/255.0);
         vec3 white = vec3(1.0,1.0,1.0);
 
-
         vec3 polar = cartesianToPolar(pos);
         vec3 p1 = sNoise(polarToCartesian(vec3(polar.x + normalDelta, polar.y, polar.z)));
         vec3 p2 = sNoise(polarToCartesian(vec3(polar.x - normalDelta, polar.y, polar.z)));

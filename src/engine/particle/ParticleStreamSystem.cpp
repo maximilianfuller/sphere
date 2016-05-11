@@ -6,6 +6,10 @@
 
 #include "platformer/entity/GameEntity.h"
 
+/* TODO:
+ * 0) Cleanup
+ * 1) Global particles
+ */
 ParticleStreamSystem::ParticleStreamSystem(QString textureKey,
                                            Entity *source, Entity *target, glm::vec3 color,
                                            float startVel) :
@@ -55,13 +59,6 @@ void ParticleStreamSystem::start()
     /* Create particles and set their age */
     if(!m_started && m_startTimer > 20)
     {
-        for(int i = 0; i < 50; i++)
-        {
-            createParticle(true);
-            int index = m_particleIndex - 1;
-            m_particles[index]->age = -m_particles[index]->pos.z;
-        }
-
         m_started = true;
     }
     else if(!m_started)
@@ -70,12 +67,17 @@ void ParticleStreamSystem::start()
     }
 }
 
+void ParticleStreamSystem::stop()
+{
+    m_started = false;
+}
+
 bool ParticleStreamSystem::getStarted()
 {
     return m_started;
 }
 
-void ParticleStreamSystem::createParticle(bool start)
+void ParticleStreamSystem::createParticle()
 {
     GameEntity *source = dynamic_cast<GameEntity *>(m_source);
     GameEntity *target = dynamic_cast<GameEntity *>(m_target);
@@ -84,7 +86,8 @@ void ParticleStreamSystem::createParticle(bool start)
     float rand_angle = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float rand_rad1 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
     float rand_rad2 = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-    float rand_vel = 0.05 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float rand_vel = 0.5 * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+    float rand_dist = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
     /* Position on circle */
     float theta = 2 * M_PI * rand_angle;
@@ -114,25 +117,23 @@ void ParticleStreamSystem::createParticle(bool start)
     Particle *particle = new Particle(pos, vel, radius, theta, m_textureKey);
     m_particles[m_particleIndex++] = particle;
     m_particleIndex %= MAX_PARTICLES;
-
-    /* Move particles to middle of stream */
-    if(start)
-    {
-        float rand_dist = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        particle->pos.z = -rand_dist;
-    }
-
+    particle->pos.z = -rand_dist;
 }
 
 void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
 {
+    if(!m_started)
+    {
+        return;
+    }
+
     GameEntity *source = dynamic_cast<GameEntity *>(m_source);
     GameEntity *target = dynamic_cast<GameEntity *>(m_target);
 
     /* Create new particle */
     if(m_particleTimer > m_particleTimeout)
     {
-        createParticle(false);
+        createParticle();
         m_particleTimer = 0;
 
         if(source->getTransferRate(target) - target->getTransferRate(source) != 0)
@@ -149,20 +150,20 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
         m_particleTimer++;
     }
 
-    /* Send color */
-    graphics->sendColorUniform(glm::vec4(m_color, 1.0));
-
     /* Update existing particles */
     glm::vec3 sourcePos = m_source->getPosition();
     glm::vec3 targetPos = m_target->getPosition();
 
     float totalDistance = glm::max(glm::length(targetPos - sourcePos), 0.0001f);
-    float maxDistance = target->getLightRadius() + source->getLightRadius();
+    float maxDistance = (target->getRadius() + source->getRadius()) * 1.5;
     glm::mat4x4 scale = glm::scale(glm::mat4x4(), glm::vec3(1, 1, totalDistance));
 
     /* Align particle stream */
     glm::mat4x4 view = glm::lookAt(sourcePos, targetPos, glm::normalize(sourcePos));
     glm::mat4x4 model = glm::inverse(view) * scale;
+
+    /* Send color */
+    graphics->sendColorUniform(glm::vec4(m_color, 1.0));
 
     for(int i = 0; i < MAX_PARTICLES; i++)
     {
@@ -193,11 +194,9 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
             {
                 delete(m_particles[i]);
                 m_particles[i] = NULL;
-                createParticle(true);
+                createParticle();
                 continue;
             }
-
-//            std::cout << totalDistance << std::endl;
 
             /* Set particle velocity */
             float maxVel = (0.003f / (totalDistance)) * (1 - totalDistance / maxDistance);

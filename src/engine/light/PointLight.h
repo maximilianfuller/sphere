@@ -6,7 +6,7 @@
 
 class Graphics;
 
-const float MIN_INTENSITY = 1 / 256.0;
+const float MIN_INTENSITY = 5 / 256.0;
 
 class PointLight : public Light
 {
