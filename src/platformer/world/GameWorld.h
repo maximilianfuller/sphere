@@ -52,6 +52,7 @@ private:
     ParticleTube *m_northSystem;
     ParticleTube *m_southSystem;
 
+    int startTimer;
     bool m_stopped;
     bool m_dead;
 };

@@ -218,11 +218,16 @@ void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
+    std::cout << glm::to_string(m_pos) << std::endl;
+    std::cout << glm::to_string(m_power) << std::endl;
+    std::cout << glm::to_string(m_camera->getUp()) << std::endl;
+
     /* Stop game */
     GameWorld *world = dynamic_cast<GameWorld *>(m_world);
 
     if(m_power <= 0 && !world->getStopped())
     {
+        std::cout << "here" << std::endl;
         world->stop();
         return;
     }
