@@ -65,9 +65,8 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     addManager(new InteractionManager(this, m_entities));
 
     /* Lights */
-    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)*5.f));
-
-    //stop();
+    addDirectionalLight(new DirectionalLight(glm::vec3(1, 1, 1), glm::vec3(0.1, 0.1, 0.1)));
+    addDirectionalLight(new DirectionalLight(glm::vec3(-1, -1, -1), glm::vec3(0.1, 0.1, 0.1)));
 }
 
 GameWorld::~GameWorld()
@@ -319,6 +318,44 @@ void GameWorld::drawGeometry(Graphics *graphics)
     m_planet->drawPlanet(m_camera->getEye(), m_player->getPosition());
 }
 
+void GameWorld::drawLights(Graphics *graphics)
+{
+    /* Draw point lights */
+    m_camera->setTransforms(graphics);
+    m_camera->setResolution(graphics);
+
+    /* Sort entities by depth */
+    std::priority_queue<std::pair<GameEntity *,float>,
+            std::vector<std::pair<GameEntity *,float> >, CompareDepth> depthQueue;
+
+    foreach(Entity *entity, m_entities)
+    {
+        GameEntity *ent = dynamic_cast<GameEntity *>(entity);
+
+        float radius = ent->getLightRadius();
+        float dist = glm::abs(glm::length(ent->getPosition() - m_camera->getEye()) - radius);
+
+        std::pair<GameEntity *, float> p(ent, dist);
+        depthQueue.push(p);
+    }
+
+    /* Draw entities */
+    while(!depthQueue.empty())
+    {
+        (depthQueue.top()).first->drawLights(graphics);
+        depthQueue.pop();
+    }
+
+    graphics->sendEmptyMatrices();
+    m_camera->setResolution(graphics);
+
+    /* Draw directional lights */
+    foreach(DirectionalLight *light, m_directionalLights)
+    {
+        light->draw(graphics);
+    }
+}
+
 void GameWorld::drawLightGeometry(Graphics *graphics)
 {
     /* Draw point lights */
@@ -334,8 +371,7 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
         GameEntity *ent = dynamic_cast<GameEntity *>(entity);
 
         float radius = ent->getRadius();
-        float dist = glm::max(glm::length(ent->getPosition() - m_camera->getEye())
-                - radius, 0.f);
+        float dist = glm::abs(glm::length(ent->getPosition() - m_camera->getEye()) - radius);
 
         std::pair<GameEntity *, float> p(ent, dist);
         depthQueue.push(p);

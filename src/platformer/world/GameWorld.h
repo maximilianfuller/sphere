@@ -37,6 +37,7 @@ public:
     /* Game loop */
     void onTick(float seconds);
     void drawGeometry(Graphics *graphics);
+    void drawLights(Graphics *graphics);
     void drawLightGeometry(Graphics *graphics);
 
     const float LOOK_ANGLE_EPS = 0.001;

@@ -41,7 +41,7 @@ float GameEntity::getRadius()
 
 float GameEntity::getLightRadius()
 {
-    return getRadius() * 20.0;
+    return getRadius() * 50.0;
 }
 
 glm::vec3 GameEntity::getLightPosition()
@@ -89,21 +89,8 @@ float GameEntity::getTransferRate(GameEntity *target)
 {
     if(!m_stun)
     {
-        float dist = glm::length(target->getPosition() - m_pos);
-        float transfer = 1.5f*(glm::pow(m_power, 0.333f)) / glm::max(dist, 1.f);
-
-        if(target->getPower() < m_power && target->getPower() >= 0.002)
-        {
-            return glm::clamp(transfer, 0.f, glm::max(target->getPower() * MAX_TRANSFER, 0.f));
-        }
-        else if(target->getPower() > m_power && target->getPower() >= 0.002)
-        {
-            return glm::clamp(transfer, 0.f, glm::max(m_power * MAX_TRANSFER, 0.f));
-        }
-        else if(target->getPower() < m_power)
-        {
-            return glm::clamp(transfer, 0.f, 0.5f);
-        }
+        float transfer = 20.f * m_power;
+        return transfer;
     }
     else
     {
@@ -138,6 +125,8 @@ void GameEntity::clearTargets()
 void GameEntity::updateAcceleration()
 {
     glm::vec3 up = glm::normalize(m_pos);
+    m_goal = m_goal - glm::dot(up, m_goal) * up;
+
     glm::vec3 perpVel = m_vel - glm::dot(up, m_vel) * up;
     glm::vec3 diff = m_goal - perpVel;
 
@@ -150,6 +139,10 @@ void GameEntity::updateVelocity(float seconds)
     glm::vec3 up = glm::normalize(m_pos);
 
     if(m_grounded && glm::dot(m_vel, up) < 0)
+    {
+        m_vel = m_vel - glm::dot(up, m_vel) * up;
+    }
+    else if(glm::dot(m_vel, up) > 0)
     {
         m_vel = m_vel - glm::dot(up, m_vel) * up;
     }

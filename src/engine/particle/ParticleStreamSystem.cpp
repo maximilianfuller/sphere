@@ -196,7 +196,7 @@ void ParticleStreamSystem::draw(Graphics *graphics, glm::mat4x4 look)
 
             /* Set particle velocity */
             float maxVel = glm::max((MAX_VEL / (totalDistance)) * (1 - totalDistance / maxDistance), MIN_VEL);
-            float diff = (source->getTransferRate(target) - target->getTransferRate(source)) / totalDistance * (1 - totalDistance / maxDistance);
+            float diff = 20.f * (source->getTransferRate(target) - target->getTransferRate(source)) / totalDistance * (1 - totalDistance / maxDistance);
             float transVel = glm::clamp(diff * VEL_SCALE, -maxVel, maxVel);
 
             m_particles[i]->vel.z += transVel * 0.1;

@@ -127,10 +127,6 @@ glm::vec3 Player::getDirection()
 
 void Player::jump()
 {
-    m_grounded = false;
-    glm::vec3 up = glm::normalize(m_pos);
-    glm::vec3 jump = up * JUMP_SPEED * 100.f;
-    m_vel = m_vel - glm::dot(m_vel, up) * up + jump;
 }
 
 void Player::attack()
@@ -218,10 +214,6 @@ void Player::onTick(float seconds)
 {
     GameEntity::onTick(seconds);
 
-    std::cout << glm::to_string(m_pos) << std::endl;
-    std::cout << glm::to_string(m_power) << std::endl;
-    std::cout << glm::to_string(m_camera->getUp()) << std::endl;
-
     /* Stop game */
     GameWorld *world = dynamic_cast<GameWorld *>(m_world);
 
@@ -232,7 +224,7 @@ void Player::onTick(float seconds)
         return;
     }
 
-    m_speed = 5.f*getRadius();
+    m_speed = 3.f*getRadius();
 
     /* Set jump velocity */
     if(m_jump && m_grounded)

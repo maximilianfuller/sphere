@@ -82,7 +82,7 @@ void Enemy::updateGoalVelocity()
     }
 
 
-    if(maxEnemy && m_delta < 0)
+    if(maxEnemy && m_delta <= 0)
     {
         glm::vec3 diff = m_pos - maxEnemy->getPosition();
         diff = diff - glm::dot(diff, up) * up;
@@ -92,7 +92,7 @@ void Enemy::updateGoalVelocity()
             m_goal = glm::normalize(diff);
         }
     }
-    else if(minEnemy && m_delta >= 0)
+    else if(minEnemy && m_delta > 0)
     {
         glm::vec3 diff = minEnemy->getPosition() - m_pos;
         diff = diff - glm::dot(diff, up) * up;
