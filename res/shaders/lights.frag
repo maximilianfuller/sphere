@@ -65,7 +65,7 @@ void main()
         vec3 vertexToLight = normalize(lightDir);
 
         /* Ambient compoenent */
-        lightData += vec4(fragColor, 0.0)  * 0.1;
+        lightData += vec4(fragColor, 0.0)  * 0.02;
 
         /* Diffuse component */
         float diffuseFactor = max(dot(fragNormal, vertexToLight), 0.0);

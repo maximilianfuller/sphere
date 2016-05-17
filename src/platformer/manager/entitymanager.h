@@ -13,6 +13,7 @@ public:
     EntityManager(GameWorld *world, QList<Entity *> &entities, Player  *p);
     virtual void onTick(float seconds);
     void spawnEnemy(int level);
+    void setPlayer(Player *player);
 
 private:
     const float SPAWN_RADIUS = 60.f;
@@ -32,9 +33,6 @@ private:
     glm::vec3 getRandomSpawnLoc(float spawnHeight);
     float getSpawnRadius();
     float getNoSpawnRadius();
-
-
-
 };
 
 #endif // ENTITYMANAGER_H

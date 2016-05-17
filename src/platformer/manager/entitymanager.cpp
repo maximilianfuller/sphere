@@ -127,3 +127,7 @@ float EntityManager::getNoSpawnRadius() {
 
 }
 
+void EntityManager::setPlayer(Player *player)
+{
+    m_player = player;
+}

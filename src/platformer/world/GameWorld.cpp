@@ -27,11 +27,6 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <platformer/manager/entitymanager.h>
 
-/* TODO
- * fix lighting
- * fix game balance
- */
-
 GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     m_stopped(true),
     m_dead(false),
@@ -39,6 +34,7 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
 {
     /* Planet */
     m_planet = new PlanetManager(graphics);
+    m_entities.clear();
 
     /* Create player */
     m_player = new Player(this, m_camera);
@@ -47,17 +43,6 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
     glm::vec3 startPos = (getTerrainHeight(southPole) + .01f) * southPole;
     m_player->setPosition(startPos);
     addEntity(m_player);
-
-    /* North and south poles */
-    glm::vec3 sp = glm::normalize(glm::vec3(1, 1, 1));
-    glm::vec3 ep = glm::normalize(glm::vec3(-1, -1, -1));
-
-    m_northSystem = new ParticleTube("particle", sp, sp + 100.f * sp,
-                                     glm::vec3(1, 1, 1), 0.05f, 0.001f);
-    m_southSystem = new ParticleTube("particle", ep, ep + 100.f * ep,
-                                     glm::vec3(1, 1, 1), 0.05f, 0.001f);
-    m_northSystem->start();
-    m_southSystem->start();
 
     /* Add managers */
     addManager(new CollisionManager(this, m_entities));
@@ -72,8 +57,6 @@ GameWorld::GameWorld(Camera *camera, Graphics *graphics) :
 GameWorld::~GameWorld()
 {
     delete m_planet;
-    delete m_northSystem;
-    delete m_southSystem;
 }
 
 Player *GameWorld::getPlayer()
@@ -237,77 +220,36 @@ void GameWorld::wheelEvent(QWheelEvent *event)
 
 void GameWorld::onTick(float seconds)
 {
-    /*
     if(m_stopped)
     {
-        if(!m_dead)
+        m_player->setZoom(5);
+        m_player->setPower(0.002);
+        m_player->setVelocity(glm::vec3(0, 0, 0));
+        m_player->setGoalVelocity(glm::vec3(0, 0, 0));
+
+        glm::vec3 southPole = glm::normalize(glm::vec3(1.f, 1.f,1.f));
+        glm::vec3 startPos = (getTerrainHeight(southPole) + .01f) * southPole;
+        m_player->setPosition(startPos);
+
+        QMutableListIterator<Entity *> i(m_entities);
+
+        while(i.hasNext())
         {
-            m_player->setPosition(glm::normalize(glm::vec3(1, 1, 1)));
-            m_player->setPower(30.0);
-            m_camera->setLook(glm::normalize(glm::vec3(-1, -1, -1)));
+            Entity *ent = i.next();
 
-            QMutableListIterator<Entity *> i(m_entities);
-
-            while(i.hasNext())
+            if(ent != m_player)
             {
-                Entity *ent = i.next();
-
-                if(ent != m_player)
-                {
-                    delete ent;
-                    i.remove();
-                }
+                delete ent;
+                i.remove();
             }
-
-            EntityManager *entManager = dynamic_cast<EntityManager *>(m_managers[1]);
-
-            for(int i = 0; i < 200; i++)
-            {
-                entManager->spawnEnemy(rand() % 6 + 1);
-            }
-
-            m_dead = true;
         }
 
-        m_camera->setEye(glm::vec3(2, 2, 2));
-        m_camera->setUp(glm::vec3(-1, 1, -1));
+        m_stopped = false;
     }
-    else
-    {
-        if(!m_dead)
-        {
-            std::cout << "here" << std::endl;
-            m_player->setZoom(5);
-            m_player->setPower(0.002);
-            m_player->setVelocity(glm::vec3(0, 0, 0));
-            m_player->setGoalVelocity(glm::vec3(0, 0, 0));
 
-            glm::vec3 southPole = glm::normalize(glm::vec3(1.f, 1.f,1.f));
-            glm::vec3 startPos = (getTerrainHeight(southPole) + .01f) * southPole;
-            m_player->setPosition(startPos);
+    m_camera->setUp(glm::normalize(m_camera->getEye()));
 
-            QMutableListIterator<Entity *> i(m_entities);
-
-            while(i.hasNext())
-            {
-                Entity *ent = i.next();
-
-                if(ent != m_player)
-                {
-                    delete ent;
-                    i.remove();
-                }
-            }
-
-            m_dead = true;
-        }
-        */
-
-        /* Set camera up vector */
-        m_camera->setUp(glm::normalize(m_camera->getEye()));
-
-        World::onTick(seconds);
-    //}
+    World::onTick(seconds);
 }
 
 void GameWorld::drawGeometry(Graphics *graphics)
@@ -333,7 +275,7 @@ void GameWorld::drawLights(Graphics *graphics)
         GameEntity *ent = dynamic_cast<GameEntity *>(entity);
 
         float radius = ent->getLightRadius();
-        float dist = glm::abs(glm::length(ent->getPosition() - m_camera->getEye()) - radius);
+        float dist = glm::length(ent->getPosition() - m_camera->getEye()) + radius;
 
         std::pair<GameEntity *, float> p(ent, dist);
         depthQueue.push(p);
@@ -371,7 +313,12 @@ void GameWorld::drawLightGeometry(Graphics *graphics)
         GameEntity *ent = dynamic_cast<GameEntity *>(entity);
 
         float radius = ent->getRadius();
-        float dist = glm::abs(glm::length(ent->getPosition() - m_camera->getEye()) - radius);
+        float dist = glm::length(ent->getPosition() - m_camera->getEye()) - radius;
+
+        if(dist < 0)
+        {
+            dist = glm::length(ent->getPosition() - m_camera->getEye()) + radius;
+        }
 
         std::pair<GameEntity *, float> p(ent, dist);
         depthQueue.push(p);

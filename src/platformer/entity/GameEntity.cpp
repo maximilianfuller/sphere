@@ -130,8 +130,11 @@ void GameEntity::updateAcceleration()
     glm::vec3 perpVel = m_vel - glm::dot(up, m_vel) * up;
     glm::vec3 diff = m_goal - perpVel;
 
-    m_acc = glm::normalize(m_pos) * G / m_speed;
-    m_acc += m_friction * diff;
+    if(m_speed > 0)
+    {
+        m_acc = glm::normalize(m_pos) * G / m_speed;
+        m_acc += m_friction * diff;
+    }
 }
 
 void GameEntity::updateVelocity(float seconds)

@@ -25,10 +25,6 @@ Enemy::~Enemy()
 
 void Enemy::idle()
 {
-    glm::vec3 up = glm::normalize(m_pos);
-    float yaw = (M_PI / 6) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-
-    m_goal = glm::rotate(m_goal, yaw, up);
 }
 
 void Enemy::updateGoalVelocity()
@@ -51,7 +47,7 @@ void Enemy::updateGoalVelocity()
         {
             float transfer = target->getTransferRate(this);
 
-            if(minDist < 0 || dist < minDist && transfer > getTransferRate(target))
+            if((minDist < 0 || dist < minDist) && transfer > getTransferRate(target))
             {
                 minDist = dist;
                 maxEnemy = target;
@@ -73,7 +69,7 @@ void Enemy::updateGoalVelocity()
         {
             float transfer = target->getTransferRate(this);
 
-            if(minDist < 0 || dist < minDist && transfer < getTransferRate(target))
+            if((minDist < 0 || dist < minDist) && transfer < getTransferRate(target))
             {
                 minDist = dist;
                 minEnemy = target;
@@ -92,7 +88,7 @@ void Enemy::updateGoalVelocity()
             m_goal = glm::normalize(diff);
         }
     }
-    else if(minEnemy && m_delta > 0)
+    else if(minEnemy && m_delta >= 0)
     {
         glm::vec3 diff = minEnemy->getPosition() - m_pos;
         diff = diff - glm::dot(diff, up) * up;

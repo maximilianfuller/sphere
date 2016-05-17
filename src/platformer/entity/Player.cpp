@@ -172,8 +172,7 @@ void Player::updateGoalVelocity()
 
     /* Examine inputs */
     if(m_moveForward)
-    {
-        inputVel += dir;
+    { inputVel += dir;
     }
 
     if(m_moveBackward)
@@ -219,12 +218,11 @@ void Player::onTick(float seconds)
 
     if(m_power <= 0 && !world->getStopped())
     {
-        std::cout << "here" << std::endl;
         world->stop();
         return;
     }
 
-    m_speed = 3.f*getRadius();
+    m_speed = 3.f * getRadius();
 
     /* Set jump velocity */
     if(m_jump && m_grounded)
