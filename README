@@ -1,45 +1,9 @@
-Retries used: NONE STANDARD EXTRA ( extra retries remaining)
+SPHERE.
 
-Engine requirements
-========================================
+======
 
-Battal
-[ ] Deffered Lighting
-	[ ] can render scene with deferred pipeline
-[ ] particles
-	[ ] can render particles with the deferred pipline
+A 3D game, featuring deferred lighting, particles, and adaptive level-of-detail procedural terrain.
 
-Mjfuller
-	[ ] 3D noise on the GPU
-		[ ] same as last week
-	[ ] quadtree
-		[ ] addaptive level of detail of the quadtree
-	[ ] collision detection with heightmap (either gpu or somehow synced and done on the cpu)
+It's kind of fun!
 
-
-Global requirements
-========================================
-[ ] Top-level handin directory contains a Qt project file, a README, and an INSTRUCTIONS file
-[ ] README has a copy of the rubric with explanations of how to verify requirements
-[ ] README documents any known bugs
-[ ] README indicates number of hours taken
-[ ] INSTRUCTIONS contains all information needed to play the game
-[ ] Engine and game code logically separated
-[ ] Engine code well designed
-[ ] Game code well designed
-[ ] Runs on department machines
-[ ] Does not crash
-[ ] Works at 800x600 and fullscreen resolutions
-
-# Hours
-* 6 since last week, 13 total
-
-# Deferred lighting
-* Running the project will display platformer levels with deferred lighting
-built in. 
-* Lights are rendered as shapes (point lights are spheres and directional lights are full screen quads) -- look at the PointLight and DirectionalLight classes, as well as the renderDeferred functoin in the Screen class to look at the deferred pipeline.
-
-# Particles
-* Moving away from the origin in any one of the levels, and clicking will emit a stream of particles from the origin.
-* Particles created, rendered, and managed in the context of particle systems. The particle system that is displayed in this scene is an instance of ParticleStreamSystem, which has a start point, and a target, and sends particles from the start point to the target.
-* Particles always face towards the camera so that they appear more 3 dimensional.
+Open the project using the QtCreator community editor, which should be configured using the following guide: https://github.com/cs123tas/docs/blob/master/local_dev.pdf
